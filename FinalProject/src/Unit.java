@@ -131,7 +131,7 @@ public abstract class Unit{
 	/************************************************************************************/
 	//Removes health based on the amount of attack an enemy does on the unit
 	//Sets the units status to dead if the attack makes them lose all their health
-	public int takeHit(int damage){
+	public void takeHit(int damage){
 		health=health-(damage/defenseAmount);
 		if (health<0){
 			dead();
