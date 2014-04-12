@@ -19,6 +19,7 @@ public abstract class Unit{
 	private Point location;
 	private BufferedImage image;
 	private char charRepresentation;
+	private int defenseAmount;
 	
 	/************************************************************************************/
 	/**
@@ -40,10 +41,12 @@ public abstract class Unit{
 		image=i;
 		location=p;
 		charRepresentation=c;
+		defenseAmount=1;
 		alive=true;
 	}
 	/************************************************************************************/
 	
+	/************************************************************************************/
 	//Returns the location on the board the unit is in 
 	public Point getLocation(){
 		return location;
@@ -59,7 +62,7 @@ public abstract class Unit{
 	/************************************************************************************/
 	
 	/************************************************************************************/
-	//Retuns the char that represents the unit
+	//Returns the char that represents the unit
 	public char getCharRepresentation(){
 		return charRepresentation;
 	}
@@ -80,9 +83,23 @@ public abstract class Unit{
 	/************************************************************************************/
 	
 	/************************************************************************************/
+	//Adds health to the unit (from item)
+	public void addHealth(int amount){
+		health+=amount;
+	}
+	/************************************************************************************/
+	
+	/************************************************************************************/
 	//Returns the amount of distance the unit can move
 	public int getDistance(){
 		return moveDistance;
+	}
+	/************************************************************************************/
+	
+	/************************************************************************************/
+	//Makes unit be able to move farther (from item)
+	public void addDistance(int amount){
+		moveDistance+=amount;
 	}
 	/************************************************************************************/
 	
@@ -102,13 +119,28 @@ public abstract class Unit{
 	/************************************************************************************/
 	
 	/************************************************************************************/
+	//Adds to Amount of attack a unit can do (item)
+	public void addAttack(int amount){
+		attack+=amount;
+	}
+	/************************************************************************************/
+	
+	
+	/************************************************************************************/
 	//Removes health based on the amount of attack an enemy does on the unit
 	//Sets the units status to dead if the attack makes them lose all their health
 	public int takeHit(int damage){
-		health=health-damage;
+		health=health-(damage/defenseAmount);
 		if (health<0){
 			dead();
 		}
+	}
+	/************************************************************************************/
+	
+	/************************************************************************************/
+	//increases players defense(item)
+	public void increaseDefenseMultiplier(int amount){
+		defenseAmount+=amount;
 	}
 	/************************************************************************************/
 
@@ -144,6 +176,19 @@ public abstract class Unit{
 	//Unit gives one of their items to another unit
 	public void trade(Unit u, Item I){
 		u.addItem(I);
+	}
+	/************************************************************************************/
+	
+	/************************************************************************************/
+	//This method makes the item be used
+	public void useItem(Item I){
+		for(Item obj: items){
+			if(I.compareTo(obj)==0){
+				I.activate(this);
+				removeItem(I);
+				break;
+			}
+		}
 	}
 	/************************************************************************************/
 	
