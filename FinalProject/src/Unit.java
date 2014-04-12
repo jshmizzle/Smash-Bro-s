@@ -121,7 +121,7 @@ public abstract class Unit{
 	
 	/************************************************************************************/
 	//Returns whether is not the unit is dead or alive
-	private boolean isAlive(){
+	public boolean isAlive(){
 		return alive;
 	}
 	/************************************************************************************/
@@ -152,7 +152,7 @@ public abstract class Unit{
 	public void removeItem(Item I){
 		for(Item obj: items){
 			if(I.compareTo(obj)==0){
-				items.remove();
+				items.remove(obj);
 				break;
 			}
 		}
@@ -160,4 +160,3 @@ public abstract class Unit{
 	/************************************************************************************/
 	
 }
-
