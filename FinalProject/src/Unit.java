@@ -12,7 +12,7 @@ public abstract class Unit extends GameObject{
 	
 	
 	public Unit (String n, int hp, int distance){
-		super(this);
+		
 		this.name = n;
 		this.health = hp;
 		this.moveDistance = distance;

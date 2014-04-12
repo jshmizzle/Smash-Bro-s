@@ -1,9 +1,8 @@
 
 public class Sonic extends Unit {
 
-	public Sonic(String n, int hp, int distance) {
-		super("Sonic", hp, distance);
-		
+	public Sonic() {
+		super("Sonic", 20, 15);
 	}
 
 	
