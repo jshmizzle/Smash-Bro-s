@@ -10,7 +10,9 @@ public abstract class Unit extends GameObject{
 	private int [] stats;
 	private Strategy strategy;
 	
+	
 	public Unit (String n, int hp, int distance){
+		super(this);
 		this.name = n;
 		this.health = hp;
 		this.moveDistance = distance;
