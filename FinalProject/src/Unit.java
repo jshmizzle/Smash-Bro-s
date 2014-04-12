@@ -20,6 +20,7 @@ public abstract class Unit{
 	private BufferedImage image;
 	private char charRepresentation;
 	private int defenseAmount;
+	private int healthFull;
 	
 	/************************************************************************************/
 	/**
@@ -36,6 +37,7 @@ public abstract class Unit{
 
 		this.name = n;
 		this.health = hp;
+		healthFull=hp;
 		this.moveDistance = distance;
 		this.attack=attack;
 		image=i;
@@ -76,7 +78,7 @@ public abstract class Unit{
 	/************************************************************************************/
 	
 	/************************************************************************************/
-	//Returns the amoun of health the unit has
+	//Returns the amount of health the unit has
 	public int getHealth(){
 		return health;
 	}
@@ -84,8 +86,8 @@ public abstract class Unit{
 	
 	/************************************************************************************/
 	//Adds health to the unit (from item)
-	public void addHealth(int amount){
-		health+=amount;
+	public void setMaxHealth(int amount){
+		health=healthFull;
 	}
 	/************************************************************************************/
 	
