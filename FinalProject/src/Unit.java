@@ -10,7 +10,9 @@ public abstract class Unit extends GameObject{
 	private int [] stats;
 	private Strategy strategy;
 	
+	
 	public Unit (String n, int hp, int distance){
+		super(this);
 		this.name = n;
 		this.health = hp;
 		this.moveDistance = distance;
@@ -20,11 +22,7 @@ public abstract class Unit extends GameObject{
 		return name;
 	}
 	
-	/**
-	 * This method lets you check how much health the unit has.
-	 * 
-	 * @return The unit's current health
-	 */
+
 	public int getHealth(){
 		return health;
 	}

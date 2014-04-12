@@ -14,7 +14,8 @@ public class GameObject {
 	
 	/************************************************************************************/
 	
-	/*
+	/**
+	* 
 	* This is the constructor for a new GameObject. Every GameObject has it's own image, as well as 
 	* a starting location, and a representation on the board.
 	*
@@ -27,8 +28,8 @@ public class GameObject {
 	}
 	
 	/************************************************************************************/
-	//gets the current location on the board.
-	
+	/**gets the current location on the board.
+	*/
 	public Point getLocation(){
 		return location;
 	}
