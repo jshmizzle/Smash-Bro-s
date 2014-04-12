@@ -7,9 +7,11 @@ public class GameBoard {
 	private char[][] gameBoard;
 	private int boardWidth = 20;
 	private int boardHeight = 20;
-	private ArrayList<Character> units;
+	private ArrayList<Character> userUnits;
+	private ArrayList<Character> compUnits;
 	private char[][] terrain;
 	
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/************************************************************************************/
 	
@@ -17,15 +19,45 @@ public class GameBoard {
 =======
 	public GameBoard(ArrayList<Character> units){
 >>>>>>> 0bd9f46af15be6490be90bf4843a96009fa0f807
+=======
+	public GameBoard(ArrayList<Character> userUnits,ArrayList<Character> compUnits){
+		
+>>>>>>> 525b58cff99e2613cdff058a4373f331693f2442
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
-		this.units = units;
+		this.userUnits = userUnits;
+		this.compUnits = compUnits;
+		
+		
+		int i=0;
+		for(char c : userUnits){
+			gameBoard[boardWidth/2-1+i][boardHeight] = c;
+			i++;
+		}
+		
+		int j=0;
+		for(char c : compUnits){
+			gameBoard[boardWidth/2-1+j][boardHeight] = c;
+			j++;
+		}
+		
+		
+		
 	}
 	
+<<<<<<< HEAD
 	/************************************************************************************/
 	
 	public ArrayList<Point> shortestPath(Point fromHere, Point toThere){
 
+=======
+	public ArrayList<Point> shortestPath(Point a, Point b){
+		
+		ArrayList<Point> moves = new ArrayList<>();
+		
+		
+		
+>>>>>>> 525b58cff99e2613cdff058a4373f331693f2442
 		return null;
 	}
 	
@@ -43,10 +75,16 @@ public class GameBoard {
 		return false;
 	}
 	
+<<<<<<< HEAD
 	/************************************************************************************/
 	
 	public GameObject inspectPosition(Point p){
 		return null;
+=======
+	public char inspectPosition(Point p){
+		
+		return gameBoard[(int) p.getX()][(int) p.getY()];
+>>>>>>> 525b58cff99e2613cdff058a4373f331693f2442
 	}
 	
 	/************************************************************************************/
