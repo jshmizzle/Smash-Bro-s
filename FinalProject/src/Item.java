@@ -5,7 +5,6 @@
 public abstract class Item implements Comparable<Item>{
 
 	protected String name;
-	protected int statBoost;
 	
 	/************************************************************************************/
 	/**
@@ -13,9 +12,8 @@ public abstract class Item implements Comparable<Item>{
 	 * @param name Name of the item
 	 * @param statBoost How much item affects the individual stats
 	 */
-	public Item(String name, int statBoost){
+	public Item(String name){
 		this.name=name;
-		this.statBoost=statBoost;
 	}
 	/************************************************************************************/
 	
@@ -23,13 +21,6 @@ public abstract class Item implements Comparable<Item>{
 	//Returns the name of the item
 	public String getName(){
 		return name;
-	}
-	/************************************************************************************/
-	
-	/************************************************************************************/
-	//Returns the amount the item increases a specific stat
-	public int getStatBoost(){
-		return statBoost;
 	}
 	/************************************************************************************/
 	
