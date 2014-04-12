@@ -44,7 +44,6 @@ public abstract class Unit{
 	}
 	/************************************************************************************/
 	
-	/************************************************************************************/
 	//Returns the location on the board the unit is in 
 	public Point getLocation(){
 		return location;
