@@ -20,6 +20,11 @@ public abstract class Unit extends GameObject{
 		return name;
 	}
 	
+	/**
+	 * This method lets you check how much health the unit has.
+	 * 
+	 * @return The unit's current health
+	 */
 	public int getHealth(){
 		return health;
 	}
