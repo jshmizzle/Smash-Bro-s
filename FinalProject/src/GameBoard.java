@@ -11,18 +11,12 @@ public class GameBoard {
 	private ArrayList<Character> compUnits;
 	private char[][] terrain;
 	
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 	/************************************************************************************/
-	
-	public GameBoard(ArrayList<Unit> units){
-=======
-	public GameBoard(ArrayList<Character> units){
->>>>>>> 0bd9f46af15be6490be90bf4843a96009fa0f807
-=======
+
+
 	public GameBoard(ArrayList<Character> userUnits,ArrayList<Character> compUnits){
 		
->>>>>>> 525b58cff99e2613cdff058a4373f331693f2442
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
 		this.userUnits = userUnits;
@@ -45,46 +39,29 @@ public class GameBoard {
 		
 	}
 	
-<<<<<<< HEAD
 	/************************************************************************************/
 	
-	public ArrayList<Point> shortestPath(Point fromHere, Point toThere){
-
-=======
 	public ArrayList<Point> shortestPath(Point a, Point b){
 		
 		ArrayList<Point> moves = new ArrayList<>();
-		
-		
-		
->>>>>>> 525b58cff99e2613cdff058a4373f331693f2442
+	
 		return null;
 	}
-	
-<<<<<<< HEAD
+
 	/************************************************************************************/
-	
-	public boolean checkAvailable(){
-=======
+
 	public boolean checkAvailable(Point point){
 		
 		if(gameBoard[(int) point.getY()][(int) point.getX()]==' ')
 			return true;
-		
->>>>>>> 0bd9f46af15be6490be90bf4843a96009fa0f807
+
 		return false;
 	}
 	
-<<<<<<< HEAD
 	/************************************************************************************/
-	
-	public GameObject inspectPosition(Point p){
-		return null;
-=======
+
 	public char inspectPosition(Point p){
-		
 		return gameBoard[(int) p.getX()][(int) p.getY()];
->>>>>>> 525b58cff99e2613cdff058a4373f331693f2442
 	}
 	
 	/************************************************************************************/
