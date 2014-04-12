@@ -4,8 +4,8 @@
  */
 public abstract class Item implements Comparable<Item>{
 
-	private String name;
-	private int statBoost;
+	protected String name;
+	protected int statBoost;
 	
 	/************************************************************************************/
 	/**
