@@ -1,0 +1,14 @@
+INDEX VERSION 1.126+/home/jjmenke/Documents/tRPG/final-project/FinalProject/.metadata/.plugins/org.eclipse.jdt.core
+2068576835.index
+4194237299.index
+3785506883.index
+1006375690.index
+2601790473.index
+3940576481.index
+1503421675.index
+910172701.index
+615678493.index
+4103696614.index
+264172651.index
+3119630635.index
+296566835.index
