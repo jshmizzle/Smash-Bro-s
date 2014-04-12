@@ -44,6 +44,6 @@ public abstract class Item implements Comparable<Item>{
 	/************************************************************************************/
 	
 	//Abstract method that will activate when the item is used and carry out the desired operations
-	abstract void activate();
+	abstract void activate(Unit u);
 
 }
