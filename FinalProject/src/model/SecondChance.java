@@ -1,3 +1,4 @@
+package model;
 /*
  * This item restores a unit back to life immediately with half of their health
  * if they die with it

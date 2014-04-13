@@ -1,3 +1,4 @@
+package model;
 /*
  * This item restores the user back to their maximum health
  */
