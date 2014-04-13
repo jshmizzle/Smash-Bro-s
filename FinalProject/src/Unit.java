@@ -21,6 +21,7 @@ public abstract class Unit{
 	private char charRepresentation;
 	private int defenseAmount;
 	private int healthFull;
+	private int attackRange;
 	
 	/************************************************************************************/
 	/**
@@ -33,7 +34,7 @@ public abstract class Unit{
 	 * @param p Location of unit
 	 * @param c The character that represents the unit
 	 */
-	public Unit (String n, int hp, int distance, int attack, BufferedImage i, Point p, char c){
+	public Unit (String n, int hp, int distance, int attack, int attackRange, BufferedImage i, Point p, char c){
 
 		this.name = n;
 		this.health = hp;
@@ -42,6 +43,7 @@ public abstract class Unit{
 		this.attack=attack;
 		image=i;
 		location=p;
+		attackRange=this.attackRange;
 		charRepresentation=c;
 		defenseAmount=1;
 		alive=true;
@@ -106,14 +108,6 @@ public abstract class Unit{
 	/************************************************************************************/
 	
 	/************************************************************************************/
-	//Takes in the path that the unit has moved and then sets the new location of the unit
-	public void move(ArrayList<Point> path){
-		Point temp= path.get(path.size()-1);
-		setLocation(temp);
-	}
-	/************************************************************************************/
-	
-	/************************************************************************************/
 	//Attacks a unit by giving that unit a specific amount of damage
 	public void attack(Unit u){
 		u.takeHit(attack);
@@ -127,6 +121,19 @@ public abstract class Unit{
 	}
 	/************************************************************************************/
 	
+	/************************************************************************************/
+	//Method that increases the attack Range (by item)
+	public void increaseAttackRange(int amount){
+		attackRange+=amount;
+	}
+	/************************************************************************************/
+	
+	/************************************************************************************/
+	//Returns the distance a unit can attack
+	public int getAttackRange(){
+		return attackRange;
+	}
+	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Removes health based on the amount of attack an enemy does on the unit
