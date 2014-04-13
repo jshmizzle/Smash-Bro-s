@@ -17,13 +17,15 @@ import javax.swing.JPanel;
 
 public class MainMenuPanel extends JPanel {
 
-	JButton deathMatchButton;
-	JButton killTargetButton;
-	ObjectOutputStream output;
-	Image background;
-	ActionListener buttonListener;
+	private JButton deathMatchButton;
+	private JButton killTargetButton;
+	private ObjectOutputStream output;
+	private Image background;
+	private ActionListener buttonListener;
+	private String name;
 	
-	public MainMenuPanel() {
+	public MainMenuPanel(String name, ObjectOutputStream output) {
+		this.output=output;
 		this.setLayout(null);
 		this.setSize(this.getWidth(), this.getHeight());
 		initializeBackground();

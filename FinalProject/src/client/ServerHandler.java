@@ -10,10 +10,10 @@ import model.UpdateCommand;
 public class ServerHandler implements Runnable {
 
 	ObjectInputStream inputStream;
-	NetpaintClient client;
+	TRPGClient client;
 	UpdateCommand command;
 	
-	public ServerHandler(NetpaintClient client, ObjectInputStream in){
+	public ServerHandler(TRPGClient client, ObjectInputStream in){
 		this.client=client;
 		this.inputStream=in;
 	}
