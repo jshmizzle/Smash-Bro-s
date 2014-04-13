@@ -88,7 +88,7 @@ public abstract class Unit{
 	
 	/************************************************************************************/
 	//Adds health to the unit (from item)
-	public void setMaxHealth(int amount){
+	public void setMaxHealt(){
 		health=healthFull;
 	}
 	/************************************************************************************/
@@ -137,11 +137,27 @@ public abstract class Unit{
 	
 	/************************************************************************************/
 	//Removes health based on the amount of attack an enemy does on the unit
-	//Sets the units status to dead if the attack makes them lose all their health
+	//Sets the units status to dead if the attack makes them lose all their health.
+	//Also checks if they have the second chance item and if they do they get to stay alive
+	//and get to have half of their max health
 	public void takeHit(int damage){
 		health=health-(damage/defenseAmount);
-		if (health<0){
-			dead();
+		boolean hasTwo=false;
+		SecondChance two=new SecondChance();
+		if (health<0){//checks if health goes to 0 or less
+			for(Item obj: items){
+				if(two.compareTo(obj)==0){ //checks if any items in the list are secondchances
+					items.remove(obj);
+					hasTwo=true;
+					break;
+				}
+			}
+			if(hasTwo==true){ //if they have second chance they dont die
+				health=healthFull/2;
+			}
+			else{ //if not they die
+				dead();
+			}
 		}
 	}
 	/************************************************************************************/
