@@ -3,7 +3,6 @@ package client;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -52,7 +51,7 @@ public class TRPGClient extends JFrame{
 		
 		String serverAccepted="reject";
 		while(serverAccepted.equals("reject")){
-			username=JOptionPane.showInputDialog("Enter your Netpaint username");
+			username=JOptionPane.showInputDialog("Enter your TRPG username");
 			outputStream.writeObject(username);
 			serverAccepted=(String)inputStream.readObject();
 		}
@@ -63,12 +62,12 @@ public class TRPGClient extends JFrame{
 	
 	public void initializeFrame(){
 		mainMenuPanel=new MainMenuPanel(username, outputStream);
-		this.add(drawingPanel).setVisible(true);
+		this.add(mainMenuPanel).setVisible(true);
 		this.setSize(1000,650);
 		this.setVisible(true);
 	}
 	
-	public void update(List<PaintObject> objects){
+	public void update(GameBoard currentBoard){
 		this.drawingPanel.update(objects);
 	}
 }
