@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class GameBoard {
 	
 	
+	/************************************************************************************/
 	
 	private char[][] gameBoard;
 	private int boardWidth = 20;
@@ -16,14 +17,17 @@ public class GameBoard {
 	private int currentMap;
 	private int currentScenario;
 	
+	/************************************************************************************/
+	
 	/**
 	 * GameBoard constructor, takes a list of users units, list of comp units, map level, and a scenario.
 	 * Based on the arguments given, the board will create a 2D char array representing the locations of
 	 * game objects on the board.  Scenario 1 is Kill the Section Leader, scenario 2 is Death Match, scenario 3 is (dunno yet)
 	 */
 	
+
 	public GameBoard(ArrayList<Character> userUnits,ArrayList<Character> compUnits, int map, int scenario){
-		
+
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
 		this.userUnits = userUnits;
@@ -72,10 +76,23 @@ public class GameBoard {
 			gameBoard[boardHeight/2+2][boardWidth/2+5] = '#';
 			gameBoard[boardHeight/2+2][boardWidth/2+4] = '#';
 			gameBoard[boardHeight/2+2][boardWidth/2+3] = '#';
+			
+			gameBoard[boardHeight/2-1][0]='#';
+			gameBoard[boardHeight/2-1][1]='#';
+			gameBoard[boardHeight/2+1][0]='#';
+			gameBoard[boardHeight/2+1][1]='#';
+			
+			gameBoard[boardHeight/2-1][boardWidth]='#';
+			gameBoard[boardHeight/2-1][boardWidth-1]='#';
+			gameBoard[boardHeight/2+1][boardWidth]='#';
+			gameBoard[boardHeight/2+1][boardWidth-1]='#';
+
 
 		}
 		
 	}
+	
+	/************************************************************************************/
 	
 	public ArrayList<Point> shortestPath(Point a, Point b){
 		
@@ -83,19 +100,24 @@ public class GameBoard {
 	
 		return null;
 	}
-	
+
+	/************************************************************************************/
+
 	public boolean checkAvailable(Point point){
 		
 		if(gameBoard[(int) point.getY()][(int) point.getX()]==' ')
 			return true;
-		
+
 		return false;
 	}
 	
+	/************************************************************************************/
+
 	public char inspectPosition(Point p){
-		
 		return gameBoard[(int) p.getX()][(int) p.getY()];
 	}
+	
+	/************************************************************************************/
 	
 	public boolean chooseMove(Unit u, Point p){
 		
@@ -116,21 +138,31 @@ public class GameBoard {
 		return false;
 	}
 	
+	/************************************************************************************/
+	
 	private void updateObservers(){
 		
 	}
+	
+	/************************************************************************************/
 	
 	public char[][] getGameBoard(){
 		return gameBoard;
 	}
 	
+	/************************************************************************************/
+	
 	public int getBoardWidth(){
 		return boardWidth;
 	}
 	
+	/************************************************************************************/
+	
 	public int getBoardHeight(){
 		return boardHeight;
 	}
+	
+	/************************************************************************************/
 	
 	public char[][] getTerrain(){
 		return terrain;
