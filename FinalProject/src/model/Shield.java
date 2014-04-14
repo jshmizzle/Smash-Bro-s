@@ -1,3 +1,4 @@
+package model;
 /*
  * This item increases a units defense
  */

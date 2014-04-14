@@ -1,3 +1,4 @@
+package model;
 
 /*
  * Abstract item class that contains general methods for all items

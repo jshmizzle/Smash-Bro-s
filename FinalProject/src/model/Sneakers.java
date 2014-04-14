@@ -1,3 +1,4 @@
+package model;
 /*
  * This item increases the distance a unit can go during the move stage
  */

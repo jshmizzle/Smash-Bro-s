@@ -7,6 +7,7 @@ import java.net.Socket;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import model.GameBoard;
 import GUI.CharacterSelectPanel;
 import GUI.MainMenuPanel;
 

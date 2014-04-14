@@ -1,3 +1,4 @@
+package model;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -137,13 +138,9 @@ public abstract class Unit{
 	
 	/************************************************************************************/
 	//Removes health based on the amount of attack an enemy does on the unit
-<<<<<<< HEAD
-	//Sets the units status to dead if the attack makes them lose all their health
-=======
 	//Sets the units status to dead if the attack makes them lose all their health.
 	//Also checks if they have the second chance item and if they do they get to stay alive
 	//and get to have half of their max health
->>>>>>> 1263b23afee096315971d8be87f65ed82b4af81d
 	public void takeHit(int damage){
 		health=health-(damage/defenseAmount);
 		boolean hasTwo=false;
