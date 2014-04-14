@@ -1,30 +1,35 @@
 package command;
 
 import java.awt.List;
+import java.awt.Point;
 import java.util.Map;
 
+import model.Unit;
 import server.TRPGServer;
 
 public class PlayerMovedCommand extends Command<TRPGServer>{
 	
 	private String source;
-	private Map<Unit,Point> moves;
+	private Unit u;
+	private Point p;
 	
 	/**
-	 * PlayerMovedCommand could take the name of the player (or object) as a string,
-	 * and a Map of units and the moves each unit made 
+	 * PlayerMovedCommand could take the name of the player as a string,
+	 * the unit that moved, and the point it moved to.
+	 * 
 	 * @param source
 	 * @param moves
 	 */
 	
-	public PlayerMovedCommand(String source, Map<Unit,Point> moves) {
+	public PlayerMovedCommand(String source, Unit u, Point p) {
 		super(source);
-		this.moves = moves;
+		this.u=u;
+		this.p=p;
 	}
 
 	@Override
 	public void execute(TRPGServer executeOn) {
-		executeOn.movePlayer(source, moves);
+		executeOn.movePlayer(source, u,p);
 	}
 
 }

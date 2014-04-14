@@ -1,30 +1,35 @@
 package command;
 
+import java.awt.Point;
 import java.util.Map;
 
+import model.Item;
 import server.TRPGServer;
 
 public class SomethingChangedCommand extends Command<TRPGServer>{
 	
 	private String source;
-	private Map<Item,Point> itemChanges;
+	private Item item;
+	private Point p;
 	
 	
 	/**
-	 * This command would take the name of the client as a string, and a map of the item that changed (
+	 * Command that takes client name as string, item that changed
+	 * and point it was at.
 	 * 
 	 * @param source
 	 * @param itemChanges
 	 */
-	public SomethingChangedCommand(String source,Map<Item,Point> itemChanges) {
+	public SomethingChangedCommand(String source,Item item, Point p) {
 		super(source);
-		this.itemChanges=itemChanges;
+		this.item=item;
+		this.p=p;
 	}
 
 	@Override
 	public void execute(TRPGServer executeOn) {
 		// TODO Auto-generated method stub
-		executeOn.removeItems(itemChanges);
+		executeOn.removeItem(source,item,p);
 	}
 	
 
