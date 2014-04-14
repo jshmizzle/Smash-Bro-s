@@ -1,7 +1,11 @@
 package model;
 import java.awt.Point;
 import java.util.ArrayList;
+
+
+
 public class GameBoard {
+	
 	
 	/************************************************************************************/
 	
@@ -11,17 +15,26 @@ public class GameBoard {
 	private ArrayList<Character> userUnits;
 	private ArrayList<Character> compUnits;
 	private char[][] terrain;
+	private int currentMap;
+	private int currentScenario;
+	
+	/************************************************************************************/
+	
+	/**
+	 * GameBoard constructor, takes a list of users units, list of comp units, map level, and a scenario.
+	 * Based on the arguments given, the board will create a 2D char array representing the locations of
+	 * game objects on the board.  Scenario 1 is Kill the Section Leader, scenario 2 is Death Match, scenario 3 is (dunno yet)
+	 */
 	
 
-	/************************************************************************************/
+	public GameBoard(ArrayList<Character> userUnits,ArrayList<Character> compUnits, int map, int scenario){
 
-
-	public GameBoard(ArrayList<Character> userUnits,ArrayList<Character> compUnits){
-		
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
 		this.userUnits = userUnits;
 		this.compUnits = compUnits;
+		currentMap = map;
+		currentScenario = scenario;
 		
 		
 		int i=0;
@@ -32,11 +45,51 @@ public class GameBoard {
 		
 		int j=0;
 		for(char c : compUnits){
-			gameBoard[boardWidth/2-1+j][boardHeight] = c;
+			gameBoard[boardWidth/2-1+j][0] = c;
 			j++;
 		}
 		
-		
+		if(currentMap==1){
+			gameBoard[boardHeight/2-5][boardWidth/2-2] = '#';
+			gameBoard[boardHeight/2-4][boardWidth/2-2] = '#';
+			gameBoard[boardHeight/2-3][boardWidth/2-2] = '#';
+			gameBoard[boardHeight/2+5][boardWidth/2-2] = '#';
+			gameBoard[boardHeight/2+4][boardWidth/2-2] = '#';
+			gameBoard[boardHeight/2+3][boardWidth/2-2] = '#';
+			
+			gameBoard[boardHeight/2-5][boardWidth/2+2] = '#';
+			gameBoard[boardHeight/2-4][boardWidth/2+2] = '#';
+			gameBoard[boardHeight/2-3][boardWidth/2+2] = '#';
+			gameBoard[boardHeight/2+5][boardWidth/2+2] = '#';
+			gameBoard[boardHeight/2+4][boardWidth/2+2] = '#';
+			gameBoard[boardHeight/2+3][boardWidth/2+2] = '#';
+			
+			gameBoard[boardHeight/2-2][boardWidth/2-5] = '#';
+			gameBoard[boardHeight/2-2][boardWidth/2-4] = '#';
+			gameBoard[boardHeight/2-2][boardWidth/2-3] = '#';
+			gameBoard[boardHeight/2-2][boardWidth/2+5] = '#';
+			gameBoard[boardHeight/2-2][boardWidth/2+4] = '#';
+			gameBoard[boardHeight/2-2][boardWidth/2+3] = '#';
+			
+			gameBoard[boardHeight/2+2][boardWidth/2-5] = '#';
+			gameBoard[boardHeight/2+2][boardWidth/2-4] = '#';
+			gameBoard[boardHeight/2+2][boardWidth/2-3] = '#';
+			gameBoard[boardHeight/2+2][boardWidth/2+5] = '#';
+			gameBoard[boardHeight/2+2][boardWidth/2+4] = '#';
+			gameBoard[boardHeight/2+2][boardWidth/2+3] = '#';
+			
+			gameBoard[boardHeight/2-1][0]='#';
+			gameBoard[boardHeight/2-1][1]='#';
+			gameBoard[boardHeight/2+1][0]='#';
+			gameBoard[boardHeight/2+1][1]='#';
+			
+			gameBoard[boardHeight/2-1][boardWidth]='#';
+			gameBoard[boardHeight/2-1][boardWidth-1]='#';
+			gameBoard[boardHeight/2+1][boardWidth]='#';
+			gameBoard[boardHeight/2+1][boardWidth-1]='#';
+
+
+		}
 		
 	}
 	
@@ -114,6 +167,16 @@ public class GameBoard {
 	
 	public char[][] getTerrain(){
 		return terrain;
+	}
+	
+	public String gameBoardToString(){
+		String str = "";
+		for(int i=0; i < boardWidth;i++){
+			for(int j=0; j < boardHeight;j++){
+				str += gameBoard[boardWidth][boardHeight];
+			}
+		}
+		return str;
 	}
 	
 }

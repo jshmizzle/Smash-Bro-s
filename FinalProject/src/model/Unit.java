@@ -14,7 +14,7 @@ public abstract class Unit{
 	private int moveDistance;
 	private ArrayList <Item> items;
 	private int [] stats;
-	private Strategy strategy;
+	//private Strategy strategy;
 	private boolean alive;
 	private int attack;
 	private Point location;
@@ -160,6 +160,7 @@ public abstract class Unit{
 				dead();
 			}
 		}
+
 	}
 	/************************************************************************************/
 	

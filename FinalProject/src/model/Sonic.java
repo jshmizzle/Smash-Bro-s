@@ -9,12 +9,12 @@ import javax.imageio.ImageIO;
 
 public class Sonic extends Unit {
 
-	private Image SonicThe = null;;
-	SonicThe = ImageIO.read(new File( "Sonic.gif"));
+	private Image sonicImage = null;
+	//SonicThe = ImageIO.read(new File( "Sonic.gif"));
 	
 	
 	public Sonic(String n, int hp, int attack, Point p) {
-		super("Sonic", hp, 20, attack, i, p, 'S');
+		super("Sonic", hp, 20, attack, null, p, 'S');
 		// TODO Auto-generated constructor stub
 	}
 

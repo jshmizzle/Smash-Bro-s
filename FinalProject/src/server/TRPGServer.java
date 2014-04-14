@@ -1,5 +1,6 @@
 package server;
 
+import java.awt.Point;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -12,6 +13,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import model.Item;
+import model.Unit;
 import command.Command;
 
 /**
@@ -216,5 +219,15 @@ public class TRPGServer {
 	public static void main(String[] args)
 	{
 		new TRPGServer(9001);
+	}
+
+	public void removeItem(String source, Item item, Point p) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void movePlayer(String source, Unit u, Point p) {
+		// TODO Auto-generated method stub
+		
 	}
 }
