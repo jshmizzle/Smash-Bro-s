@@ -21,6 +21,7 @@ public abstract class Unit{
 	private char charRepresentation;
 	private int defenseAmount;
 	private int healthFull;
+	private int attackRange;
 	
 	/************************************************************************************/
 	/**
@@ -33,7 +34,7 @@ public abstract class Unit{
 	 * @param p Location of unit
 	 * @param c The character that represents the unit
 	 */
-	public Unit (String n, int hp, int distance, int attack, BufferedImage i, Point p, char c){
+	public Unit (String n, int hp, int distance, int attack, int attackRange, BufferedImage i, Point p, char c){
 
 		this.name = n;
 		this.health = hp;
@@ -42,6 +43,7 @@ public abstract class Unit{
 		this.attack=attack;
 		image=i;
 		location=p;
+		attackRange=this.attackRange;
 		charRepresentation=c;
 		defenseAmount=1;
 		alive=true;
@@ -77,7 +79,7 @@ public abstract class Unit{
 	}
 	/************************************************************************************/
 	
-	/************************************************************************************/
+ 	/************************************************************************************/
 	//Returns the amount of health the unit has
 	public int getHealth(){
 		return health;
@@ -86,7 +88,7 @@ public abstract class Unit{
 	
 	/************************************************************************************/
 	//Adds health to the unit (from item)
-	public void setMaxHealth(int amount){
+	public void setMaxHealt(){
 		health=healthFull;
 	}
 	/************************************************************************************/
@@ -106,14 +108,6 @@ public abstract class Unit{
 	/************************************************************************************/
 	
 	/************************************************************************************/
-	//Takes in the path that the unit has moved and then sets the new location of the unit
-	public void move(ArrayList<Point> path){
-		Point temp= path.get(path.size()-1);
-		setLocation(temp);
-	}
-	/************************************************************************************/
-	
-	/************************************************************************************/
 	//Attacks a unit by giving that unit a specific amount of damage
 	public void attack(Unit u){
 		u.takeHit(attack);
@@ -127,14 +121,47 @@ public abstract class Unit{
 	}
 	/************************************************************************************/
 	
+	/************************************************************************************/
+	//Method that increases the attack Range (by item)
+	public void increaseAttackRange(int amount){
+		attackRange+=amount;
+	}
+	/************************************************************************************/
+	
+	/************************************************************************************/
+	//Returns the distance a unit can attack
+	public int getAttackRange(){
+		return attackRange;
+	}
+	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Removes health based on the amount of attack an enemy does on the unit
+<<<<<<< HEAD
 	//Sets the units status to dead if the attack makes them lose all their health
+=======
+	//Sets the units status to dead if the attack makes them lose all their health.
+	//Also checks if they have the second chance item and if they do they get to stay alive
+	//and get to have half of their max health
+>>>>>>> 1263b23afee096315971d8be87f65ed82b4af81d
 	public void takeHit(int damage){
 		health=health-(damage/defenseAmount);
-		if (health<0){
-			dead();
+		boolean hasTwo=false;
+		SecondChance two=new SecondChance();
+		if (health<0){//checks if health goes to 0 or less
+			for(Item obj: items){
+				if(two.compareTo(obj)==0){ //checks if any items in the list are secondchances
+					items.remove(obj);
+					hasTwo=true;
+					break;
+				}
+			}
+			if(hasTwo==true){ //if they have second chance they dont die
+				health=healthFull/2;
+			}
+			else{ //if not they die
+				dead();
+			}
 		}
 
 	}
