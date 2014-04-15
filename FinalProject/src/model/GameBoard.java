@@ -26,7 +26,6 @@ public class GameBoard {
 	 * game objects on the board.  Scenario 1 is Kill the Section Leader, scenario 2 is Death Match, scenario 3 is (dunno yet)
 	 */
 	
-
 	public GameBoard(ArrayList<Character> userUnits,ArrayList<Character> compUnits, int map, int scenario){
 
 		gameBoard = new char[boardWidth][boardHeight];
@@ -35,7 +34,6 @@ public class GameBoard {
 		this.compUnits = compUnits;
 		currentMap = map;
 		currentScenario = scenario;
-		
 		
 		int i=0;
 		for(char c : userUnits){
@@ -46,6 +44,7 @@ public class GameBoard {
 		int j=0;
 		for(char c : compUnits){
 			gameBoard[boardWidth/2-1+j][0] = c;
+		
 			j++;
 		}
 		
@@ -94,15 +93,6 @@ public class GameBoard {
 	}
 	
 	/************************************************************************************/
-	
-	public ArrayList<Point> shortestPath(Point a, Point b){
-		
-		ArrayList<Point> moves = new ArrayList<>();
-	
-		return null;
-	}
-
-	/************************************************************************************/
 
 	public boolean checkAvailable(Point point){
 		
@@ -116,6 +106,35 @@ public class GameBoard {
 
 	public char inspectPosition(Point p){
 		return gameBoard[(int) p.getX()][(int) p.getY()];
+	}
+	
+	/**
+	 * 
+	 * @param currentUnit This is the unit who is currently making an attack. Will be compared to the Unit at the given point if applicable to determine whether or not they are on the same team.
+	 * @param p The position in question.
+	 * @return A boolean stating whether or not it is an enemy at that position.
+	 */
+	public boolean checkIfEnemy(Unit currentUnit, Point p){
+		int x=(int)p.getX();
+		int y=(int)p.getY();
+		char charRep=currentUnit.getCharRepresentation();
+		
+		if (gameBoard[x][y]==' ' || gameBoard[x][y]=='#')
+			return false;
+		else if(charRep<='z' && charRep>='a'){
+			//the character is on the team represented by lowercase chars
+			if(gameBoard[x][y]>='A' || gameBoard[x][y]<='Z')
+				return true;
+			else 
+				return false;
+		}
+		else{
+			//the character is on the team represented by lowercase chars
+			if(gameBoard[x][y]>='a' || gameBoard[x][y]<='z')
+				return true;
+			else 
+				return false;
+		}
 	}
 	
 	/************************************************************************************/
@@ -137,6 +156,28 @@ public class GameBoard {
 		}
 		
 		return false;
+	}
+	
+	public boolean moveRight(Unit u){
+		
+		if(u.isAlive() && checkAvailable(new Point(u.getLocation().x+1, u.getLocation().y))){
+			u.setLocation(new Point(u.getLocation().x+1, u.getLocation().y));
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+	public boolean moveLeft(Unit u){
+		
+		if(u.isAlive() && checkAvailable(new Point(u.getLocation().x-1, u.getLocation().y))){
+			u.setLocation(new Point(u.getLocation().x-1, u.getLocation().y));
+			return true;
+		}
+		
+		return false;
+		
 	}
 	
 	/************************************************************************************/
@@ -179,4 +220,19 @@ public class GameBoard {
 		return str;
 	}
 	
+	public String toString(){
+		String result="";
+		for(int row=0; row<gameBoard.length; row++){
+			for(int col=0; col<gameBoard[0].length; col++){
+				if(gameBoard[row][col]!=' '){
+					result+=""+gameBoard[row][col];
+				}
+				else{
+					result+=" ";
+				}
+			}
+			result+="\n";
+		}
+		return result;
+	}
 }
