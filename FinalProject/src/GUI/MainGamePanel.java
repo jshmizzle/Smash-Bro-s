@@ -28,8 +28,8 @@ public class MainGamePanel extends JPanel {
 	public void initializeImages(){
 		try {
 			boulder=ImageIO.read(new File("images/Boulder.png"));
-			megaman=ImageIO.read(new File("images/megamanStanding.png"));
-			sonic=ImageIO.read(new File("images/sonicStanding.png"));
+			megaman=ImageIO.read(new File("images/MegamanStanding.png"));
+			sonic=ImageIO.read(new File("images/SonicStanding.png"));
 			grass=ImageIO.read(new File("images/TRPGgrass.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -52,6 +52,7 @@ public class MainGamePanel extends JPanel {
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 				else if(currentBoard[row][col]=='#'){
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(boulder, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 				else if(currentBoard[row][col]=='S' || currentBoard[row][col]=='s'){
