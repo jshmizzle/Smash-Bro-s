@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 	<p>This abstract class defines a serializable command that can be sent
  * 	and executed on either a client or server.<p>
  *  
- *  @author Gabriel Kishi
+ *  @author The Other Guys
  */
 
 public abstract class Command<T> implements Serializable {

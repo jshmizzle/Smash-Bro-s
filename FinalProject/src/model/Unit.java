@@ -7,7 +7,7 @@ import java.util.ArrayList;
 /*
  * Unit class. Holds all the information and methods for each unit
  */
-public abstract class Unit{ 
+public class Unit{ 
 		
 	private String name;
 	private int health;
@@ -49,13 +49,38 @@ public abstract class Unit{
 		defenseAmount=1;
 		alive=true;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
+	/**
+	 * Sets up units initial stats
+	 * @param n Name of the unit
+	 * @param hp Units health
+	 * @param distance How far unit can move
+	 * @param attack Amount of damage the unit does
+	 * @param p Location of unit
+	 * @param c The character that represents the unit
+	 */
+	
+	public Unit (String n, int hp, int distance, int attack, int attackRange, Point p, char c){
+
+		this.name = n;
+		this.health = hp;
+		healthFull=hp;
+		this.moveDistance = distance;
+		this.attack=attack;
+		location=p;
+		attackRange=this.attackRange;
+		charRepresentation=c;
+		defenseAmount=1;
+		alive=true;
+	}
+	/************************************************************************************/
 	//Returns the location on the board the unit is in 
+
 	public Point getLocation(){
 		return location;
 	}
+	
 	/************************************************************************************/
 	
 	/************************************************************************************/
@@ -78,55 +103,55 @@ public abstract class Unit{
 	public String getName(){
 		return name;
 	}
-	/************************************************************************************/
 	
  	/************************************************************************************/
 	//Returns the amount of health the unit has
+	
 	public int getHealth(){
 		return health;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Adds health to the unit (from item)
+
 	public void setMaxHealt(){
 		health=healthFull;
 	}
 	/************************************************************************************/
-	
-	/************************************************************************************/
 	//Returns the amount of distance the unit can move
+
 	public int getDistance(){
 		return moveDistance;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Makes unit be able to move farther (from item)
+	
 	public void addDistance(int amount){
 		moveDistance+=amount;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Attacks a unit by giving that unit a specific amount of damage
+	
 	public void attack(Unit u){
 		u.takeHit(attack);
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Adds to Amount of attack a unit can do (item)
+	
 	public void addAttack(int amount){
 		attack+=amount;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Method that increases the attack Range (by item)
+	
 	public void increaseAttackRange(int amount){
 		attackRange+=amount;
 	}
+	
 	/************************************************************************************/
 	
 	/************************************************************************************/

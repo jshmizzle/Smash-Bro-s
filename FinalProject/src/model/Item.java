@@ -16,17 +16,17 @@ public abstract class Item implements Comparable<Item>{
 	public Item(String name){
 		this.name=name;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Returns the name of the item
+	
 	public String getName(){
 		return name;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Compares to items by name to see if they are the same
+	
 	public int compareTo(Item obj) {
 		if(name.equals(obj.getName())){
 			return 0;
