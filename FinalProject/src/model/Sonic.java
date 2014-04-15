@@ -14,12 +14,6 @@ public class Sonic extends Unit {
 	
 	
 	public Sonic(String n, int hp, int attack, Point p) {
-		super("Sonic", hp, 20, attack, 44, p, 'S'); 
+		super("Sonic", hp, 20, attack, 1, p, 'S');
 	}
-
-	
-	
-
-	
-	
 }

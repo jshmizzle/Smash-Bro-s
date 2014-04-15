@@ -291,4 +291,75 @@ public class GameBoard {
 	
 	/************************************************************************************/
 	
+	public boolean checkOpenLineOfFire(Unit u, Point p){
+		
+		Point thisPoint = u.getLocation();
+		int thisRange = u.getAttackRange();
+		int thisX = (int)thisPoint.getX();
+		int thisY = (int)thisPoint.getY();
+		int otherX = (int)p.getX();
+		int otherY = (int)p.getY();
+		boolean isOpen = true;
+		Point change = new Point(0, 0);
+		
+		if(thisX != otherX && thisY != otherY)
+			return false;
+		
+		if(thisX == otherX){
+			if(Math.abs(thisY - otherY) > thisRange)
+				return false;
+			
+			if(thisY > otherY)
+				for(int i = otherY; i<=thisY; i++)
+				{
+					change.setLocation((double)thisX, (double)i);
+					if(!checkAvailable(change))
+					{
+						isOpen = false;
+						return isOpen;
+					}
+					
+				}
+			else
+				for(int i = thisY; i<=otherY ; i++)
+				{
+					change.setLocation((double)thisX, (double)i);
+					if(!checkAvailable(change))
+					{
+						isOpen = false;
+						return isOpen;
+					}
+					
+				}
+		} //end thisX == otherX
+		
+		else{
+			if(Math.abs(thisX - otherX) > thisRange)
+				return false;
+			
+			if(thisX > otherX)
+				for(int i = otherX; i<=thisX; i++)
+				{
+					change.setLocation((double)i, (double)thisY);
+					if(!checkAvailable(change))
+					{
+						isOpen = false;
+						return isOpen;
+					}
+				}
+			else
+				for(int i = thisX; i<=otherX; i++)
+				{
+					change.setLocation((double)i, (double)thisY);
+					if(!checkAvailable(change))
+					{
+						isOpen = false;
+						return isOpen;
+					}
+				}
+		}
+		
+		return isOpen;
+	}
+	
 }

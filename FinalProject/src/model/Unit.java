@@ -69,7 +69,7 @@ public class Unit{
 		this.moveDistance = distance;
 		this.attack=attack;
 		location=p;
-		attackRange=this.attackRange;
+		this.attackRange = attackRange;
 		charRepresentation=c;
 		defenseAmount=1;
 		alive=true;
@@ -82,24 +82,22 @@ public class Unit{
 	}
 	
 	/************************************************************************************/
-	
-	/************************************************************************************/
 	//sets the location of the unit to the point that is passed in
+	
 	public void setLocation(Point p){
 		this.location = p;
 	}
 	
 	/************************************************************************************/
-	
-	/************************************************************************************/
 	//Returns the char that represents the unit
+	
 	public char getCharRepresentation(){
 		return charRepresentation;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Returns the name of the unit
+	
 	public String getName(){
 		return name;
 	}
@@ -153,19 +151,17 @@ public class Unit{
 	}
 	
 	/************************************************************************************/
-	
-	/************************************************************************************/
 	//Returns the distance a unit can attack
 	public int getAttackRange(){
 		return attackRange;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
-	//Removes health based on the amount of attack an enemy does on the unit
-	//Sets the units status to dead if the attack makes them lose all their health.
-	//Also checks if they have the second chance item and if they do they get to stay alive
-	//and get to have half of their max health
+	/**	Removes health based on the amount of attack an enemy does on the unit
+		sets the units status to dead if the attack makes them lose all their health.
+		Also checks if they have the second chance item and if they do they get to stay alive
+		and get to have half of their max health
+	*/
 	public void takeHit(int damage){
 		health=health-(damage/defenseAmount);
 		boolean hasTwo=false;
@@ -188,51 +184,47 @@ public class Unit{
 
 	}
 	/************************************************************************************/
-	
-	/************************************************************************************/
-	//increases players defense(item)
+
 	public void increaseDefenseMultiplier(int amount){
 		defenseAmount+=amount;
 	}
-	/************************************************************************************/
-
+	
 	/************************************************************************************/
 	//Sets the status of the unit to dead
+	
 	private void dead() {
 		alive=false;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Returns whether is not the unit is dead or alive
+	
 	public boolean isAlive(){
 		return alive;
 	}
-	/************************************************************************************/
-	
+
 	/************************************************************************************/
 	//Adds an item to the units inventory
 	public void addItem (Item item){
 		items.add(item);
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Return a list of the current items a user has
+	
 	public ArrayList getInventory(){
 		return items;
 	}
-	/************************************************************************************/
 	
 	/************************************************************************************/
 	//Unit gives one of their items to another unit
+	
 	public void trade(Unit u, Item I){
 		u.addItem(I);
 	}
 	/************************************************************************************/
-	
-	/************************************************************************************/
 	//This method makes the item be used
+	
 	public void useItem(Item I){
 		for(Item obj: items){
 			if(I.compareTo(obj)==0){
@@ -243,9 +235,8 @@ public class Unit{
 		}
 	}
 	/************************************************************************************/
-	
-	/************************************************************************************/
 	//Method gets rid of an item from the users inventory
+	
 	public void removeItem(Item I){
 		for(Item obj: items){
 			if(I.compareTo(obj)==0){
@@ -254,6 +245,6 @@ public class Unit{
 			}
 		}
 	}
-	/************************************************************************************/
 	
+	/************************************************************************************/
 }
