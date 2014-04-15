@@ -26,7 +26,6 @@ public class GameBoard {
 	 * game objects on the board.  Scenario 1 is Kill the Section Leader, scenario 2 is Death Match, scenario 3 is (dunno yet)
 	 */
 	
-
 	public GameBoard(ArrayList<Unit> userUnits,ArrayList<Unit> compUnits, int map, int scenario){
 
 		gameBoard = new char[boardWidth][boardHeight];
@@ -36,12 +35,10 @@ public class GameBoard {
 		currentMap = map;
 		currentScenario = scenario;
 		
-		
 		for(int i = 0; i<gameBoard.length; i++)
 			for(int j = 0; j<gameBoard[0].length; j++){
 				gameBoard[i][j] = ' ';
 			}
-		
 		
 		int i=0;
 		for(Unit u: userUnits){
@@ -102,7 +99,6 @@ public class GameBoard {
 		}
 		
 	}
-
 	/************************************************************************************/
 
 	public boolean checkAvailable(Point point){
@@ -127,6 +123,8 @@ public class GameBoard {
 	public char inspectPosition(Point p){
 		return gameBoard[(int) p.getX()][(int) p.getY()];
 	}
+	
+	
 	
 	/************************************************************************************/
 	
@@ -203,7 +201,6 @@ public class GameBoard {
 		return false;
 		
 	}
-		
 	/************************************************************************************/
 	
 	private void updateObservers(){
@@ -243,8 +240,6 @@ public class GameBoard {
 		}
 		return str;
 	}
-	
-	/************************************************************************************/
 	
 	public String toString(){
 		String result="";
@@ -295,12 +290,5 @@ public class GameBoard {
 	}
 	
 	/************************************************************************************/
-	
-	public boolean checkOpenPath(){
-		
-		
-		return false;
-	}
-	
 	
 }

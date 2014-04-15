@@ -6,6 +6,7 @@ import java.net.Socket;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import model.GameBoard;
 import GUI.CharacterSelectPanel;
@@ -20,6 +21,8 @@ public class TRPGClient extends JFrame{
 	private ObjectOutputStream outputStream;
 	private MainMenuPanel mainMenuPanel;
 	private CharacterSelectPanel charSelectPanel;
+	private JPanel currentPanel;
+	private MainGamePanel gamePanel;
 
 	public static void main(String[] args) {
 		TRPGClient client=new TRPGClient();
@@ -69,6 +72,6 @@ public class TRPGClient extends JFrame{
 	}
 	
 	public void update(GameBoard currentBoard){
-		this.drawingPanel.update(objects);
+		this.gamePanel.update(currentBoard);
 	}
 }
