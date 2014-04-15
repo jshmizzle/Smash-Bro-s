@@ -10,7 +10,7 @@ public class MegaMan extends Unit{
 	}
 	
 	public MegaMan( int hp, int distance, int attack, Point p){
-		super("MegaMan", hp, distance, attack, 3, p, 'M');
+		super("MegaMan", hp, distance, attack, 2, p, 'M');
 		
 	}
 

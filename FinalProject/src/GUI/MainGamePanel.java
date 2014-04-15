@@ -15,7 +15,7 @@ public class MainGamePanel extends JPanel {
 
 	char [][] currentBoard;
 	int gameTileWidth, gameTileHeight;
-	Image boulder, megaman, sonic, grass; 
+	Image boulder, megaman, sonic, grass, mario, goku; 
 	
 	public MainGamePanel(GameBoard startingBoard) {
 		this.currentBoard=startingBoard.getGameBoard();
@@ -31,6 +31,8 @@ public class MainGamePanel extends JPanel {
 			megaman=ImageIO.read(new File("images/MegamanStanding.png"));
 			sonic=ImageIO.read(new File("images/SonicStanding.png"));
 			grass=ImageIO.read(new File("images/TRPGgrass.png"));
+			mario=ImageIO.read(new File("images/marioStanding.png"));
+			goku=ImageIO.read(new File("images/gokuStanding.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -62,6 +64,14 @@ public class MainGamePanel extends JPanel {
 				else if(currentBoard[row][col]=='M' || currentBoard[row][col]=='m'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(megaman, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+				}
+				else if(currentBoard[row][col]=='W' || currentBoard[row][col]=='w'){
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					g2.drawImage(mario, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+				}
+				else if(currentBoard[row][col]=='G'){
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					g2.drawImage(goku, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 			}
 		}
