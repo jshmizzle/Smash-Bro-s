@@ -296,5 +296,11 @@ public class GameBoard {
 	
 	/************************************************************************************/
 	
+	public boolean checkOpenPath(){
+		
+		
+		return false;
+	}
+	
 	
 }

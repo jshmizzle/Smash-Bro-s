@@ -54,9 +54,7 @@ public class Tests {
 		 assertTrue(g.moveUp(sComputer));
 		 assertTrue(g.moveUp(sComputer));
 		 assertEquals(sComputer.getLocation(), new Point(16, 9));
-	//	 assertTrue(g.moveUp(sComputer));
-	//	 assertTrue(g.moveUp(sComputer));
-		 
+	
 	//	 assertTrue(g.moveLeft(sComputer));
 	//	 assertTrue(g.moveRight(sComputer));
 		 //assertEquals(sComputer.getLocation(), new Point(19, 10));
