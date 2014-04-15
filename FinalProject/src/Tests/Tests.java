@@ -62,5 +62,28 @@ public class Tests {
 		 System.out.println("\n\n\n\n" +g.toString());
 		
 	 }
+	 
+	 public void testPaintingTheGameBoardToAGUI(){
+		 //initialize the units and the GameBoard
+		 Point b = new Point(0, 0);
+		 Point x = new Point(0, 10);
+		 
+		 ArrayList<Unit> player = new ArrayList<Unit>();
+		 ArrayList<Unit> computer = new ArrayList<Unit>();
+		 
+		 Sonic s = new Sonic("Sonic", 10000, 10, b);
+		 Sonic t = new Sonic("Sonic", 10000, 10, b);
+		 Sonic r = new Sonic("Sonic", 10000, 10, b);
+		 Sonic e = new Sonic("Sonic", 10000, 10, b);
+		 Sonic sComputer = new Sonic("Sonic", 10000, 10, x);
+		 player.add(s);
+		 player.add(t);
+		 player.add(r);
+		 player.add(e);
+		 computer.add(sComputer);
+		 GameBoard g = new GameBoard(player, computer, 1, 0);
+		 
+		 
+	 }
 	
 }
