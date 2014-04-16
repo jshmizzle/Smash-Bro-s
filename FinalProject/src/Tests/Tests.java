@@ -55,7 +55,11 @@ public class Tests {
 		 assertTrue(g.moveUp(sComputer));
 		 assertTrue(g.moveUp(sComputer));
 		 assertEquals(sComputer.getLocation(), new Point(16, 9));
+		 assertTrue(g.moveUp(sComputer));
+		 assertFalse(g.checkOpenLineOfFire(sComputer, new Point(15,8)));
+		 assertFalse(g.checkOpenLineOfFire(sComputer, new Point(15,9)));
 		 System.out.println("\n\n\n\n" +g.toString());
+		
 		
 	 }
 
@@ -92,7 +96,6 @@ public class Tests {
 		 
 		 m.setLocation(new Point(0, 18));
 		 sComputer.setLocation(new Point(0, 17));
-		 
 		 /*
 		  * MegaMan is at (0, 18) so he can attack units
 		  * that are at (0, 19), (1, 18), (2, 18), (0, 17),

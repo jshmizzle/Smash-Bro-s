@@ -367,5 +367,27 @@ public class GameBoard {
 	}
 	
 	/************************************************************************************/
+	/**
+	 * 
+	 * @param u - The Unit that needs to be moved
+	 * @param p - The location where the unit needs to be moved to
+	 * @return true if it moved successfully, false otherwise
+	 */
 	
+	public boolean setUnitToThisSpot(Unit u, Point p){
+		
+		int x = p.x;
+		int y = p.y;
+		
+		if(checkAvailable(p))
+		{
+			gameBoard[x][y] = u.getCharRepresentation();
+			u.setLocation(p);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/************************************************************************************/
 }
