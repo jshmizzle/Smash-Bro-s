@@ -239,6 +239,23 @@ public class GameBoard {
 		return terrain;
 	}
 	
+<<<<<<< HEAD
+=======
+	/************************************************************************************/
+	
+	public String gameBoardToString(){
+		String str = "";
+		for(int i=0; i < boardWidth;i++){
+			for(int j=0; j < boardHeight;j++){
+				str += gameBoard[boardWidth][boardHeight];
+			}
+		}
+		return str;
+	}
+	
+	/************************************************************************************/
+	
+>>>>>>> b7b25cc922b26ded501c9d5c802cfa932be2114e
 	public String toString(){
 		String result="";
 		for(int row=0; row<gameBoard.length; row++){
@@ -363,4 +380,28 @@ public class GameBoard {
 		gameBoard[(int) p.getY()][(int) p.getX()] = ' '; 
 	}
 	
+	/************************************************************************************/
+	/**
+	 * 
+	 * @param u - The Unit that needs to be moved
+	 * @param p - The location where the unit needs to be moved to
+	 * @return true if it moved successfully, false otherwise
+	 */
+	
+	public boolean setUnitToThisSpot(Unit u, Point p){
+		
+		int x = p.x;
+		int y = p.y;
+		
+		if(checkAvailable(p))
+		{
+			gameBoard[x][y] = u.getCharRepresentation();
+			u.setLocation(p);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/************************************************************************************/
 }
