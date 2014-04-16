@@ -231,6 +231,8 @@ public class GameBoard {
 		return terrain;
 	}
 	
+	/************************************************************************************/
+	
 	public String gameBoardToString(){
 		String str = "";
 		for(int i=0; i < boardWidth;i++){
@@ -240,6 +242,8 @@ public class GameBoard {
 		}
 		return str;
 	}
+	
+	/************************************************************************************/
 	
 	public String toString(){
 		String result="";
@@ -361,5 +365,7 @@ public class GameBoard {
 		
 		return isOpen;
 	}
+	
+	/************************************************************************************/
 	
 }

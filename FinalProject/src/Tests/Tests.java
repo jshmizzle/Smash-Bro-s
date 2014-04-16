@@ -64,7 +64,7 @@ public class Tests {
 		
 		 Point b = new Point(0, 0);
 		 Sonic sonic = new Sonic("Sonic", 50, 10, b);
-		 MegaMan m = new MegaMan(65, 5, 4, new Point(0, 0));
+		 MegaMan m = new MegaMan();
 		 Sonic sComputer = new Sonic("Sonic", 50, 10, b);
 		 ArrayList<Unit> player = new ArrayList<Unit>();
 		 ArrayList<Unit> computer = new ArrayList<Unit>();

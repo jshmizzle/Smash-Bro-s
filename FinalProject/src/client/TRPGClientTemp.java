@@ -42,8 +42,8 @@ public class TRPGClientTemp extends JFrame {
 		 ArrayList<Unit> computer = new ArrayList<Unit>();
 		 
 		 Sonic s = new Sonic("Sonic", 10000, 10, b);
-		 MegaMan t = new MegaMan(65, 5, 4, new Point(0, 0));
-		 Mario r = new Mario(100, 7, 3, 3, new Point(0, 0));
+		 MegaMan t = new MegaMan();
+		 Mario r = new Mario();
 		 Goku e = new Goku(10, 5, 500, 1, new Point(0, 0));
 		 Sonic sComputer = new Sonic("Sonic", 10000, 10, x);
 		 player.add(s);
