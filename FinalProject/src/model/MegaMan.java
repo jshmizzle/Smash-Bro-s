@@ -9,8 +9,8 @@ public class MegaMan extends Unit{
 		super(n, hp, distance, attack, attackRange, i, p, c);
 	}
 	
-	public MegaMan(){
-		super("MegaMan", 100, 6, 12, 2, new Point(0, 0), 'M');
+	public MegaMan(char c){
+		super("MegaMan", 100, 6, 12, 2, new Point(0, 0), c);
 		//    name, hp, movedistance, dmg, range, starting point, character representation
 	}
 

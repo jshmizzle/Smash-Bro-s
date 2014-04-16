@@ -13,7 +13,7 @@ public class Sonic extends Unit {
 	//SonicThe = ImageIO.read(new File( "Sonic.gif"));
 	
 	
-	public Sonic(String n, int hp, int attack, Point p) {
-		super("Sonic", hp, 20, attack, 1, p, 'S');
+	public Sonic(char c) {
+		super("Sonic", 100, 20, 3, 1, new Point(0, 0), c);
 	}
 }

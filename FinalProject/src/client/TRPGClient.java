@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import command.ServerHandler;
+
 import model.GameBoard;
 import model.Item;
 import model.Unit;
