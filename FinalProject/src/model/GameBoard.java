@@ -256,23 +256,8 @@ public class GameBoard {
 		return terrain;
 	}
 	
-<<<<<<< HEAD
-=======
 	/************************************************************************************/
 	
-	public String gameBoardToString(){
-		String str = "";
-		for(int i=0; i < boardWidth;i++){
-			for(int j=0; j < boardHeight;j++){
-				str += gameBoard[boardWidth][boardHeight];
-			}
-		}
-		return str;
-	}
-	
-	/************************************************************************************/
-	
->>>>>>> b7b25cc922b26ded501c9d5c802cfa932be2114e
 	public String toString(){
 		String result="";
 		for(int row=0; row<gameBoard.length; row++){

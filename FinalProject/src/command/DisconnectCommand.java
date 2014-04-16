@@ -1,7 +1,6 @@
 package command;
 
 import server.TRPGServer;
-import client.ServerHandler;
 
 public class DisconnectCommand extends Command<TRPGServer>{
 	
