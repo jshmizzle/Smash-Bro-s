@@ -4,9 +4,8 @@ import java.awt.Point;
 
 public class Goku extends Unit{
 
-	public Goku(int hp, int distance, int attack, int attackRange,
-			Point p) {
-		super("Goku", hp, distance, attack, attackRange, p, 'G');
+	public Goku(char c) {
+		super("Goku", 100, 6, 8, 1, new Point(0,0), c);
 		
 	}
 

@@ -40,20 +40,35 @@ public class GameBoard {
 				gameBoard[i][j] = ' ';
 			}
 		
+		gameBoard[0][boardHeight/2] = 'P';
+		
 		int i=0;
 		for(Unit u: userUnits){
-			gameBoard[0][boardHeight/2-1+i] = u.getCharRepresentation();
-			Point p = new Point(0, boardHeight/2-1+i);
-			u.setLocation(p);
-			i++;
+			if(u.getCharRepresentation() == 'P' || u.getCharRepresentation() == 'p'){
+	
+			}
+			else{
+				gameBoard[1][boardHeight/2-2+i] = u.getCharRepresentation();
+				Point p = new Point(1, boardHeight/2-2+i);
+				u.setLocation(p);
+				i++;
+			}
 		}
 		
 		int j=0;
+		
+		gameBoard[boardHeight -1][boardHeight/2] = 'p';
 		for(Unit c : compUnits){
-			gameBoard[boardHeight-1][boardWidth/2-1+j] = c.getCharRepresentation();
-			Point p = new Point(boardHeight-1, boardWidth/2-1+j);
-			c.setLocation(p);
-			j++;
+			if(c.getCharRepresentation() == 'P' || c.getCharRepresentation() == 'p'){
+				
+			}
+			
+			else{
+				gameBoard[boardHeight-2][boardWidth/2-2+j] = c.getCharRepresentation();
+				Point p = new Point(boardHeight-2, boardWidth/2-2+j);
+				c.setLocation(p);
+				j++;
+			}
 		}
 		
 		if(currentMap==1){
@@ -101,6 +116,10 @@ public class GameBoard {
 	}
 	/************************************************************************************/
 
+	public ArrayList<Unit> getUserUnits(){
+		return userUnits;
+	}
+	
 	public boolean checkAvailable(Point point){
 		
 		int x = (int)point.getX();
@@ -123,8 +142,6 @@ public class GameBoard {
 	public char inspectPosition(Point p){
 		return gameBoard[(int) p.getX()][(int) p.getY()];
 	}
-	
-	
 	
 	/************************************************************************************/
 	
@@ -387,6 +404,13 @@ public class GameBoard {
 		}
 		
 		return false;
+	}
+	public void setBoard(char[][] board) {
+		gameBoard = board;
+		
+	}
+	public ArrayList<Unit> getCompUnits() {
+		return compUnits;
 	}
 	
 	/************************************************************************************/

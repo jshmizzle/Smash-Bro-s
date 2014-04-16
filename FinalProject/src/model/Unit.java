@@ -23,6 +23,7 @@ public class Unit{
 	private int defenseAmount;
 	private int healthFull;
 	private int attackRange;
+	private int movesLeft;
 	
 	/************************************************************************************/
 	/**
@@ -48,6 +49,7 @@ public class Unit{
 		charRepresentation=c;
 		defenseAmount=1;
 		alive=true;
+		movesLeft = distance;
 	}
 	
 	/************************************************************************************/
@@ -73,6 +75,7 @@ public class Unit{
 		charRepresentation=c;
 		defenseAmount=1;
 		alive=true;
+		movesLeft = distance;
 	}
 	/************************************************************************************/
 	//Returns the location on the board the unit is in 
@@ -244,6 +247,11 @@ public class Unit{
 				break;
 			}
 		}
+	}
+
+	public int getMovesLeft() {
+		// TODO Auto-generated method stub
+		return movesLeft;
 	}
 	
 	/************************************************************************************/
