@@ -11,7 +11,7 @@ public class Game extends Observable{
 	private GameBoard levelOneBoard;//These must be initialized at the start to be how we 
 	private GameBoard levelTwoBoard;//want to design the levels
 	private GameBoard currentBoard;
-	private BotPlayer bot;
+	//private BotPlayer bot;
 	private int turnNumber;
 	private int currentScenario;
 	
@@ -26,7 +26,7 @@ public class Game extends Observable{
 		this.enemies=enemy;
 		levelOneBoard=new GameBoard(friendlies, enemies, 1, currentScenario);
 		currentBoard=levelOneBoard;
-		bot=new BotPlayer();
+		//bot=new BotPlayer();
 		turnNumber=0;
 	}
 
@@ -44,12 +44,12 @@ public class Game extends Observable{
 		this.enemies=enemies;
 		this.currentScenario=scenario;
 		this.turnNumber=0;
-		levelTwoBoard=new GameBoard(friendlies, enemies, 2);
+		//levelTwoBoard=new GameBoard(friendlies, enemies, 2);
 		this.currentBoard=levelTwoBoard;
 		return currentBoard;
 	}
 	
-	public int hasWon(){
+	/*public int hasWon(){
 		if (currentScenario==1){
 			//this is the game mode where the target needs to be killed
 			
@@ -57,7 +57,7 @@ public class Game extends Observable{
 		else if (currentScenario==2){
 			//this is the deathmatch game mode
 		}
-	}
+	}*/
 
 	
 }

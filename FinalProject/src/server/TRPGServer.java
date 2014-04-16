@@ -44,9 +44,7 @@ public class TRPGServer {
 	/**
 	 *	ClientHandler
 	 * 
-	 *	This class handles executing command from a single client. It 
-	 *	manages the queue of pending commands and maintains a history 
-	 *	of	executed commands that can be undone.
+	 *	This class handles executing command from a single client. 
 	 */
 	private class ClientHandler implements Runnable{
 		
@@ -62,7 +60,7 @@ public class TRPGServer {
 			
 			System.out.println("New Client " + id + " connected");
 			
-			updateClients();
+			//updateClients();
 		}
 
 		public void run() {
@@ -156,23 +154,23 @@ public class TRPGServer {
 		}
 	}
 	
-	/**
+/*	*//**
 	 * This method undoes the last command of a client
 	 * 
 	 * @param clientName 	name of the client whose command should be undone
-	 */
+	 *//*
 	public void undoLast(String clientName) {
 		Deque<Command<TRPGServer>> commands = histories.get(clientName);
 		if (commands.isEmpty())
 			return;
 		commands.pop().undo(TRPGServer.this);
-	}
+	}*/
 
 	/**
 	 *	This method updates all connected clients with the current list of
 	 *	PaintObjects in the world
 	 */
-	public void updateClients(){
+/*	public void updateClients(){
 		Command<TRPGClient> update = new UpdateCommand("server", currentBoard);
 		for (ObjectOutputStream out: outputs.values())
 			try{
@@ -182,7 +180,7 @@ public class TRPGServer {
 				//e.printStackTrace();
 				outputs.remove(out);
 			}
-	}
+	}*/
 
 	/**
 	 * Adds a PaintObject to the canvas
@@ -231,34 +229,4 @@ public class TRPGServer {
 		new TRPGServer(9001);
 	}
 
-	public void createGameBoard(ArrayList<Unit> userUnits,
-			ArrayList<Unit> compUnits, int map, int scenario) {
-		currentBoard = new GameBoard(userUnits,compUnits,map,scenario);
-	}
-
-	public void useItem(String client, Item item, Point p) {
-		//clientName.use(item);
-		currentBoard.removeItem(p);
-		updateClients();
-	}
-
-	public void moveUnitLeft(String client, Unit u, Point p) {
-		currentBoard.moveLeft(u);
-		updateClients();
-	}
-
-	public void moveUnitRight(String client, Unit u, Point p) {
-		currentBoard.moveRight(u);
-		updateClients();
-	}
-
-	public void moveUnitDown(String client, Unit u, Point p) {
-		currentBoard.moveDown(u);
-		updateClients();
-	}
-
-	public void moveUnitUp(String client, Unit u, Point p) {
-		currentBoard.moveUp(u);
-		updateClients();
-	}
 }

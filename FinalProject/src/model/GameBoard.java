@@ -17,6 +17,7 @@ public class GameBoard {
 	private char[][] terrain;
 	private int currentMap;
 	private int currentScenario;
+	private ArrayList<String> playerList;
 	
 	/************************************************************************************/
 	
@@ -34,6 +35,11 @@ public class GameBoard {
 		this.compUnits = compUnits;
 		currentMap = map;
 		currentScenario = scenario;
+		playerList = new ArrayList<>();
+		
+		//playerList.add(player1);
+		//playerList.add(player2);
+
 		
 		for(int i = 0; i<gameBoard.length; i++)
 			for(int j = 0; j<gameBoard[0].length; j++){
@@ -136,7 +142,7 @@ public class GameBoard {
 	
 	/************************************************************************************/
 	
-	public boolean moveUp(Unit u){
+	public boolean moveUp(String client,Unit u){
 		Point uSpot = u.getLocation();
 		int row =(int) uSpot.getX();
 		int column =(int) uSpot.getY();
@@ -154,7 +160,7 @@ public class GameBoard {
 	
 	/************************************************************************************/
 	
-	public boolean moveDown(Unit u){
+	public boolean moveDown(String client,Unit u){
 		Point uSpot = u.getLocation();
 		int row =(int) uSpot.getX();
 		int column =(int) uSpot.getY();
@@ -172,7 +178,7 @@ public class GameBoard {
 	
 	/************************************************************************************/
 
-	public boolean moveRight(Unit u){
+	public boolean moveRight(String client,Unit u){
 			Point uSpot = u.getLocation();
 			int row =(int) uSpot.getX();
 			int column =(int) uSpot.getY();
@@ -192,7 +198,7 @@ public class GameBoard {
 		
 	/************************************************************************************/
 	
-	public boolean moveLeft(Unit u){
+	public boolean moveLeft(String client,Unit u){
 		Point uSpot = u.getLocation();
 		int row =(int) uSpot.getX();
 		int column =(int) uSpot.getY();
@@ -239,23 +245,6 @@ public class GameBoard {
 		return terrain;
 	}
 	
-<<<<<<< HEAD
-=======
-	/************************************************************************************/
-	
-	public String gameBoardToString(){
-		String str = "";
-		for(int i=0; i < boardWidth;i++){
-			for(int j=0; j < boardHeight;j++){
-				str += gameBoard[boardWidth][boardHeight];
-			}
-		}
-		return str;
-	}
-	
-	/************************************************************************************/
-	
->>>>>>> b7b25cc922b26ded501c9d5c802cfa932be2114e
 	public String toString(){
 		String result="";
 		for(int row=0; row<gameBoard.length; row++){
@@ -401,6 +390,9 @@ public class GameBoard {
 		}
 		
 		return false;
+	}
+	public void useThisItem(String client, Unit u, Item item) {
+		
 	}
 	
 	/************************************************************************************/

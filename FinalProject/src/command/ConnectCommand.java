@@ -2,16 +2,16 @@ package command;
 
 import server.TRPGServer;
 
-public class DisconnectCommand extends Command<TRPGServer>{
+public class ConnectCommand extends Command<TRPGServer>{
 	
 	private String source;
 	
 	/**
-	 * Command disconnects the client based on the given string.
+	 * Command connects the client based on the given string.
 	 * @param source
 	 */
 	
-	public DisconnectCommand(String source) {
+	public ConnectCommand(String source) {
 		super(source);
 	}
 

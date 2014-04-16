@@ -2,10 +2,11 @@ package command;
 
 import java.util.ArrayList;
 
+import client.TRPGClient;
 import model.Unit;
 import server.TRPGServer;
 
-public class GameBoardCommand extends Command<TRPGServer>{
+public class GameBoardCommand extends Command<TRPGClient>{
 	
 	private ArrayList<Unit> userUnits;
 	private ArrayList<Unit> compUnits;
@@ -14,7 +15,6 @@ public class GameBoardCommand extends Command<TRPGServer>{
 
 	public GameBoardCommand(String source,ArrayList<Unit> userUnits,ArrayList<Unit> compUnits, int map, int scenario) {
 		super(source);
-		// TODO Auto-generated constructor stub
 		this.userUnits=userUnits;
 		this.compUnits=userUnits;
 		this.map=map;
@@ -22,8 +22,7 @@ public class GameBoardCommand extends Command<TRPGServer>{
 	}
 
 	@Override
-	public void execute(TRPGServer executeOn) {
-		// TODO Auto-generated method stub
+	public void execute(TRPGClient executeOn) {
 		executeOn.createGameBoard(userUnits,compUnits,map,scenario);
 	}
 

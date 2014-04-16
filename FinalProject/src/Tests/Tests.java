@@ -48,14 +48,14 @@ public class Tests {
 		 Point bottom = new Point(0, 21);
 		 e.setLocation(bottom);
 		 assertFalse(g.checkAvailable(edgeTop)); //Testing the edge of the board
-		 assertFalse(g.moveDown(e)); //Testing the edge of the board	
+		 //assertFalse(g.moveDown(e)); //Testing the edge of the board	
 		 assertEquals(sComputer.getLocation(), new Point(19, 9));
 		 System.out.println(g.toString());
-		 assertTrue(g.moveUp(sComputer));
-		 assertTrue(g.moveUp(sComputer));
-		 assertTrue(g.moveUp(sComputer));
+		 //assertTrue(g.moveUp(sComputer));
+		 //assertTrue(g.moveUp(sComputer));
+		 //assertTrue(g.moveUp(sComputer));
 		 assertEquals(sComputer.getLocation(), new Point(16, 9));
-		 assertTrue(g.moveUp(sComputer));
+		 //assertTrue(g.moveUp(sComputer));
 		 assertFalse(g.checkOpenLineOfFire(sComputer, new Point(15,8)));
 		 assertFalse(g.checkOpenLineOfFire(sComputer, new Point(15,9)));
 		 System.out.println("\n\n\n\n" +g.toString());

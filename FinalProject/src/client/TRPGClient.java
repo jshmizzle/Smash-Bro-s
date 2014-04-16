@@ -1,14 +1,19 @@
 package client;
 
+import java.awt.Point;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import command.ServerHandler;
 import model.GameBoard;
+import model.Item;
+import model.Unit;
 import GUI.CharacterSelectPanel;
 import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
@@ -24,6 +29,7 @@ public class TRPGClient extends JFrame{
 	private CharacterSelectPanel charSelectPanel;
 	private JPanel currentPanel;
 	private MainGamePanel gamePanel;
+	private GameBoard currentBoard;
 
 	public static void main(String[] args) {
 		TRPGClient client=new TRPGClient();
@@ -74,5 +80,30 @@ public class TRPGClient extends JFrame{
 	
 	public void update(GameBoard currentBoard){
 		this.gamePanel.update(currentBoard);
+	}
+	
+	public void createGameBoard(ArrayList<Unit> userUnits,
+			ArrayList<Unit> compUnits, int map, int scenario) {
+		currentBoard = new GameBoard(userUnits,compUnits,map,scenario);
+	}
+
+	public void useItem(String client, Unit u, Item item) {
+		currentBoard.useThisItem(client,u,item);
+	}
+
+	public void moveUnitLeft(String client, Unit u, Point p) {
+		currentBoard.moveLeft(client,u);
+	}
+
+	public void moveUnitRight(String client, Unit u, Point p) {
+		currentBoard.moveRight(client,u);
+	}
+
+	public void moveUnitDown(String client, Unit u, Point p) {
+		currentBoard.moveDown(client,u);
+	}
+
+	public void moveUnitUp(String client, Unit u, Point p) {
+		currentBoard.moveUp(client,u);
 	}
 }

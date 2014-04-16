@@ -4,10 +4,11 @@ import java.awt.List;
 import java.awt.Point;
 import java.util.Map;
 
+import client.TRPGClient;
 import model.Unit;
 import server.TRPGServer;
 
-public class UnitMovedRightCommand extends Command<TRPGServer>{
+public class UnitMovedRightCommand extends Command<TRPGClient>{
 	
 	public UnitMovedRightCommand(String source) {
 		super(source);
@@ -33,7 +34,7 @@ public class UnitMovedRightCommand extends Command<TRPGServer>{
 	}
 
 	@Override
-	public void execute(TRPGServer executeOn) {
+	public void execute(TRPGClient executeOn) {
 		executeOn.moveUnitRight(source, u, p);
 	}
 
