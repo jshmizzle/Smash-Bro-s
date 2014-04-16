@@ -6,7 +6,7 @@ import java.util.Map;
 import model.Item;
 import server.TRPGServer;
 
-public class SomethingChangedCommand extends Command<TRPGServer>{
+public class ItemUsedCommand extends Command<TRPGServer>{
 	
 	private String source;
 	private Item item;
@@ -20,7 +20,7 @@ public class SomethingChangedCommand extends Command<TRPGServer>{
 	 * @param source
 	 * @param itemChanges
 	 */
-	public SomethingChangedCommand(String source,Item item, Point p) {
+	public ItemUsedCommand(String source,Item item, Point p) {
 		super(source);
 		this.item=item;
 		this.p=p;
@@ -28,8 +28,7 @@ public class SomethingChangedCommand extends Command<TRPGServer>{
 
 	@Override
 	public void execute(TRPGServer executeOn) {
-		// TODO Auto-generated method stub
-		executeOn.removeItem(source,item,p);
+		executeOn.useItem(source,item,p);
 	}
 	
 

@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import model.GameBoard;
 import GUI.CharacterSelectPanel;
+import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 
 public class TRPGClient extends JFrame{

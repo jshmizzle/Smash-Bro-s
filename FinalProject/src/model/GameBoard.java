@@ -57,47 +57,55 @@ public class GameBoard {
 		}
 		
 		if(currentMap==1){
-			gameBoard[boardHeight/2-5][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2-4][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2-3][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2+5][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2+4][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2+3][boardWidth/2-2] = '#';
-			
-			gameBoard[boardHeight/2-5][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2-4][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2-3][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2+5][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2+4][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2+3][boardWidth/2+2] = '#';
-			
-			gameBoard[boardHeight/2-2][boardWidth/2-5] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2-4] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2-3] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2+5] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2+4] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2+3] = '#';
-			
-			gameBoard[boardHeight/2+2][boardWidth/2-5] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2-4] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2-3] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2+5] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2+4] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2+3] = '#';
-			
-			gameBoard[boardHeight/2-1][0]='#';
-			gameBoard[boardHeight/2-1][1]='#';
-			gameBoard[boardHeight/2+1][0]='#';
-			gameBoard[boardHeight/2+1][1]='#';
-			
-			gameBoard[boardHeight/2-1][boardWidth-1]='#';
-			gameBoard[boardHeight/2-1][boardWidth-2]='#';
-			gameBoard[boardHeight/2+1][boardWidth-1]='#';
-			gameBoard[boardHeight/2+1][boardWidth-2]='#';
-
-
+			setMapOne();
+		}
+		if(currentMap==2){
+			setMapTwo();
 		}
 		
+	}
+	private void setMapTwo() {
+		// TODO Auto-generated method stub
+		
+	}
+	private void setMapOne() {
+		gameBoard[boardHeight/2-5][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2-4][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2-3][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2+5][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2+4][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2+3][boardWidth/2-2] = '#';
+		
+		gameBoard[boardHeight/2-5][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2-4][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2-3][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2+5][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2+4][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2+3][boardWidth/2+2] = '#';
+		
+		gameBoard[boardHeight/2-2][boardWidth/2-5] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2-4] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2-3] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2+5] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2+4] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2+3] = '#';
+		
+		gameBoard[boardHeight/2+2][boardWidth/2-5] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2-4] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2-3] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2+5] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2+4] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2+3] = '#';
+		
+		gameBoard[boardHeight/2-1][0]='#';
+		gameBoard[boardHeight/2-1][1]='#';
+		gameBoard[boardHeight/2+1][0]='#';
+		gameBoard[boardHeight/2+1][1]='#';
+		
+		gameBoard[boardHeight/2-1][boardWidth-1]='#';
+		gameBoard[boardHeight/2-1][boardWidth-2]='#';
+		gameBoard[boardHeight/2+1][boardWidth-1]='#';
+		gameBoard[boardHeight/2+1][boardWidth-2]='#';
 	}
 	/************************************************************************************/
 
@@ -231,16 +239,6 @@ public class GameBoard {
 		return terrain;
 	}
 	
-	public String gameBoardToString(){
-		String str = "";
-		for(int i=0; i < boardWidth;i++){
-			for(int j=0; j < boardHeight;j++){
-				str += gameBoard[boardWidth][boardHeight];
-			}
-		}
-		return str;
-	}
-	
 	public String toString(){
 		String result="";
 		for(int row=0; row<gameBoard.length; row++){
@@ -360,6 +358,9 @@ public class GameBoard {
 		}
 		
 		return isOpen;
+	}
+	public void removeItem(Point p) {
+		gameBoard[(int) p.getY()][(int) p.getX()] = ' '; 
 	}
 	
 }

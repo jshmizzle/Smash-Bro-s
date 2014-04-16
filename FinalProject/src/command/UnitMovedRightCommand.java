@@ -7,8 +7,13 @@ import java.util.Map;
 import model.Unit;
 import server.TRPGServer;
 
-public class PlayerMovedCommand extends Command<TRPGServer>{
+public class UnitMovedRightCommand extends Command<TRPGServer>{
 	
+	public UnitMovedRightCommand(String source) {
+		super(source);
+		// TODO Auto-generated constructor stub
+	}
+
 	private String source;
 	private Unit u;
 	private Point p;
@@ -21,7 +26,7 @@ public class PlayerMovedCommand extends Command<TRPGServer>{
 	 * @param moves
 	 */
 	
-	public PlayerMovedCommand(String source, Unit u, Point p) {
+	public UnitMovedRightCommand(String source, Unit u, Point p) {
 		super(source);
 		this.u=u;
 		this.p=p;
@@ -29,7 +34,7 @@ public class PlayerMovedCommand extends Command<TRPGServer>{
 
 	@Override
 	public void execute(TRPGServer executeOn) {
-		executeOn.movePlayer(source, u,p);
+		executeOn.moveUnitRight(source, u, p);
 	}
 
 }

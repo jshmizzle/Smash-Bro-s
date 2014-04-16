@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -13,23 +14,28 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import client.TRPGClient;
+import model.GameBoard;
 import model.Item;
 import model.Unit;
 import command.Command;
+import command.DisconnectCommand;
+import command.UpdateCommand;
 
 /**
- * Netpaint Server
+ * TRPG Server
  * 
- * <p> This class is the server side of Netpaint. It is responsible for
+ * <p> This class is the server side of TRPG. It is responsible for
  * managing connections to clients, sending and executing commands, and
- * holds the list of all PaintObjects on the shared canvas. <P>
+ * holds the GameBoard. <P>
  * 
- * @author Gabriel Kishi
+ * @author The Other Guys
  *
  */
 
 public class TRPGServer {
 	private ServerSocket socket;
+	private GameBoard currentBoard;
 	
 	private Map<String, Deque<Command<TRPGServer>>> histories;
 	private Map<String, ObjectInputStream> inputs;
@@ -70,8 +76,8 @@ public class TRPGServer {
 						if (command instanceof DisconnectCommand){
 							break;
 						}
-						else if (!(command instanceof UndoLastCommand)) // undo commands can't be undone
-							history.push(command);
+//						else if (!(command instanceof UndoLastCommand)) // undo commands can't be undone
+//							history.push(command);
 					}
 				}
 				catch(Exception e){
@@ -167,7 +173,7 @@ public class TRPGServer {
 	 *	PaintObjects in the world
 	 */
 	public void updateClients(){
-		Command<NetpaintClient> update = new UpdateCommand("server", objects.toArray(new PaintObject[objects.size()]));
+		Command<TRPGClient> update = new UpdateCommand("server", currentBoard);
 		for (ObjectOutputStream out: outputs.values())
 			try{
 				out.writeObject(update);
@@ -182,7 +188,7 @@ public class TRPGServer {
 	 * Adds a PaintObject to the canvas
 	 * @param object	a PaintObject to add to the canvas
 	 */
-	public void addObject(PaintObject object) {
+/*	public void addObject(PaintObject object) {
 		System.out.println(objects.size());
 		System.out.println("Adding new Object" + object.getClass().toString());
 		objects.add(object);
@@ -190,10 +196,10 @@ public class TRPGServer {
 		updateClients();
 	}
 	
-	/**
+	*//**
 	 * Removes a PaintObject from the canvas
 	 * @param object	a PaintObject to be removed
-	 */
+	 *//*
 	public void removeObject(PaintObject object) {
 		objects.remove(object);
 		updateClients();
@@ -201,6 +207,10 @@ public class TRPGServer {
 	
 	public List<PaintObject> getObjects() {
 		return objects;
+	}*/
+	
+	public GameBoard getGameBoard(){
+		return currentBoard;
 	}
 
 	/**
@@ -221,13 +231,34 @@ public class TRPGServer {
 		new TRPGServer(9001);
 	}
 
-	public void removeItem(String source, Item item, Point p) {
-		// TODO Auto-generated method stub
-		
+	public void createGameBoard(ArrayList<Unit> userUnits,
+			ArrayList<Unit> compUnits, int map, int scenario) {
+		currentBoard = new GameBoard(userUnits,compUnits,map,scenario);
 	}
 
-	public void movePlayer(String source, Unit u, Point p) {
-		// TODO Auto-generated method stub
-		
+	public void useItem(String client, Item item, Point p) {
+		//clientName.use(item);
+		currentBoard.removeItem(p);
+		updateClients();
+	}
+
+	public void moveUnitLeft(String client, Unit u, Point p) {
+		currentBoard.moveLeft(u);
+		updateClients();
+	}
+
+	public void moveUnitRight(String client, Unit u, Point p) {
+		currentBoard.moveRight(u);
+		updateClients();
+	}
+
+	public void moveUnitDown(String client, Unit u, Point p) {
+		currentBoard.moveDown(u);
+		updateClients();
+	}
+
+	public void moveUnitUp(String client, Unit u, Point p) {
+		currentBoard.moveUp(u);
+		updateClients();
 	}
 }
