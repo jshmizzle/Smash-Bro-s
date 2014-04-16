@@ -3,14 +3,16 @@ package command;
 import java.awt.Point;
 import java.util.Map;
 
+import client.TRPGClient;
 import model.Item;
+import model.Unit;
 import server.TRPGServer;
 
-public class SomethingChangedCommand extends Command<TRPGServer>{
+public class ItemUsedCommand extends Command<TRPGClient>{
 	
 	private String source;
 	private Item item;
-	private Point p;
+	private Unit u;;
 	
 	
 	/**
@@ -20,16 +22,15 @@ public class SomethingChangedCommand extends Command<TRPGServer>{
 	 * @param source
 	 * @param itemChanges
 	 */
-	public SomethingChangedCommand(String source,Item item, Point p) {
+	public ItemUsedCommand(String source,Unit u,Item item) {
 		super(source);
 		this.item=item;
-		this.p=p;
+		this.u=u;
 	}
 
 	@Override
-	public void execute(TRPGServer executeOn) {
-		// TODO Auto-generated method stub
-		executeOn.removeItem(source,item,p);
+	public void execute(TRPGClient executeOn) {
+		executeOn.useItem(source,u, item);
 	}
 	
 

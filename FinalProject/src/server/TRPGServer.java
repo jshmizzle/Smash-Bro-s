@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -13,23 +14,28 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import client.TRPGClient;
+import model.GameBoard;
 import model.Item;
 import model.Unit;
 import command.Command;
+import command.DisconnectCommand;
+import command.UpdateCommand;
 
 /**
- * Netpaint Server
+ * TRPG Server
  * 
- * <p> This class is the server side of Netpaint. It is responsible for
+ * <p> This class is the server side of TRPG. It is responsible for
  * managing connections to clients, sending and executing commands, and
- * holds the list of all PaintObjects on the shared canvas. <P>
+ * holds the GameBoard. <P>
  * 
- * @author Gabriel Kishi
+ * @author The Other Guys
  *
  */
 
 public class TRPGServer {
 	private ServerSocket socket;
+	private GameBoard currentBoard;
 	
 	private Map<String, Deque<Command<TRPGServer>>> histories;
 	private Map<String, ObjectInputStream> inputs;
@@ -38,9 +44,7 @@ public class TRPGServer {
 	/**
 	 *	ClientHandler
 	 * 
-	 *	This class handles executing command from a single client. It 
-	 *	manages the queue of pending commands and maintains a history 
-	 *	of	executed commands that can be undone.
+	 *	This class handles executing command from a single client. 
 	 */
 	private class ClientHandler implements Runnable{
 		
@@ -56,7 +60,7 @@ public class TRPGServer {
 			
 			System.out.println("New Client " + id + " connected");
 			
-			updateClients();
+			//updateClients();
 		}
 
 		public void run() {
@@ -70,8 +74,8 @@ public class TRPGServer {
 						if (command instanceof DisconnectCommand){
 							break;
 						}
-						else if (!(command instanceof UndoLastCommand)) // undo commands can't be undone
-							history.push(command);
+//						else if (!(command instanceof UndoLastCommand)) // undo commands can't be undone
+//							history.push(command);
 					}
 				}
 				catch(Exception e){
@@ -150,24 +154,24 @@ public class TRPGServer {
 		}
 	}
 	
-	/**
+/*	*//**
 	 * This method undoes the last command of a client
 	 * 
 	 * @param clientName 	name of the client whose command should be undone
-	 */
+	 *//*
 	public void undoLast(String clientName) {
 		Deque<Command<TRPGServer>> commands = histories.get(clientName);
 		if (commands.isEmpty())
 			return;
 		commands.pop().undo(TRPGServer.this);
-	}
+	}*/
 
 	/**
 	 *	This method updates all connected clients with the current list of
 	 *	PaintObjects in the world
 	 */
-	public void updateClients(){
-		Command<NetpaintClient> update = new UpdateCommand("server", objects.toArray(new PaintObject[objects.size()]));
+/*	public void updateClients(){
+		Command<TRPGClient> update = new UpdateCommand("server", currentBoard);
 		for (ObjectOutputStream out: outputs.values())
 			try{
 				out.writeObject(update);
@@ -176,13 +180,13 @@ public class TRPGServer {
 				//e.printStackTrace();
 				outputs.remove(out);
 			}
-	}
+	}*/
 
 	/**
 	 * Adds a PaintObject to the canvas
 	 * @param object	a PaintObject to add to the canvas
 	 */
-	public void addObject(PaintObject object) {
+/*	public void addObject(PaintObject object) {
 		System.out.println(objects.size());
 		System.out.println("Adding new Object" + object.getClass().toString());
 		objects.add(object);
@@ -190,10 +194,10 @@ public class TRPGServer {
 		updateClients();
 	}
 	
-	/**
+	*//**
 	 * Removes a PaintObject from the canvas
 	 * @param object	a PaintObject to be removed
-	 */
+	 *//*
 	public void removeObject(PaintObject object) {
 		objects.remove(object);
 		updateClients();
@@ -201,6 +205,10 @@ public class TRPGServer {
 	
 	public List<PaintObject> getObjects() {
 		return objects;
+	}*/
+	
+	public GameBoard getGameBoard(){
+		return currentBoard;
 	}
 
 	/**
@@ -221,13 +229,4 @@ public class TRPGServer {
 		new TRPGServer(9001);
 	}
 
-	public void removeItem(String source, Item item, Point p) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void movePlayer(String source, Unit u, Point p) {
-		// TODO Auto-generated method stub
-		
-	}
 }

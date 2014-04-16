@@ -16,6 +16,7 @@ public class GameBoard {
 	private char[][] terrain;
 	private int currentMap;
 	private int currentScenario;
+	private ArrayList<String> playerList;
 	
 	/************************************************************************************/
 	
@@ -33,73 +34,105 @@ public class GameBoard {
 		this.compUnits = compUnits;
 		currentMap = map;
 		currentScenario = scenario;
+		playerList = new ArrayList<>();
+		
+		//playerList.add(player1);
+		//playerList.add(player2);
+
 		
 		for(int i = 0; i<gameBoard.length; i++)
 			for(int j = 0; j<gameBoard[0].length; j++){
 				gameBoard[i][j] = ' ';
 			}
 		
+		gameBoard[0][boardHeight/2] = 'P';
+		
 		int i=0;
 		for(Unit u: userUnits){
-			gameBoard[0][boardHeight/2-1+i] = u.getCharRepresentation();
-			Point p = new Point(0, boardHeight/2-1+i);
-			u.setLocation(p);
-			i++;
+			if(u.getCharRepresentation() == 'P' || u.getCharRepresentation() == 'p'){
+	
+			}
+			else{
+				gameBoard[1][boardHeight/2-2+i] = u.getCharRepresentation();
+				Point p = new Point(1, boardHeight/2-2+i);
+				u.setLocation(p);
+				i++;
+			}
 		}
 		
 		int j=0;
+		
+		gameBoard[boardHeight -1][boardHeight/2] = 'p';
 		for(Unit c : compUnits){
-			gameBoard[boardHeight-1][boardWidth/2-1+j] = c.getCharRepresentation();
-			Point p = new Point(boardHeight-1, boardWidth/2-1+j);
-			c.setLocation(p);
-			j++;
+			if(c.getCharRepresentation() == 'P' || c.getCharRepresentation() == 'p'){
+				
+			}
+			
+			else{
+				gameBoard[boardHeight-2][boardWidth/2-2+j] = c.getCharRepresentation();
+				Point p = new Point(boardHeight-2, boardWidth/2-2+j);
+				c.setLocation(p);
+				j++;
+			}
 		}
 		
 		if(currentMap==1){
-			gameBoard[boardHeight/2-5][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2-4][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2-3][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2+5][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2+4][boardWidth/2-2] = '#';
-			gameBoard[boardHeight/2+3][boardWidth/2-2] = '#';
-			
-			gameBoard[boardHeight/2-5][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2-4][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2-3][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2+5][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2+4][boardWidth/2+2] = '#';
-			gameBoard[boardHeight/2+3][boardWidth/2+2] = '#';
-			
-			gameBoard[boardHeight/2-2][boardWidth/2-5] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2-4] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2-3] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2+5] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2+4] = '#';
-			gameBoard[boardHeight/2-2][boardWidth/2+3] = '#';
-			
-			gameBoard[boardHeight/2+2][boardWidth/2-5] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2-4] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2-3] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2+5] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2+4] = '#';
-			gameBoard[boardHeight/2+2][boardWidth/2+3] = '#';
-			
-			gameBoard[boardHeight/2-1][0]='#';
-			gameBoard[boardHeight/2-1][1]='#';
-			gameBoard[boardHeight/2+1][0]='#';
-			gameBoard[boardHeight/2+1][1]='#';
-			
-			gameBoard[boardHeight/2-1][boardWidth-1]='#';
-			gameBoard[boardHeight/2-1][boardWidth-2]='#';
-			gameBoard[boardHeight/2+1][boardWidth-1]='#';
-			gameBoard[boardHeight/2+1][boardWidth-2]='#';
-
-
+			setMapOne();
+		}
+		if(currentMap==2){
+			setMapTwo();
 		}
 		
 	}
+	private void setMapTwo() {
+		// TODO Auto-generated method stub
+		
+	}
+	private void setMapOne() {
+		gameBoard[boardHeight/2-5][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2-4][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2-3][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2+5][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2+4][boardWidth/2-2] = '#';
+		gameBoard[boardHeight/2+3][boardWidth/2-2] = '#';
+		
+		gameBoard[boardHeight/2-5][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2-4][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2-3][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2+5][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2+4][boardWidth/2+2] = '#';
+		gameBoard[boardHeight/2+3][boardWidth/2+2] = '#';
+		
+		gameBoard[boardHeight/2-2][boardWidth/2-5] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2-4] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2-3] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2+5] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2+4] = '#';
+		gameBoard[boardHeight/2-2][boardWidth/2+3] = '#';
+		
+		gameBoard[boardHeight/2+2][boardWidth/2-5] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2-4] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2-3] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2+5] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2+4] = '#';
+		gameBoard[boardHeight/2+2][boardWidth/2+3] = '#';
+		
+		gameBoard[boardHeight/2-1][0]='#';
+		gameBoard[boardHeight/2-1][1]='#';
+		gameBoard[boardHeight/2+1][0]='#';
+		gameBoard[boardHeight/2+1][1]='#';
+		
+		gameBoard[boardHeight/2-1][boardWidth-1]='#';
+		gameBoard[boardHeight/2-1][boardWidth-2]='#';
+		gameBoard[boardHeight/2+1][boardWidth-1]='#';
+		gameBoard[boardHeight/2+1][boardWidth-2]='#';
+	}
 	/************************************************************************************/
 
+	public ArrayList<Unit> getUserUnits(){
+		return userUnits;
+	}
+	
 	public boolean checkAvailable(Point point){
 		
 		int x = (int)point.getX();
@@ -123,11 +156,9 @@ public class GameBoard {
 		return gameBoard[(int) p.getX()][(int) p.getY()];
 	}
 	
-	
-	
 	/************************************************************************************/
 	
-	public boolean moveUp(Unit u){
+	public boolean moveUp(String client,Unit u){
 		Point uSpot = u.getLocation();
 		int row =(int) uSpot.getX();
 		int column =(int) uSpot.getY();
@@ -145,7 +176,7 @@ public class GameBoard {
 	
 	/************************************************************************************/
 	
-	public boolean moveDown(Unit u){
+	public boolean moveDown(String client,Unit u){
 		Point uSpot = u.getLocation();
 		int row =(int) uSpot.getX();
 		int column =(int) uSpot.getY();
@@ -163,7 +194,7 @@ public class GameBoard {
 	
 	/************************************************************************************/
 
-	public boolean moveRight(Unit u){
+	public boolean moveRight(String client,Unit u){
 			Point uSpot = u.getLocation();
 			int row =(int) uSpot.getX();
 			int column =(int) uSpot.getY();
@@ -183,7 +214,7 @@ public class GameBoard {
 		
 	/************************************************************************************/
 	
-	public boolean moveLeft(Unit u){
+	public boolean moveLeft(String client,Unit u){
 		Point uSpot = u.getLocation();
 		int row =(int) uSpot.getX();
 		int column =(int) uSpot.getY();
@@ -230,15 +261,7 @@ public class GameBoard {
 		return terrain;
 	}
 	
-	public String gameBoardToString(){
-		String str = "";
-		for(int i=0; i < boardWidth;i++){
-			for(int j=0; j < boardHeight;j++){
-				str += gameBoard[boardWidth][boardHeight];
-			}
-		}
-		return str;
-	}
+	/************************************************************************************/
 	
 	public String toString(){
 		String result="";
@@ -360,5 +383,44 @@ public class GameBoard {
 		
 		return isOpen;
 	}
+	public void removeItem(Point p) {
+		gameBoard[(int) p.getY()][(int) p.getX()] = ' '; 
+	}
 	
+	/************************************************************************************/
+	/**
+	 * 
+	 * @param u - The Unit that needs to be moved
+	 * @param p - The location where the unit needs to be moved to
+	 * @return true if it moved successfully, false otherwise
+	 */
+	
+	public boolean setUnitToThisSpot(Unit u, Point p){
+		
+		int x = p.x;
+		int y = p.y;
+		
+		if(checkAvailable(p))
+		{
+			gameBoard[x][y] = u.getCharRepresentation();
+			u.setLocation(p);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public void useThisItem(String client, Unit u, Item item) {
+		
+	}
+
+	public void setBoard(char[][] board) {
+		gameBoard = board;
+		
+	}
+	public ArrayList<Unit> getCompUnits() {
+		return compUnits;
+	}
+	
+	/************************************************************************************/
 }

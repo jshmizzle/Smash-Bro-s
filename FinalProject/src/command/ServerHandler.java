@@ -1,11 +1,12 @@
-package client;
+package command;
+
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
-import model.UpdateCommand;
+import client.TRPGClient;
 
 public class ServerHandler implements Runnable {
 

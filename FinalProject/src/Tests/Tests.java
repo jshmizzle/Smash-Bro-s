@@ -48,14 +48,18 @@ public class Tests {
 		 Point bottom = new Point(0, 21);
 		 e.setLocation(bottom);
 		 assertFalse(g.checkAvailable(edgeTop)); //Testing the edge of the board
-		 assertFalse(g.moveDown(e)); //Testing the edge of the board	
+		 //assertFalse(g.moveDown(e)); //Testing the edge of the board	
 		 assertEquals(sComputer.getLocation(), new Point(19, 9));
 		 System.out.println(g.toString());
-		 assertTrue(g.moveUp(sComputer));
-		 assertTrue(g.moveUp(sComputer));
-		 assertTrue(g.moveUp(sComputer));
+		 //assertTrue(g.moveUp(sComputer));
+		 //assertTrue(g.moveUp(sComputer));
+		 //assertTrue(g.moveUp(sComputer));
 		 assertEquals(sComputer.getLocation(), new Point(16, 9));
+		 //assertTrue(g.moveUp(sComputer));
+		 assertFalse(g.checkOpenLineOfFire(sComputer, new Point(15,8)));
+		 assertFalse(g.checkOpenLineOfFire(sComputer, new Point(15,9)));
 		 System.out.println("\n\n\n\n" +g.toString());
+		
 		
 	 }
 
@@ -64,7 +68,7 @@ public class Tests {
 		
 		 Point b = new Point(0, 0);
 		 Sonic sonic = new Sonic("Sonic", 50, 10, b);
-		 MegaMan m = new MegaMan(65, 5, 4, new Point(0, 0));
+		 MegaMan m = new MegaMan();
 		 Sonic sComputer = new Sonic("Sonic", 50, 10, b);
 		 ArrayList<Unit> player = new ArrayList<Unit>();
 		 ArrayList<Unit> computer = new ArrayList<Unit>();
@@ -92,7 +96,6 @@ public class Tests {
 		 
 		 m.setLocation(new Point(0, 18));
 		 sComputer.setLocation(new Point(0, 17));
-		 
 		 /*
 		  * MegaMan is at (0, 18) so he can attack units
 		  * that are at (0, 19), (1, 18), (2, 18), (0, 17),
