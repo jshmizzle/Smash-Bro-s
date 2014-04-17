@@ -16,7 +16,7 @@ public class Unit{
 	private int [] stats;
 	//private Strategy strategy;
 	private boolean alive;
-	private int attack;
+	private int attackPower;
 	private Point location;
 	private BufferedImage image;
 	private char charRepresentation;
@@ -31,18 +31,18 @@ public class Unit{
 	 * @param n Name of the unit
 	 * @param hp Units health
 	 * @param distance How far unit can move
-	 * @param attack Amount of damage the unit does
+	 * @param attackPower Amount of damage the unit does
 	 * @param i Image of unit
 	 * @param p Location of unit
 	 * @param c The character that represents the unit
 	 */
-	public Unit (String n, int hp, int distance, int attack, int attackRange, BufferedImage i, Point p, char c){
+	public Unit (String n, int hp, int distance, int attackPower, int attackRange, BufferedImage i, Point p, char c){
 
 		this.name = n;
 		this.health = hp;
 		healthFull=hp;
 		this.moveDistance = distance;
-		this.attack=attack;
+		this.attackPower=attackPower;
 		image=i;
 		location=p;
 		attackRange=this.attackRange;
@@ -69,7 +69,7 @@ public class Unit{
 		this.health = hp;
 		healthFull=hp;
 		this.moveDistance = distance;
-		this.attack=attack;
+		this.attackPower=attack;
 		location=p;
 		this.attackRange = attackRange;
 		charRepresentation=c;
@@ -136,14 +136,14 @@ public class Unit{
 	//Attacks a unit by giving that unit a specific amount of damage
 	
 	public void attack(Unit u){
-		u.takeHit(attack);
+		u.takeHit(attackPower);
 	}
 	
 	/************************************************************************************/
 	//Adds to Amount of attack a unit can do (item)
 	
 	public void addAttack(int amount){
-		attack+=amount;
+		attackPower+=amount;
 	}
 	
 	/************************************************************************************/
@@ -251,6 +251,10 @@ public class Unit{
 
 	public int getMovesLeft() {
 		return movesLeft;
+	}
+
+	public int getAttackPower() {
+		return attackPower;
 	}
 	
 	/************************************************************************************/
