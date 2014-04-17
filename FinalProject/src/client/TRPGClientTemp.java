@@ -42,6 +42,7 @@ public class TRPGClientTemp extends JFrame {
 		 
 	    Sonic S = new Sonic('S');
 	  	Goku G = new Goku('G');
+	  	Mario W = new Mario('W');
 	 	Link l = new Link('l');
 		Mario w = new Mario('w');
 		MegaMan m = new MegaMan('m');
@@ -49,6 +50,7 @@ public class TRPGClientTemp extends JFrame {
 		Princess p = new Princess('p');
 			
 		playerUnits.add(P);
+		playerUnits.add(W);
 		playerUnits.add(S);
 		playerUnits.add(G);
 		compUnits.add(p);
