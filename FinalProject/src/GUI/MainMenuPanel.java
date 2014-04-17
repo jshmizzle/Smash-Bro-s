@@ -34,7 +34,7 @@ public class MainMenuPanel extends JPanel {
 	
 	private void initializeBackground(){
 		try {
-			background=ImageIO.read(new File("images/MainMenuBackground.jpg"));
+			background=ImageIO.read(new File("images/MainMenuBackground.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

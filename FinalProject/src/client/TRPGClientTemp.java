@@ -1,15 +1,11 @@
 package client;
 
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import model.GameBoard;
 import model.Goku;
@@ -20,7 +16,6 @@ import model.Princess;
 import model.Sonic;
 import model.Unit;
 import GUI.MainGamePanel;
-import GUI.MainMenuPanel;
 
 public class TRPGClientTemp extends JFrame {
 
@@ -29,6 +24,11 @@ public class TRPGClientTemp extends JFrame {
 	public static GameBoard gameBoard;
 	
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		JFrame client=new TRPGClientTemp("Destroy the Princess");
 		client.setVisible(true);
 	}

@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import command.ServerHandler;
-
 import model.GameBoard;
 import model.Item;
 import model.Unit;
@@ -33,12 +33,17 @@ public class TRPGClient extends JFrame{
 	private GameBoard currentBoard;
 
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		TRPGClient client=new TRPGClient();
 		client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	public TRPGClient() {
-		askUserForInfo();//now the client has been logged into the server
+		askUserForInfo();//now the client has been logged into the server'
 		initializeFrame();
 		ServerHandler handler=new ServerHandler(this, inputStream);
 		Thread t=new Thread(handler);
@@ -106,5 +111,10 @@ public class TRPGClient extends JFrame{
 
 	public void moveUnitUp(String client, Unit u, Point p) {
 		currentBoard.moveUp(client,u);
+	}
+
+	public void welcomeToLobby(String source) {
+		// open lobby for whoever connected
+		
 	}
 }

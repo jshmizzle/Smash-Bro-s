@@ -12,7 +12,6 @@ public class UnitMovedRightCommand extends Command<TRPGClient>{
 	
 	public UnitMovedRightCommand(String source) {
 		super(source);
-		// TODO Auto-generated constructor stub
 	}
 
 	private String source;
