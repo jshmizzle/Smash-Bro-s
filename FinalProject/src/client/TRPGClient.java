@@ -26,7 +26,7 @@ import command.Command;
 
 public class TRPGClient extends JFrame {
 
-	private String host, username;
+	private String host, userName;
 	private int port = 0;
 	private Socket server;
 	private ObjectInputStream inputStream;
@@ -37,6 +37,7 @@ public class TRPGClient extends JFrame {
 	private MainGamePanel gamePanel;
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
+	private boolean myTurn = false;
 
 	public static void main(String[] args) {
 //		try {
@@ -76,9 +77,9 @@ public class TRPGClient extends JFrame {
 
 			String serverAccepted = "reject";
 			while (serverAccepted.equals("reject")) {
-				username = JOptionPane
+				userName = JOptionPane
 						.showInputDialog("Enter your TRPG username");
-				outputStream.writeObject(username);
+				outputStream.writeObject(userName);
 				serverAccepted = (String) inputStream.readObject();
 			}
 		} catch (Exception e) {
@@ -126,13 +127,13 @@ public class TRPGClient extends JFrame {
 		this.gamePanel.update(currentBoard);
 	}
 
-	private void createGameBoard(ArrayList<Unit> userUnits,
+	public void createGameBoard(ArrayList<Unit> userUnits,
 			ArrayList<Unit> compUnits, int map, int scenario) {
 		currentBoard = new GameBoard(userUnits, compUnits, map, scenario);
 		playingAlready = true;
 	}
 
-	private void useItem(String client, Unit u, Item item) {
+	public void useItem(String client, Unit u, Item item) {
 		currentBoard.useThisItem(client, u, item);
 	}
 
@@ -152,7 +153,7 @@ public class TRPGClient extends JFrame {
 		currentBoard.moveUp(client, u);
 	}
 
-	public void welcomeToLobby(String source) {
+	public void welcomeToLobby(String client) {
 		// open lobby for whoever connected
 		if (playingAlready == true) {
 			; // do nothing
@@ -164,5 +165,21 @@ public class TRPGClient extends JFrame {
 			Thread t = new Thread(handler);
 			t.start();
 		}
+	}
+
+	public void unitDied(String client, Unit u) {
+		currentBoard.unitDied(client,u);
+	}
+
+	public void attackUnit(String client, Unit from, Unit to) {
+		currentBoard.attackUnit(client,from,to);
+	}
+
+	public void endTurn(String client) {
+		if(client.equals(userName)){
+			myTurn = false;
+		}
+		else
+			myTurn = true;
 	}
 }

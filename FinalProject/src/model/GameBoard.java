@@ -421,6 +421,12 @@ public class GameBoard {
 	public ArrayList<Unit> getCompUnits() {
 		return compUnits;
 	}
+	public void unitDied(String source, Unit u) {
+		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
+	}
+	public void attackUnit(String source, Unit from, Unit to) {
+		to.takeHit(to.getHealth() - from.getAttackPower());
+	}
 	
 	/************************************************************************************/
 }

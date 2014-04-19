@@ -18,7 +18,7 @@ public class Tests {
 	 @Test
      public void testUnit() {
 		 Point b = new Point(0,0);
-		 Sonic x = new Sonic("Sonic", 10000, 10, b);
+		 Unit x = new Sonic('s');
 		 assertEquals(x.getName(), "Sonic");
 		 assertEquals(x.getDistance(), 20);
 		 assertEquals(x.getCharRepresentation(), 'S');
