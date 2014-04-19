@@ -27,8 +27,11 @@ public class MainGamePanel extends JPanel {
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
+		cursorLocation=new Point(0,0);
 		this.addKeyListener(new KeyManager());
 		initializeImages();
+		this.setFocusable(true);
+		this.requestFocusInWindow();
 		this.setVisible(true);
 	}
 	
@@ -53,7 +56,6 @@ public class MainGamePanel extends JPanel {
 		
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
-		this.cursorLocation=new Point(getWidth()/gameTileWidth*10, getHeight()/gameTileHeight*10);
 		
 		//loop through the current gameBoard and draw the images based on the current positions
 		//of the units currently in the game
@@ -92,36 +94,46 @@ public class MainGamePanel extends JPanel {
 				}
 			}
 		}
-		
 		drawCursor(g2);
 	}
 	
 	private void drawCursor(Graphics2D g2){
 		g2.setColor(Color.RED);
-		g2.drawRect(cursorLocation.x, cursorLocation.y, gameTileWidth, gameTileHeight);
+		g2.drawRect(cursorLocation.x*gameTileWidth, cursorLocation.y*gameTileHeight, gameTileWidth, gameTileHeight);
 	}
-	
+		
 	private class KeyManager implements KeyListener{
 
 		@Override
 		public void keyPressed(KeyEvent arg0) {
-			if(arg0.getKeyCode()==KeyEvent.VK_RIGHT){
-				cursorLocation.setLocation(cursorLocation.x+gameTileWidth, cursorLocation.y);
-				System.out.println("Right pressed");
+			int key=arg0.getKeyCode();
+		
+			if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+				cursorLocation.translate(1, 0);
 				repaint();
 			}
-			System.out.println("key Pressed");
-		}
-
-		@Override
-		public void keyReleased(KeyEvent arg0) {
-			// TODO Auto-generated method stub
+			if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
+				cursorLocation.translate(0,1);
+				repaint();
+			}
+			if(key==KeyEvent.VK_UP && cursorLocation.y>0){
+				cursorLocation.translate(0, -1);
+				
+				repaint();
+			}
+			if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+				cursorLocation.translate(-1, 0);
+				repaint();
+			}
 			
 		}
 
 		@Override
+		public void keyReleased(KeyEvent arg0) {
+		}
+
+		@Override
 		public void keyTyped(KeyEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 		
 	}
