@@ -9,15 +9,20 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 
-import command.ServerHandler;
 import model.GameBoard;
+import model.Goku;
 import model.Item;
+import model.Link;
+import model.Mario;
+import model.MegaMan;
+import model.Princess;
+import model.Sonic;
 import model.Unit;
 import GUI.CharacterSelectPanel;
 import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
+import command.Command;
 
 public class TRPGClient extends JFrame {
 
@@ -34,11 +39,11 @@ public class TRPGClient extends JFrame {
 	private boolean playingAlready = false;
 
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		TRPGClient client = new TRPGClient();
 		client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -80,25 +85,54 @@ public class TRPGClient extends JFrame {
 			e.printStackTrace();
 		}
 	}
+	
+	//temp method
+	private void initializeGameBoard() {
+		//initialize the units and the GameBoard
+		 ArrayList<Unit> playerUnits = new ArrayList<Unit>();
+		 ArrayList<Unit> compUnits = new ArrayList<Unit>();
+		 
+	    Sonic S = new Sonic('S');
+	  	Goku G = new Goku('G');
+	  	Mario W = new Mario('W');
+	 	Link l = new Link('l');
+		Mario w = new Mario('w');
+		MegaMan m = new MegaMan('m');
+		Princess P = new Princess('P');
+		Princess p = new Princess('p');
+			
+		playerUnits.add(P);
+		playerUnits.add(W);
+		playerUnits.add(S);
+		playerUnits.add(G);
+		compUnits.add(p);
+		compUnits.add(l);
+		compUnits.add(m);
+		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0); 
+	}
 
-	public void initializeFrame() {
-		mainMenuPanel = new MainMenuPanel(username, outputStream);
-		this.add(mainMenuPanel).setVisible(true);
-		this.setSize(1000, 650);
+	private void initializeFrame() {
+		//mainMenuPanel = new MainMenuPanel(username, outputStream);
+		//start with MainGamePanel for testing menus will be added later the game comes first
+		initializeGameBoard();
+		gamePanel=new MainGamePanel(currentBoard);
+		currentPanel=gamePanel;
+		this.add(currentPanel).setVisible(true);
+		this.pack();
 		this.setVisible(true);
 	}
 
-	public void update(GameBoard currentBoard) {
+	private void update(Command<?> command) {
 		this.gamePanel.update(currentBoard);
 	}
 
-	public void createGameBoard(ArrayList<Unit> userUnits,
+	private void createGameBoard(ArrayList<Unit> userUnits,
 			ArrayList<Unit> compUnits, int map, int scenario) {
 		currentBoard = new GameBoard(userUnits, compUnits, map, scenario);
 		playingAlready = true;
 	}
 
-	public void useItem(String client, Unit u, Item item) {
+	private void useItem(String client, Unit u, Item item) {
 		currentBoard.useThisItem(client, u, item);
 	}
 

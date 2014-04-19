@@ -1,26 +1,19 @@
 package server;
 
-import java.awt.Point;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import client.TRPGClient;
 import model.GameBoard;
-import model.Item;
-import model.Unit;
+import client.TRPGClient;
+
 import command.Command;
 import command.DisconnectCommand;
-import command.UpdateCommand;
 
 /**
  * TRPG Server
@@ -68,14 +61,23 @@ public class TRPGServer {
 				try{
 					Object ob = input.readObject();
 					if (ob instanceof Command<?>){
-						Command<TRPGServer> command = (Command<TRPGServer>)ob; // cast the object // grab a command off the queue
-						command.execute(TRPGServer.this); // execute the command on the server
-					
-						if (command instanceof DisconnectCommand){
+						
+						if(ob instanceof DisconnectCommand){
 							break;
 						}
+						else{
+						Command<TRPGClient> command = (Command<TRPGClient>)ob; // cast the object // grab a command off the queue
+						
+						//TODO: we do not want to execute the commands on the server side. 
+						//we simply want the commands to be passed on to the clients where 
+						//they will be executed correctly.
+						
+						//command.execute(TRPGServer.this); // execute the command on the server
+						updateClients(command);//the clients will be passed the command
+						
 //						else if (!(command instanceof UndoLastCommand)) // undo commands can't be undone
 //							history.push(command);
+						}
 					}
 				}
 				catch(Exception e){
@@ -167,11 +169,11 @@ public class TRPGServer {
 	}*/
 
 	/**
-	 *	This method updates all connected clients with the current list of
-	 *	PaintObjects in the world
+	 *	This method updates all connected clients with the most recent command that was 
+	 *  sent by one of the clients.
 	 */
-/*	public void updateClients(){
-		Command<TRPGClient> update = new UpdateCommand("server", currentBoard);
+	public void updateClients(Command<TRPGClient> command){
+		Command<TRPGClient> update = command;
 		for (ObjectOutputStream out: outputs.values())
 			try{
 				out.writeObject(update);
@@ -180,7 +182,7 @@ public class TRPGServer {
 				//e.printStackTrace();
 				outputs.remove(out);
 			}
-	}*/
+	}
 
 	/**
 	 * Adds a PaintObject to the canvas

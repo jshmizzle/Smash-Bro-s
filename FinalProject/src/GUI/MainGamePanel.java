@@ -1,11 +1,11 @@
 package GUI;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -24,6 +24,7 @@ public class MainGamePanel extends JPanel {
 	private Point cursorLocation;
 	
 	public MainGamePanel(GameBoard startingBoard) {
+		this.setPreferredSize(new Dimension(600, 600));
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
@@ -99,7 +100,7 @@ public class MainGamePanel extends JPanel {
 	
 	private void drawCursor(Graphics2D g2){
 		g2.setColor(Color.RED);
-		g2.drawRect(cursorLocation.x*gameTileWidth, cursorLocation.y*gameTileHeight, gameTileWidth, gameTileHeight);
+		g2.drawRect(cursorLocation.x*gameTileWidth, cursorLocation.y*gameTileHeight, gameTileWidth-1, gameTileHeight-1);
 	}
 		
 	private class KeyManager implements KeyListener{

@@ -1,40 +1,42 @@
 package command;
 
-import java.awt.List;
 import java.awt.Point;
-import java.util.Map;
 
-import client.TRPGClient;
 import model.Unit;
-import server.TRPGServer;
+import client.TRPGClient;
 
 public class UnitMovedUpCommand extends Command<TRPGClient>{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8595717000330684074L;
+
 	public UnitMovedUpCommand(String source) {
 		super(source);
 	}
 
 	private String source;
-	private Unit u;
-	private Point p;
+	private Unit unit;
+	private Point point;
 	
 	/**
 	 * Moves client's unit up one point
 	 * 
-	 * @param source
-	 * @param unit
-	 * @param point
+	 * @param source The unique name of the client who connected to the server.
+	 * @param u The Unit which will be moving up.	
+	 * @param p I'm not sure if this point is necessary. keeping it until we discuss why it's here.
 	 */
 	
 	public UnitMovedUpCommand(String source, Unit u, Point p) {
 		super(source);
-		this.u=u;
-		this.p=p;
+		this.unit=u;
+		this.point=p;
 	}
 
 	@Override
 	public void execute(TRPGClient executeOn) {
-		executeOn.moveUnitUp(source, u, p);
+		executeOn.moveUnitUp(source, unit, point);
 	}
 
 }
