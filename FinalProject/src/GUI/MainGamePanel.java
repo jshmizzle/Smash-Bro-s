@@ -1,8 +1,13 @@
 package GUI;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -16,11 +21,13 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	int gameTileWidth, gameTileHeight;
 	Image boulder, megaman, sonic, grass, mario, goku, link, princess; 
+	private Point cursorLocation;
 	
 	public MainGamePanel(GameBoard startingBoard) {
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
+		this.addKeyListener(new KeyManager());
 		initializeImages();
 		this.setVisible(true);
 	}
@@ -46,7 +53,7 @@ public class MainGamePanel extends JPanel {
 		
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
-		
+		this.cursorLocation=new Point(getWidth()/gameTileWidth*10, getHeight()/gameTileHeight*10);
 		
 		//loop through the current gameBoard and draw the images based on the current positions
 		//of the units currently in the game
@@ -85,6 +92,38 @@ public class MainGamePanel extends JPanel {
 				}
 			}
 		}
+		
+		drawCursor(g2);
+	}
+	
+	private void drawCursor(Graphics2D g2){
+		g2.setColor(Color.RED);
+		g2.drawRect(cursorLocation.x, cursorLocation.y, gameTileWidth, gameTileHeight);
+	}
+	
+	private class KeyManager implements KeyListener{
+
+		@Override
+		public void keyPressed(KeyEvent arg0) {
+			if(arg0.getKeyCode()==KeyEvent.VK_RIGHT){
+				cursorLocation.setLocation(cursorLocation.x+gameTileWidth, cursorLocation.y);
+				System.out.println("Right pressed");
+				repaint();
+			}
+			System.out.println("key Pressed");
+		}
+
+		@Override
+		public void keyReleased(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent arg0) {
+			// TODO Auto-generated method stub
+		}
+		
 	}
 	
 	public void update(GameBoard currentGameBoard){
