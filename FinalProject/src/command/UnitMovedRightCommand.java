@@ -12,7 +12,6 @@ public class UnitMovedRightCommand extends Command<TRPGClient>{
 	
 	public UnitMovedRightCommand(String source) {
 		super(source);
-		// TODO Auto-generated constructor stub
 	}
 
 	private String source;
@@ -20,11 +19,11 @@ public class UnitMovedRightCommand extends Command<TRPGClient>{
 	private Point p;
 	
 	/**
-	 * PlayerMovedCommand could take the name of the player as a string,
-	 * the unit that moved, and the point it moved to.
+	 * Moves client's unit right one point
 	 * 
 	 * @param source
-	 * @param moves
+	 * @param unit
+	 * @param point
 	 */
 	
 	public UnitMovedRightCommand(String source, Unit u, Point p) {

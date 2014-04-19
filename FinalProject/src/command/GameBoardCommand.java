@@ -12,7 +12,15 @@ public class GameBoardCommand extends Command<TRPGClient>{
 	private ArrayList<Unit> compUnits;
 	private int map;
 	private int scenario;
-
+/**
+ * Initial board command that takes all info from client
+ * 
+ * @param source
+ * @param userUnits
+ * @param compUnits
+ * @param map
+ * @param scenario
+ */
 	public GameBoardCommand(String source,ArrayList<Unit> userUnits,ArrayList<Unit> compUnits, int map, int scenario) {
 		super(source);
 		this.userUnits=userUnits;

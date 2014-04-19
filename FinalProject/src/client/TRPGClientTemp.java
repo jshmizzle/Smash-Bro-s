@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
-
+import javax.swing.UIManager;
 import model.GameBoard;
 import model.Goku;
 import model.Link;
@@ -23,6 +23,11 @@ public class TRPGClientTemp extends JFrame {
 	public static GameBoard gameBoard;
 	
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		JFrame client=new TRPGClientTemp("Destroy the Princess");
 		client.setVisible(true);
 	}
@@ -36,6 +41,7 @@ public class TRPGClientTemp extends JFrame {
 		 
 	    Sonic S = new Sonic('S');
 	  	Goku G = new Goku('G');
+	  	Mario W = new Mario('W');
 	 	Link l = new Link('l');
 		Mario w = new Mario('w');
 		MegaMan m = new MegaMan('m');
@@ -43,6 +49,7 @@ public class TRPGClientTemp extends JFrame {
 		Princess p = new Princess('p');
 			
 		playerUnits.add(P);
+		playerUnits.add(W);
 		playerUnits.add(S);
 		playerUnits.add(G);
 		compUnits.add(p);
