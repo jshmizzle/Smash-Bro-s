@@ -158,6 +158,7 @@ public class MainGamePanel extends JPanel {
 					repaint();
 				}
 				else if(key==KeyEvent.VK_ENTER){
+					
 					currentGameState=GameState.ChoosingAttack;
 				}
 			}
