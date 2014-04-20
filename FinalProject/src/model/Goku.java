@@ -8,5 +8,9 @@ public class Goku extends Unit{
 		super("Goku", 100, 6, 8, 1, new Point(0,0), c);
 		
 	}
+	
+	public void easyMove(){
+		
+	}
 
 }
