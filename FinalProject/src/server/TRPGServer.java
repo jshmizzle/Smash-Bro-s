@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import model.GameBoard;
+import client.Client;
 import client.TRPGClient;
-
 import command.Command;
 import command.DisconnectCommand;
 
@@ -66,7 +66,7 @@ public class TRPGServer {
 							break;
 						}
 						else{
-						Command<TRPGClient> command = (Command<TRPGClient>)ob; // cast the object // grab a command off the queue
+						Command<Client> command = (Command<Client>)ob; // cast the object // grab a command off the queue
 						
 						//TODO: we do not want to execute the commands on the server side. 
 						//we simply want the commands to be passed on to the clients where 
@@ -172,8 +172,8 @@ public class TRPGServer {
 	 *	This method updates all connected clients with the most recent command that was 
 	 *  sent by one of the clients.
 	 */
-	public void updateClients(Command<TRPGClient> command){
-		Command<TRPGClient> update = command;
+	public void updateClients(Command<Client> command){
+		Command<Client> update = command;
 		for (ObjectOutputStream out: outputs.values())
 			try{
 				out.writeObject(update);
