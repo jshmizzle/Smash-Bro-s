@@ -126,6 +126,8 @@ public class GameBoard {
 		gameBoard[boardHeight/2-1][boardWidth-2]='#';
 		gameBoard[boardHeight/2+1][boardWidth-1]='#';
 		gameBoard[boardHeight/2+1][boardWidth-2]='#';
+		
+		
 	}
 	/************************************************************************************/
 
@@ -411,7 +413,18 @@ public class GameBoard {
 	}
 	
 	public void useThisItem(String client, Unit u, Item item) {
-		
+		if(client.equals("Computer")){
+			for(Unit unit : compUnits){
+				if(unit == u)
+					u.useItem(item);
+				
+			}
+		}
+		else{
+			for(Unit unit : userUnits)
+				if(unit == u)
+					u.useItem(item);
+		}
 	}
 
 	public void setBoard(char[][] board) {
@@ -421,12 +434,28 @@ public class GameBoard {
 	public ArrayList<Unit> getCompUnits() {
 		return compUnits;
 	}
-	public void unitDied(String source, Unit u) {
+	public void userUnitDied(Unit u) {
 		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
+		userUnits.remove(u);
 	}
-	public void attackUnit(String source, Unit from, Unit to) {
-		to.takeHit(to.getHealth() - from.getAttackPower());
+	public void compUnitDied(Unit u) {
+		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
+		compUnits.remove(u);
 	}
+	public void attackUnit(Unit from, Unit to) {
+		from.attack(to);
+	}
+	public void resetCompMoves() {
+		for(Unit u : compUnits){
+			u.setMovesLeft(u.getDistance());
+		}
+	}
+	public void resetUserMoves() {
+		for(Unit u : userUnits){
+			u.setMovesLeft(u.getDistance());
+		}
+	}
+
 	
 	/************************************************************************************/
 }

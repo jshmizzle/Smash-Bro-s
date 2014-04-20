@@ -24,7 +24,7 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import command.Command;
 
-public class TRPGClient extends JFrame {
+public class TRPGClient extends JFrame implements Client{
 
 	private String host, userName;
 	private int port = 0;
@@ -38,6 +38,7 @@ public class TRPGClient extends JFrame {
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
 	private boolean myTurn = false;
+	private ArrayList<Item> itemList;
 
 	public static void main(String[] args) {
 //		try {
@@ -134,7 +135,11 @@ public class TRPGClient extends JFrame {
 	}
 
 	public void useItem(String client, Unit u, Item item) {
-		currentBoard.useThisItem(client, u, item);
+		if(client.equals(userName)){
+			currentBoard.useThisItem(client, u, item);
+		}
+		else
+			; // do nothing
 	}
 
 	public void moveUnitLeft(String client, Unit u, Point p) {
@@ -168,18 +173,40 @@ public class TRPGClient extends JFrame {
 	}
 
 	public void unitDied(String client, Unit u) {
-		currentBoard.unitDied(client,u);
+		if(client.equals(userName))
+			currentBoard.userUnitDied(u);
+		else
+			currentBoard.compUnitDied(u);
 	}
 
 	public void attackUnit(String client, Unit from, Unit to) {
-		currentBoard.attackUnit(client,from,to);
+			currentBoard.attackUnit(from,to);
 	}
 
 	public void endTurn(String client) {
 		if(client.equals(userName)){
 			myTurn = false;
 		}
-		else
+		else{
 			myTurn = true;
+			//TODO: gonna need to change this for multiplayer
+			if(userName.equals("Computer"))
+				currentBoard.resetCompMoves();
+			if(!userName.equals("Computer"))
+				currentBoard.resetUserMoves();
+			else
+				;  //stuff to fill in for multiplayer
+		}
+	}
+
+	public void pickUpItem(String client, Unit u, Item item) {
+		if(client.equals(userName)){
+			itemList.add(item);
+		}
+	}
+
+	public void unitMoved(String source, ArrayList<Point> moves) {
+		// TODO We'll have this up and running when Lorenzo is finished with shortestPath
+		
 	}
 }

@@ -165,7 +165,7 @@ public class Unit{
 		Also checks if they have the second chance item and if they do they get to stay alive
 		and get to have half of their max health
 	*/
-	public void takeHit(int damage){
+	private void takeHit(int damage){
 		health=health-(damage/defenseAmount);
 		boolean hasTwo=false;
 		SecondChance two=new SecondChance();
@@ -255,6 +255,10 @@ public class Unit{
 
 	public int getAttackPower() {
 		return attackPower;
+	}
+
+	public void setMovesLeft(int distance) {
+		movesLeft = distance;
 	}
 	
 	/************************************************************************************/
