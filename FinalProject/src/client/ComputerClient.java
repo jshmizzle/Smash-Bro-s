@@ -24,7 +24,7 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import command.Command;
 
-public class ComputerClient extends JFrame{
+public class ComputerClient extends JFrame implements Client{
 
 	private String host, userName;
 	private int port = 0;
@@ -166,11 +166,14 @@ public class ComputerClient extends JFrame{
 	}
 
 	public void unitDied(String client, Unit u) {
-		currentBoard.unitDied(client, u);
+		if(client.equals(userName))
+			currentBoard.userUnitDied(u);
+		else
+			currentBoard.compUnitDied(u);
 	}
 
 	public void attackUnit(String client, Unit from, Unit to) {
-		currentBoard.attackUnit(client, from, to);
+		currentBoard.attackUnit(from,to);
 	}
 
 	public void endTurn(String client) {
@@ -178,5 +181,17 @@ public class ComputerClient extends JFrame{
 			myTurn = false;
 		} else
 			myTurn = true;
+	}
+
+	@Override
+	public void pickUpItem(String client, Unit u, Item item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unitMoved(String source, ArrayList<Point> moves) {
+		// TODO Auto-generated method stub
+		
 	}
 }
