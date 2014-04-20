@@ -28,6 +28,7 @@ public class MainGamePanel extends JPanel {
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
 	private Unit currentUnit;
+	private UnitStatusPanel statsPanel;
 	
 	public MainGamePanel(GameBoard startingBoard, ObjectOutputStream serverOut) {
 		this.serverOut=serverOut;
@@ -38,6 +39,7 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
+		this.currentUnit=gameBoard.getUserUnits().get(1);
 		
 		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
@@ -51,7 +53,7 @@ public class MainGamePanel extends JPanel {
 		
 		initializeImages();
 		
-		
+		this.setLayout(null);
 		this.setFocusable(true);
 		this.requestFocusInWindow();
 		this.setVisible(true);
@@ -124,10 +126,23 @@ public class MainGamePanel extends JPanel {
 		g2.setColor(Color.RED);
 		g2.drawRect(cursorLocation.x*gameTileWidth, cursorLocation.y*gameTileHeight, gameTileWidth-1, gameTileHeight-1);
 	}
+	
+	private void drawStatsPanel(){
+		if(statsPanel!=null){
+			MainGamePanel.this.remove(statsPanel);
+		}
+		statsPanel=new UnitStatusPanel(currentUnit, gameTileWidth, gameTileHeight);
+		Point temp=currentUnit.getLocation();
+		statsPanel.setLocation( (temp.y+1)*gameTileHeight, (temp.x-2)*gameTileWidth);
+		statsPanel.setSize(gameTileWidth*2, gameTileHeight*2);
+		MainGamePanel.this.add(statsPanel).setVisible(true);
+		repaint();
+	}
 		
 	private class KeyManager implements KeyListener{
 
 		private int unitIndex=1;
+		private boolean showStats=false;
 		
 		@Override
 		public void keyPressed(KeyEvent arg0) {
@@ -155,6 +170,7 @@ public class MainGamePanel extends JPanel {
 					currentGameState=GameState.CyclingThroughUnits;
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+					MainGamePanel.this.add(statsPanel);
 					repaint();
 				}
 				else if(key==KeyEvent.VK_ENTER){
@@ -170,22 +186,47 @@ public class MainGamePanel extends JPanel {
 					if(unitIndex<gameBoard.getUserUnits().size()-1){
 						unitIndex++;
 					}
+
+					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 					repaint();
+
+					if(showStats==true){
+						drawStatsPanel();
+					}
 				}
 				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
 					if(unitIndex>1){
 						unitIndex--;
 					}
+					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 					repaint();
+					if(showStats==true){
+						drawStatsPanel();
+					}
 				}
 				//if the user presses enter while cycling through units
 				else if(key==KeyEvent.VK_ENTER){
 					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 					currentGameState=GameState.ChoosingMove;
+					MainGamePanel.this.remove(statsPanel);
+					repaint();
+				}
+				//if the user presses 's' the stats panel will be brought up for the current unit
+				else if(key==KeyEvent.VK_S){
+					if(showStats==true){
+						showStats=false;
+						MainGamePanel.this.remove(statsPanel);
+						repaint();
+					}
+					else{
+						showStats=true;
+						drawStatsPanel();
+					}
 				}
 			}
 		}

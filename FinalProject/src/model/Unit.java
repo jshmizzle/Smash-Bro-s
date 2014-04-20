@@ -113,6 +113,11 @@ public class Unit{
 		return health;
 	}
 	
+	//Returns the Maximum health of the current unit
+	public int getMaxHealth(){
+		return healthFull;
+	}
+	
 	/************************************************************************************/
 	//Adds health to the unit (from item)
 
@@ -166,7 +171,7 @@ public class Unit{
 		Also checks if they have the second chance item and if they do they get to stay alive
 		and get to have half of their max health
 	*/
-	private void takeHit(int damage){
+	public void takeHit(int damage){
 		health=health-(damage/defenseAmount);
 		boolean hasTwo=false;
 		SecondChance two=new SecondChance();
