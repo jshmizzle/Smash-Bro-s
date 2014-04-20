@@ -24,7 +24,7 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import command.Command;
 
-public class TRPGClient extends JFrame implements Client{
+public class ComputerClient extends JFrame{
 
 	private String host, userName;
 	private int port = 0;
@@ -38,33 +38,30 @@ public class TRPGClient extends JFrame implements Client{
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
 	private boolean myTurn = false;
-	private ArrayList<Item> itemList;
 
 	public static void main(String[] args) {
-//		try {
-//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		TRPGClient client = new TRPGClient();
+		// try {
+		// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		ComputerClient client = new ComputerClient();
 		client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	public TRPGClient() {
+	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
 		initializeFrame();
-		ServerHandler handler = new ServerHandler(this, inputStream);
+		ComputerServerHandler handler = new ComputerServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
 	}
 
 	private void askUserForInfo() {
-		host = JOptionPane.showInputDialog(null,
-				"What host would you like to connect to?");
+		host = "localhost";
 		while (port == 0) {
 			try {
-				port = Integer.parseInt((String) JOptionPane.showInputDialog(
-						null, "What port are you trying to connect on?"));
+				port = 9001;
 				server = new Socket(host, port);
 				inputStream = new ObjectInputStream(server.getInputStream());
 				outputStream = new ObjectOutputStream(server.getOutputStream());
@@ -78,8 +75,7 @@ public class TRPGClient extends JFrame implements Client{
 
 			String serverAccepted = "reject";
 			while (serverAccepted.equals("reject")) {
-				userName = JOptionPane
-						.showInputDialog("Enter your TRPG username");
+				userName = "computer";
 				outputStream.writeObject(userName);
 				serverAccepted = (String) inputStream.readObject();
 			}
@@ -87,22 +83,22 @@ public class TRPGClient extends JFrame implements Client{
 			e.printStackTrace();
 		}
 	}
-	
-	//temp method
+
+	// temp method
 	private void initializeGameBoard() {
-		//initialize the units and the GameBoard
-		 ArrayList<Unit> playerUnits = new ArrayList<Unit>();
-		 ArrayList<Unit> compUnits = new ArrayList<Unit>();
-		 
-	    Sonic S = new Sonic('S');
-	  	Goku G = new Goku('G');
-	  	Mario W = new Mario('W');
-	 	Link l = new Link('l');
+		// initialize the units and the GameBoard
+		ArrayList<Unit> playerUnits = new ArrayList<Unit>();
+		ArrayList<Unit> compUnits = new ArrayList<Unit>();
+
+		Sonic S = new Sonic('S');
+		Goku G = new Goku('G');
+		Mario W = new Mario('W');
+		Link l = new Link('l');
 		Mario w = new Mario('w');
 		MegaMan m = new MegaMan('m');
 		Princess P = new Princess('P');
 		Princess p = new Princess('p');
-			
+
 		playerUnits.add(P);
 		playerUnits.add(W);
 		playerUnits.add(S);
@@ -110,15 +106,16 @@ public class TRPGClient extends JFrame implements Client{
 		compUnits.add(p);
 		compUnits.add(l);
 		compUnits.add(m);
-		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0); 
+		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0);
 	}
 
 	private void initializeFrame() {
-		//mainMenuPanel = new MainMenuPanel(username, outputStream);
-		//start with MainGamePanel for testing menus will be added later the game comes first
+		// mainMenuPanel = new MainMenuPanel(username, outputStream);
+		// start with MainGamePanel for testing menus will be added later the
+		// game comes first
 		initializeGameBoard();
-		gamePanel=new MainGamePanel(currentBoard, outputStream);
-		currentPanel=gamePanel;
+		gamePanel = new MainGamePanel(currentBoard);
+		currentPanel = gamePanel;
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
@@ -135,11 +132,7 @@ public class TRPGClient extends JFrame implements Client{
 	}
 
 	public void useItem(String client, Unit u, Item item) {
-		if(client.equals(userName)){
-			currentBoard.useThisItem(client, u, item);
-		}
-		else
-			; // do nothing
+		currentBoard.useThisItem(client, u, item);
 	}
 
 	public void moveUnitLeft(String client, Unit u, Point p) {
@@ -166,47 +159,24 @@ public class TRPGClient extends JFrame implements Client{
 			// load lobby (probably needs work)
 			askUserForInfo();// now the client has been logged into the server
 			initializeFrame();
-			ServerHandler handler = new ServerHandler(this, inputStream);
+			ComputerServerHandler handler = new ComputerServerHandler(this, inputStream);
 			Thread t = new Thread(handler);
 			t.start();
 		}
 	}
 
 	public void unitDied(String client, Unit u) {
-		if(client.equals(userName))
-			currentBoard.userUnitDied(u);
-		else
-			currentBoard.compUnitDied(u);
+		currentBoard.unitDied(client, u);
 	}
 
 	public void attackUnit(String client, Unit from, Unit to) {
-			currentBoard.attackUnit(from,to);
+		currentBoard.attackUnit(client, from, to);
 	}
 
 	public void endTurn(String client) {
-		if(client.equals(userName)){
+		if (client.equals(userName)) {
 			myTurn = false;
-		}
-		else{
+		} else
 			myTurn = true;
-			//TODO: gonna need to change this for multiplayer
-			if(userName.equals("Computer"))
-				currentBoard.resetCompMoves();
-			if(!userName.equals("Computer"))
-				currentBoard.resetUserMoves();
-			else
-				;  //stuff to fill in for multiplayer
-		}
-	}
-
-	public void pickUpItem(String client, Unit u, Item item) {
-		if(client.equals(userName)){
-			itemList.add(item);
-		}
-	}
-
-	public void unitMoved(String source, ArrayList<Point> moves) {
-		// TODO We'll have this up and running when Lorenzo is finished with shortestPath
-		
 	}
 }

@@ -9,21 +9,22 @@ import java.util.ArrayList;
  */
 public class Unit{ 
 		
-	private String name;
-	private int health;
-	private int moveDistance;
-	private ArrayList <Item> items;
-	private int [] stats;
-	//private Strategy strategy;
-	private boolean alive;
-	private int attackPower;
-	private Point location;
-	private BufferedImage image;
-	private char charRepresentation;
-	private int defenseAmount;
-	private int healthFull;
-	private int attackRange;
-	private int movesLeft;
+	protected String name;
+	protected int health;
+	protected int moveDistance;
+	protected ArrayList <Item> items;
+	protected int [] stats;
+	//protected Strategy strategy;
+	protected boolean alive;
+	protected int attackPower;
+	protected Point location;
+	protected BufferedImage image;
+	protected char charRepresentation;
+	protected int defenseAmount;
+	protected int healthFull;
+	protected int attackRange;
+	protected int movesLeft;
+
 	
 	/************************************************************************************/
 	/**
@@ -165,7 +166,7 @@ public class Unit{
 		Also checks if they have the second chance item and if they do they get to stay alive
 		and get to have half of their max health
 	*/
-	public void takeHit(int damage){
+	private void takeHit(int damage){
 		health=health-(damage/defenseAmount);
 		boolean hasTwo=false;
 		SecondChance two=new SecondChance();
@@ -255,6 +256,10 @@ public class Unit{
 
 	public int getAttackPower() {
 		return attackPower;
+	}
+
+	public void setMovesLeft(int distance) {
+		movesLeft = distance;
 	}
 	
 	/************************************************************************************/

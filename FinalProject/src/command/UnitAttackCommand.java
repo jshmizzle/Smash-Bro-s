@@ -8,11 +8,11 @@ import model.Item;
 import model.Unit;
 import server.TRPGServer;
 
-public class ItemUsedCommand extends Command<TRPGClient>{
+public class UnitAttackCommand extends Command<TRPGClient>{
 	
 	private String source;
-	private Item item;
-	private Unit u;;
+	private Unit from;
+	private Unit to;
 	
 	
 	/**
@@ -22,15 +22,15 @@ public class ItemUsedCommand extends Command<TRPGClient>{
 	 * @param source
 	 * @param itemChanges
 	 */
-	public ItemUsedCommand(String source,Unit u,Item item) {
+	public UnitAttackCommand(String source,Unit from,Unit to) {
 		super(source);
-		this.item=item;
-		this.u=u;
+		this.from=from;
+		this.to=to;
 	}
 
 	@Override
 	public void execute(TRPGClient executeOn) {
-		executeOn.useItem(source,u, item);
+		executeOn.attackUnit(source,from, to);
 	}
 	
 
