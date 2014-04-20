@@ -3,12 +3,13 @@ package command;
 import java.awt.Point;
 import java.util.Map;
 
+import client.Client;
 import client.TRPGClient;
 import model.Item;
 import model.Unit;
 import server.TRPGServer;
 
-public class UnitDiedCommand extends Command<TRPGClient>{
+public class UnitDiedCommand extends Command<Client>{
 	
 	private String source;
 	private Unit u;;
@@ -27,7 +28,7 @@ public class UnitDiedCommand extends Command<TRPGClient>{
 	}
 
 	@Override
-	public void execute(TRPGClient executeOn) {
+	public void execute(Client executeOn) {
 		executeOn.unitDied(source,u);
 	}
 	

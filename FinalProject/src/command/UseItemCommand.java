@@ -3,12 +3,13 @@ package command;
 import java.awt.Point;
 import java.util.Map;
 
+import client.Client;
 import client.TRPGClient;
 import model.Item;
 import model.Unit;
 import server.TRPGServer;
 
-public class UseItemCommand extends Command<TRPGClient>{
+public class UseItemCommand extends Command<Client>{
 	
 	private String source;
 	private Item item;
@@ -29,7 +30,7 @@ public class UseItemCommand extends Command<TRPGClient>{
 	}
 
 	@Override
-	public void execute(TRPGClient executeOn) {
+	public void execute(Client executeOn) {
 		executeOn.useItem(source,u, item);
 	}
 	

@@ -3,9 +3,10 @@ package command;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import client.Client;
 import client.TRPGClient;
 
-public class UnitMoved extends Command<TRPGClient>{
+public class UnitMoved extends Command<Client>{
 
 	private String source;
 	private ArrayList<Point> moves;
@@ -16,7 +17,7 @@ public class UnitMoved extends Command<TRPGClient>{
 	}
 
 	@Override
-	public void execute(TRPGClient executeOn) {
+	public void execute(Client executeOn) {
 		// TODO Auto-generated method stub
 		executeOn.unitMoved(source, moves);
 	}

@@ -3,9 +3,10 @@ package command;
 import java.awt.Point;
 
 import model.Unit;
+import client.Client;
 import client.TRPGClient;
 
-public class UnitMovedUpCommand extends Command<TRPGClient>{
+public class UnitMovedUpCommand extends Command<Client>{
 	
 	/**
 	 * 
@@ -35,7 +36,7 @@ public class UnitMovedUpCommand extends Command<TRPGClient>{
 	}
 
 	@Override
-	public void execute(TRPGClient executeOn) {
+	public void execute(Client executeOn) {
 		executeOn.moveUnitUp(source, unit, point);
 	}
 

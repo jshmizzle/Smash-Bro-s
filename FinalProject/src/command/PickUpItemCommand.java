@@ -30,8 +30,8 @@ public class PickUpItemCommand extends Command<Client>{
 	}
 
 	@Override
-	public void execute(TRPGClient executeOn) {
-		executeOn.pickUpItem(source,u, item);
+	public void execute(Client executeOn) {
+		executeOn.pickUpItem(source, u, item);
 	}
 
 	
