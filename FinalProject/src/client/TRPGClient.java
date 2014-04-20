@@ -115,15 +115,11 @@ public class TRPGClient extends JFrame {
 		//mainMenuPanel = new MainMenuPanel(username, outputStream);
 		//start with MainGamePanel for testing menus will be added later the game comes first
 		initializeGameBoard();
-		gamePanel=new MainGamePanel(currentBoard);
+		gamePanel=new MainGamePanel(currentBoard, outputStream);
 		currentPanel=gamePanel;
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
-	}
-
-	private void update(Command<?> command) {
-		this.gamePanel.update(currentBoard);
 	}
 
 	private void createGameBoard(ArrayList<Unit> userUnits,
