@@ -24,7 +24,7 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import command.Command;
 
-public class ComputerClient extends JFrame{
+public class ComputerClient extends JFrame implements Client{
 
 	private String host, userName;
 	private int port = 0;
@@ -181,5 +181,17 @@ public class ComputerClient extends JFrame{
 			myTurn = false;
 		} else
 			myTurn = true;
+	}
+
+	@Override
+	public void pickUpItem(String client, Unit u, Item item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unitMoved(String source, ArrayList<Point> moves) {
+		// TODO Auto-generated method stub
+		
 	}
 }

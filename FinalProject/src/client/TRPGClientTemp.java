@@ -67,7 +67,7 @@ public class TRPGClientTemp extends JFrame {
 		this.setLocation(425, 85);
 		this.setTitle(name);
 		initializeGameBoard();
-		mainGamePanel=new MainGamePanel(gameBoard);
+		mainGamePanel=new MainGamePanel(gameBoard, null);
 		this.add(mainGamePanel);
 		int count = 0;
 		ArrayList<Unit> userUnits = new ArrayList<Unit>();

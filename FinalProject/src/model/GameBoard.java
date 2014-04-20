@@ -48,7 +48,7 @@ public class GameBoard {
 		gameBoard[0][boardHeight/2] = 'P';
 		
 		int i=0;
-		for(Unit u: userUnits){
+		for(Unit u: compUnits){
 			if(u.getCharRepresentation() == 'P' || u.getCharRepresentation() == 'p'){
 	
 			}
@@ -63,7 +63,7 @@ public class GameBoard {
 		int j=0;
 		
 		gameBoard[boardHeight -1][boardHeight/2] = 'p';
-		for(Unit c : compUnits){
+		for(Unit c : userUnits){
 			if(c.getCharRepresentation() == 'P' || c.getCharRepresentation() == 'p'){
 				
 			}

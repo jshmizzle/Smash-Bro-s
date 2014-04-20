@@ -10,30 +10,52 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import model.GameBoard;
+import model.Unit;
 
 public class MainGamePanel extends JPanel {
 
 	char [][] currentBoard;
+	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	Image boulder, megaman, sonic, grass, mario, goku, link, princess; 
+	private Image boulder, megaman, sonic, grass, mario, goku, link, princess; 
 	private Point cursorLocation;
+	private ObjectOutputStream serverOut;
+	private GameState currentGameState;
+	private Unit currentUnit;
 	
-	public MainGamePanel(GameBoard startingBoard) {
+	public MainGamePanel(GameBoard startingBoard, ObjectOutputStream serverOut) {
+		this.serverOut=serverOut;
+		
+		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
+		
+		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
+		this.gameBoard=startingBoard;
+		
+		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
-		cursorLocation=new Point(0,0);
+		
+		Point tempPoint=gameBoard.getUserUnits().get(1).getLocation();
+		cursorLocation=new Point(tempPoint.y, tempPoint.x);
+				
+		//add the key listener to allow the cursor to send 
 		this.addKeyListener(new KeyManager());
+		
 		initializeImages();
+		
+		
 		this.setFocusable(true);
 		this.requestFocusInWindow();
 		this.setVisible(true);
+		this.currentGameState=GameState.CyclingThroughUnits;
 	}
 	
 	public void initializeImages(){
@@ -105,28 +127,66 @@ public class MainGamePanel extends JPanel {
 		
 	private class KeyManager implements KeyListener{
 
+		private int unitIndex=1;
+		
 		@Override
 		public void keyPressed(KeyEvent arg0) {
 			int key=arg0.getKeyCode();
-		
-			if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
-				cursorLocation.translate(1, 0);
-				repaint();
-			}
-			if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
-				cursorLocation.translate(0,1);
-				repaint();
-			}
-			if(key==KeyEvent.VK_UP && cursorLocation.y>0){
-				cursorLocation.translate(0, -1);
-				
-				repaint();
-			}
-			if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
-				cursorLocation.translate(-1, 0);
-				repaint();
-			}
 			
+			if(currentGameState==GameState.ChoosingMove){
+				if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+					cursorLocation.translate(1, 0);
+					repaint();
+				}
+				else if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
+					cursorLocation.translate(0,1);
+					repaint();
+				}
+				else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
+					cursorLocation.translate(0, -1);
+					
+					repaint();
+				}
+				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+					cursorLocation.translate(-1, 0);
+					repaint();
+				}
+				else if(key==KeyEvent.VK_BACK_SPACE){
+					currentGameState=GameState.CyclingThroughUnits;
+					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+					repaint();
+				}
+				else if(key==KeyEvent.VK_ENTER){
+					currentGameState=GameState.ChoosingAttack;
+				}
+			}
+			//if the player is trying to just choose his current unit then the cursor will 
+			//just jump to the location of the unit next or previously in line.
+			else if(currentGameState==GameState.CyclingThroughUnits){
+				
+				if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+					if(unitIndex<gameBoard.getUserUnits().size()-1){
+						unitIndex++;
+					}
+					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+					repaint();
+				}
+				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+					if(unitIndex>1){
+						unitIndex--;
+					}
+					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+					repaint();
+				}
+				//if the user presses enter while cycling through units
+				else if(key==KeyEvent.VK_ENTER){
+					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+					currentGameState=GameState.ChoosingMove;
+				}
+			}
 		}
 
 		@Override
@@ -143,5 +203,6 @@ public class MainGamePanel extends JPanel {
 		this.currentBoard=currentGameBoard.getGameBoard();
 		this.repaint();
 	}
+	
 	
 }
