@@ -166,11 +166,14 @@ public class ComputerClient extends JFrame{
 	}
 
 	public void unitDied(String client, Unit u) {
-		currentBoard.unitDied(client, u);
+		if(client.equals(userName))
+			currentBoard.userUnitDied(u);
+		else
+			currentBoard.compUnitDied(u);
 	}
 
 	public void attackUnit(String client, Unit from, Unit to) {
-		currentBoard.attackUnit(client, from, to);
+		currentBoard.attackUnit(from,to);
 	}
 
 	public void endTurn(String client) {
