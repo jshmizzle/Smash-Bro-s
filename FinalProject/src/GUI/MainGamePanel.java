@@ -23,7 +23,7 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	private Image boulder, megaman, sonic, grass, mario, goku, link, princess; 
+	private Image boulder, megaman, sonic, grass, mario, goku, link, princess, waypoint, invalidMove; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
@@ -70,6 +70,8 @@ public class MainGamePanel extends JPanel {
 			goku=ImageIO.read(new File("images/gokuStanding.png"));
 			link=ImageIO.read(new File("images/linkStanding.png"));
 			princess=ImageIO.read(new File("images/princess.png"));
+			waypoint=ImageIO.read(new File("images/1GlowingOrb.png"));
+			invalidMove=ImageIO.read(new File("images/notValidCursor.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -120,6 +122,9 @@ public class MainGamePanel extends JPanel {
 			}
 		}
 		drawCursor(g2);
+		if(currentGameState==GameState.ChoosingMove){
+			drawShortestPathLineToCursor(g2);
+		}
 	}
 	
 	private void drawCursor(Graphics2D g2){
@@ -138,6 +143,31 @@ public class MainGamePanel extends JPanel {
 		MainGamePanel.this.add(statsPanel).setVisible(true);
 		repaint();
 	}
+	
+	private void drawShortestPathLineToCursor(Graphics g){
+		Graphics2D g2=(Graphics2D)g;
+
+		Point [] path = gameBoard.shortestPath(currentUnit.getLocation(), cursorLocation);
+		System.out.println(path.length);
+		
+		//loop through the points on the path that the player will follow and draw a waypoint
+		//icon at each of those points on the board to visualize it for the player
+		if(path[0]!=null){
+			for (int i = 0; i < path.length; i++) {
+				System.out.println("drawing");
+				int x = path[i].y;
+				int y = path[i].x;
+				g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
+			}
+		}
+		if(!gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
+			if(!(currentUnit.getLocation().x==cursorLocation.y && currentUnit.getLocation().y==cursorLocation.x))
+				g2.drawImage(invalidMove, cursorLocation.x * gameTileWidth, cursorLocation.y * gameTileHeight, gameTileWidth, gameTileHeight, null);
+			
+		}
+		else
+			g2.drawImage(waypoint, cursorLocation.x * gameTileWidth+7, cursorLocation.y * gameTileHeight+6, null);
+	}
 		
 	private class KeyManager implements KeyListener{
 
@@ -152,25 +182,30 @@ public class MainGamePanel extends JPanel {
 				if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
 					cursorLocation.translate(1, 0);
 					repaint();
+					drawShortestPathLineToCursor(MainGamePanel.this.getGraphics());
 				}
 				else if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
 					cursorLocation.translate(0,1);
 					repaint();
+					drawShortestPathLineToCursor(MainGamePanel.this.getGraphics());
 				}
 				else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
 					cursorLocation.translate(0, -1);
-					
 					repaint();
+					drawShortestPathLineToCursor(MainGamePanel.this.getGraphics());
 				}
 				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
 					cursorLocation.translate(-1, 0);
 					repaint();
+					drawShortestPathLineToCursor(MainGamePanel.this.getGraphics());
 				}
 				else if(key==KeyEvent.VK_BACK_SPACE){
 					currentGameState=GameState.CyclingThroughUnits;
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
-					MainGamePanel.this.add(statsPanel);
+					if(statsPanel!=null){
+						MainGamePanel.this.add(statsPanel);
+					}
 					repaint();
 				}
 				else if(key==KeyEvent.VK_ENTER){
@@ -213,7 +248,9 @@ public class MainGamePanel extends JPanel {
 				else if(key==KeyEvent.VK_ENTER){
 					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 					currentGameState=GameState.ChoosingMove;
-					MainGamePanel.this.remove(statsPanel);
+					if(MainGamePanel.this.statsPanel!=null){
+						MainGamePanel.this.remove(statsPanel);
+					}
 					repaint();
 				}
 				//if the user presses 's' the stats panel will be brought up for the current unit
@@ -243,6 +280,7 @@ public class MainGamePanel extends JPanel {
 	
 	public void update(GameBoard currentGameBoard){
 		this.currentBoard=currentGameBoard.getGameBoard();
+		this.gameBoard=currentGameBoard;
 		this.repaint();
 	}
 	
