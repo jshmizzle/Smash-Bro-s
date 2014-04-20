@@ -1,13 +1,12 @@
 package model;
+
 import java.awt.Point;
 import java.util.ArrayList;
 
-
 public class GameBoard {
-	
-	
+
 	/************************************************************************************/
-	
+
 	private char[][] gameBoard;
 	private int boardWidth = 20;
 	private int boardHeight = 20;
@@ -17,16 +16,19 @@ public class GameBoard {
 	private int currentMap;
 	private int currentScenario;
 	private ArrayList<String> playerList;
-	
+
 	/************************************************************************************/
-	
+
 	/**
-	 * GameBoard constructor, takes a list of users units, list of comp units, map level, and a scenario.
-	 * Based on the arguments given, the board will create a 2D char array representing the locations of
-	 * game objects on the board.  Scenario 1 is Kill the Section Leader, scenario 2 is Death Match, scenario 3 is (dunno yet)
+	 * GameBoard constructor, takes a list of users units, list of comp units,
+	 * map level, and a scenario. Based on the arguments given, the board will
+	 * create a 2D char array representing the locations of game objects on the
+	 * board. Scenario 1 is Kill the Section Leader, scenario 2 is Death Match,
+	 * scenario 3 is (dunno yet)
 	 */
-	
-	public GameBoard(ArrayList<Unit> userUnits,ArrayList<Unit> compUnits, int map, int scenario){
+
+	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits,
+			int map, int scenario) {
 
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
@@ -35,427 +37,510 @@ public class GameBoard {
 		currentMap = map;
 		currentScenario = scenario;
 		playerList = new ArrayList<>();
-		
-		//playerList.add(player1);
-		//playerList.add(player2);
 
-		
-		for(int i = 0; i<gameBoard.length; i++)
-			for(int j = 0; j<gameBoard[0].length; j++){
+		// playerList.add(player1);
+		// playerList.add(player2);
+
+		for (int i = 0; i < gameBoard.length; i++)
+			for (int j = 0; j < gameBoard[0].length; j++) {
 				gameBoard[i][j] = ' ';
 			}
-		
-		gameBoard[0][boardHeight/2] = 'P';
-		
-		int i=0;
-		for(Unit u: compUnits){
-			if(u.getCharRepresentation() == 'P' || u.getCharRepresentation() == 'p'){
-	
-			}
-			else{
-				gameBoard[1][boardHeight/2-2+i] = u.getCharRepresentation();
-				Point p = new Point(1, boardHeight/2-2+i);
-				u.setLocation(p);
-				i++;
-			}
-		}
-		
-		int j=0;
-		
-		gameBoard[boardHeight -1][boardHeight/2] = 'p';
-		for(Unit c : userUnits){
-			if(c.getCharRepresentation() == 'P' || c.getCharRepresentation() == 'p'){
-				
-			}
-			
-			else{
-				gameBoard[boardHeight-2][boardWidth/2-2+j] = c.getCharRepresentation();
-				Point p = new Point(boardHeight-2, boardWidth/2-2+j);
-				c.setLocation(p);
-				j++;
-			}
-		}
-		
-		if(currentMap==1){
+
+		gameBoard[0][boardHeight / 2] = 'P';
+
+		int i = 0;
+		/*
+		 * for (Unit u : compUnits) { if (u.getCharRepresentation() == 'P' ||
+		 * u.getCharRepresentation() == 'p') {
+		 * 
+		 * } else { gameBoard[1][boardHeight / 2 - 2 + i] = u
+		 * .getCharRepresentation(); Point p = new Point(1, boardHeight / 2 - 2
+		 * + i); u.setLocation(p); i++; } }
+		 * 
+		 * int j = 0;
+		 * 
+		 * gameBoard[boardHeight - 1][boardHeight / 2] = 'p'; for (Unit c :
+		 * userUnits) { if (c.getCharRepresentation() == 'P' ||
+		 * c.getCharRepresentation() == 'p') {
+		 * 
+		 * }
+		 * 
+		 * else { gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
+		 * .getCharRepresentation(); Point p = new Point(boardHeight - 2,
+		 * boardWidth / 2 - 2 + j); c.setLocation(p); j++; } }
+		 */
+
+		if (currentMap == 1) {
 			setMapOne();
 		}
-		if(currentMap==2){
+		if (currentMap == 2) {
 			setMapTwo();
 		}
-		
+
 	}
+
 	private void setMapTwo() {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	private void setMapOne() {
-		gameBoard[boardHeight/2-5][boardWidth/2-2] = '#';
-		gameBoard[boardHeight/2-4][boardWidth/2-2] = '#';
-		gameBoard[boardHeight/2-3][boardWidth/2-2] = '#';
-		gameBoard[boardHeight/2+5][boardWidth/2-2] = '#';
-		gameBoard[boardHeight/2+4][boardWidth/2-2] = '#';
-		gameBoard[boardHeight/2+3][boardWidth/2-2] = '#';
-		
-		gameBoard[boardHeight/2-5][boardWidth/2+2] = '#';
-		gameBoard[boardHeight/2-4][boardWidth/2+2] = '#';
-		gameBoard[boardHeight/2-3][boardWidth/2+2] = '#';
-		gameBoard[boardHeight/2+5][boardWidth/2+2] = '#';
-		gameBoard[boardHeight/2+4][boardWidth/2+2] = '#';
-		gameBoard[boardHeight/2+3][boardWidth/2+2] = '#';
-		
-		gameBoard[boardHeight/2-2][boardWidth/2-5] = '#';
-		gameBoard[boardHeight/2-2][boardWidth/2-4] = '#';
-		gameBoard[boardHeight/2-2][boardWidth/2-3] = '#';
-		gameBoard[boardHeight/2-2][boardWidth/2+5] = '#';
-		gameBoard[boardHeight/2-2][boardWidth/2+4] = '#';
-		gameBoard[boardHeight/2-2][boardWidth/2+3] = '#';
-		
-		gameBoard[boardHeight/2+2][boardWidth/2-5] = '#';
-		gameBoard[boardHeight/2+2][boardWidth/2-4] = '#';
-		gameBoard[boardHeight/2+2][boardWidth/2-3] = '#';
-		gameBoard[boardHeight/2+2][boardWidth/2+5] = '#';
-		gameBoard[boardHeight/2+2][boardWidth/2+4] = '#';
-		gameBoard[boardHeight/2+2][boardWidth/2+3] = '#';
-		
-		gameBoard[boardHeight/2-1][0]='#';
-		gameBoard[boardHeight/2-1][1]='#';
-		gameBoard[boardHeight/2+1][0]='#';
-		gameBoard[boardHeight/2+1][1]='#';
-		
-		gameBoard[boardHeight/2-1][boardWidth-1]='#';
-		gameBoard[boardHeight/2-1][boardWidth-2]='#';
-		gameBoard[boardHeight/2+1][boardWidth-1]='#';
-		gameBoard[boardHeight/2+1][boardWidth-2]='#';
-		
-		
+		gameBoard[boardHeight / 2 - 5][boardWidth / 2 - 2] = '#';
+		gameBoard[boardHeight / 2 - 4][boardWidth / 2 - 2] = '#';
+		gameBoard[boardHeight / 2 - 3][boardWidth / 2 - 2] = '#';
+		gameBoard[boardHeight / 2 + 5][boardWidth / 2 - 2] = '#';
+		gameBoard[boardHeight / 2 + 4][boardWidth / 2 - 2] = '#';
+		gameBoard[boardHeight / 2 + 3][boardWidth / 2 - 2] = '#';
+
+		gameBoard[boardHeight / 2 - 5][boardWidth / 2 + 2] = '#';
+		gameBoard[boardHeight / 2 - 4][boardWidth / 2 + 2] = '#';
+		gameBoard[boardHeight / 2 - 3][boardWidth / 2 + 2] = '#';
+		gameBoard[boardHeight / 2 + 5][boardWidth / 2 + 2] = '#';
+		gameBoard[boardHeight / 2 + 4][boardWidth / 2 + 2] = '#';
+		gameBoard[boardHeight / 2 + 3][boardWidth / 2 + 2] = '#';
+
+		gameBoard[boardHeight / 2 - 2][boardWidth / 2 - 5] = '#';
+		gameBoard[boardHeight / 2 - 2][boardWidth / 2 - 4] = '#';
+		gameBoard[boardHeight / 2 - 2][boardWidth / 2 - 3] = '#';
+		gameBoard[boardHeight / 2 - 2][boardWidth / 2 + 5] = '#';
+		gameBoard[boardHeight / 2 - 2][boardWidth / 2 + 4] = '#';
+		gameBoard[boardHeight / 2 - 2][boardWidth / 2 + 3] = '#';
+
+		gameBoard[boardHeight / 2 + 2][boardWidth / 2 - 5] = '#';
+		gameBoard[boardHeight / 2 + 2][boardWidth / 2 - 4] = '#';
+		gameBoard[boardHeight / 2 + 2][boardWidth / 2 - 3] = '#';
+		gameBoard[boardHeight / 2 + 2][boardWidth / 2 + 5] = '#';
+		gameBoard[boardHeight / 2 + 2][boardWidth / 2 + 4] = '#';
+		gameBoard[boardHeight / 2 + 2][boardWidth / 2 + 3] = '#';
+
+		gameBoard[boardHeight / 2 - 1][0] = '#';
+		gameBoard[boardHeight / 2 - 1][1] = '#';
+		gameBoard[boardHeight / 2 + 1][0] = '#';
+		gameBoard[boardHeight / 2 + 1][1] = '#';
+
+		gameBoard[boardHeight / 2 - 1][boardWidth - 1] = '#';
+		gameBoard[boardHeight / 2 - 1][boardWidth - 2] = '#';
+		gameBoard[boardHeight / 2 + 1][boardWidth - 1] = '#';
+		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
+
 	}
+
 	/************************************************************************************/
 
-	public ArrayList<Unit> getUserUnits(){
+	public ArrayList<Unit> getUserUnits() {
 		return userUnits;
 	}
-	
-	public boolean checkAvailable(Point point){
-		
-		int x = (int)point.getX();
-		int y = (int)point.getY();
-		
-		if(x >= boardWidth || x < 0)
+
+	public boolean checkAvailable(Point point) {
+
+		int x = (int) point.getX();
+		int y = (int) point.getY();
+
+		if (x >= boardWidth || x < 0)
 			return false;
-		
-		if(y >= boardHeight || y < 0)
+
+		if (y >= boardHeight || y < 0)
 			return false;
-		
-		if(gameBoard[(int) point.getX()][(int) point.getY()]==' ')
+
+		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' ')
 			return true;
 
 		return false;
 	}
-	
+
 	/************************************************************************************/
 
-	public char inspectPosition(Point p){
+	public char inspectPosition(Point p) {
 		return gameBoard[(int) p.getX()][(int) p.getY()];
 	}
-	
-	/************************************************************************************/
-	
-	public boolean moveUp(String client,Unit u){
-		Point uSpot = u.getLocation();
-		int row =(int) uSpot.getX();
-		int column =(int) uSpot.getY();
-		Point nextSpot = new Point (row-1, column);
-		
-		if(checkAvailable(nextSpot)){
-			u.setLocation(nextSpot);
-			gameBoard[row][column] = ' ';
-			gameBoard[row-1][column] = u.getCharRepresentation();
-			return true;
-		}
-		
-		return false;
-	}
-	
-	/************************************************************************************/
-	
-	public boolean moveDown(String client,Unit u){
-		Point uSpot = u.getLocation();
-		int row =(int) uSpot.getX();
-		int column =(int) uSpot.getY();
-		Point nextSpot = new Point (row +1, column);
-		
-		if(checkAvailable(nextSpot) ){
-			u.setLocation(nextSpot);
-			gameBoard[row][column] = ' ';
-			gameBoard[row+1][column] = u.getCharRepresentation();
-			return true;
-		}
-		
-		return false;
-	}
-	
+
 	/************************************************************************************/
 
-	public boolean moveRight(String client,Unit u){
-			Point uSpot = u.getLocation();
-			int row =(int) uSpot.getX();
-			int column =(int) uSpot.getY();
-			Point nextSpot = new Point (row, column+1);
-			
-			if(checkAvailable(nextSpot))
-			{		
-				u.setLocation(nextSpot);
-				gameBoard[row][column] = ' ';
-				gameBoard[row][column+1] = u.getCharRepresentation();
-				return true;
-			}
-			
-			return false;
-			
-		}
-		
-	/************************************************************************************/
-	
-	public boolean moveLeft(String client,Unit u){
+	public boolean moveUp(String client, Unit u) {
 		Point uSpot = u.getLocation();
-		int row =(int) uSpot.getX();
-		int column =(int) uSpot.getY();
-		Point nextSpot = new Point (row, column-1);
-		
-		if(checkAvailable(nextSpot))
-		{		
+		int row = (int) uSpot.getX();
+		int column = (int) uSpot.getY();
+		Point nextSpot = new Point(row - 1, column);
+
+		if (checkAvailable(nextSpot)) {
 			u.setLocation(nextSpot);
 			gameBoard[row][column] = ' ';
-			gameBoard[row][column-1] = u.getCharRepresentation();
+			gameBoard[row - 1][column] = u.getCharRepresentation();
 			return true;
 		}
-		
+
 		return false;
-		
 	}
+
 	/************************************************************************************/
-	
-	private void updateObservers(){
-		
+
+	public boolean moveDown(String client, Unit u) {
+		Point uSpot = u.getLocation();
+		int row = (int) uSpot.getX();
+		int column = (int) uSpot.getY();
+		Point nextSpot = new Point(row + 1, column);
+
+		if (checkAvailable(nextSpot)) {
+			u.setLocation(nextSpot);
+			gameBoard[row][column] = ' ';
+			gameBoard[row + 1][column] = u.getCharRepresentation();
+			return true;
+		}
+
+		return false;
 	}
-	
+
 	/************************************************************************************/
-	
-	public char[][] getGameBoard(){
+
+	public boolean moveRight(String client, Unit u) {
+		Point uSpot = u.getLocation();
+		int row = (int) uSpot.getX();
+		int column = (int) uSpot.getY();
+		Point nextSpot = new Point(row, column + 1);
+
+		if (checkAvailable(nextSpot)) {
+			u.setLocation(nextSpot);
+			gameBoard[row][column] = ' ';
+			gameBoard[row][column + 1] = u.getCharRepresentation();
+			return true;
+		}
+
+		return false;
+
+	}
+
+	/************************************************************************************/
+
+	public boolean moveLeft(String client, Unit u) {
+		Point uSpot = u.getLocation();
+		int row = (int) uSpot.getX();
+		int column = (int) uSpot.getY();
+		Point nextSpot = new Point(row, column - 1);
+
+		if (checkAvailable(nextSpot)) {
+			u.setLocation(nextSpot);
+			gameBoard[row][column] = ' ';
+			gameBoard[row][column - 1] = u.getCharRepresentation();
+			return true;
+		}
+
+		return false;
+
+	}
+
+	/************************************************************************************/
+
+	private void updateObservers() {
+
+	}
+
+	/************************************************************************************/
+
+	public char[][] getGameBoard() {
 		return gameBoard;
 	}
-	
+
 	/************************************************************************************/
-	
-	public int getBoardWidth(){
+
+	public int getBoardWidth() {
 		return boardWidth;
 	}
-	
+
 	/************************************************************************************/
-	
-	public int getBoardHeight(){
+
+	public int getBoardHeight() {
 		return boardHeight;
 	}
-	
+
 	/************************************************************************************/
-	
-	public char[][] getTerrain(){
+
+	public char[][] getTerrain() {
 		return terrain;
 	}
-	
+
 	/************************************************************************************/
-	
-	public String toString(){
-		String result="";
-		for(int row=0; row<gameBoard.length; row++){
-			for(int col=0; col<gameBoard[0].length; col++){
-				if(gameBoard[row][col]!=' '){
-					result+=""+gameBoard[row][col];
-				}
-				else{
-					result+=" ";
+
+	public String toString() {
+		String result = "";
+		for (int row = 0; row < gameBoard.length; row++) {
+			for (int col = 0; col < gameBoard[0].length; col++) {
+				if (gameBoard[row][col] != ' ') {
+					result += "" + gameBoard[row][col];
+				} else {
+					result += " ";
 				}
 			}
-			result+="\n";
+			result += "\n";
 		}
 		return result;
 	}
-	
+
 	/************************************************************************************/
-	
+
 	/**
 	 * 
-	 * @param currentUnit This is the unit who is currently making an attack. Will be compared to the Unit at the given point if applicable to determine whether or not they are on the same team.
-	 * @param p The position in question.
+	 * @param currentUnit
+	 *            This is the unit who is currently making an attack. Will be
+	 *            compared to the Unit at the given point if applicable to
+	 *            determine whether or not they are on the same team.
+	 * @param p
+	 *            The position in question.
 	 * @return A boolean stating whether or not it is an enemy at that position.
 	 */
-	
-	public boolean checkIfEnemy(Unit currentUnit, Point p){
-		int x=(int)p.getX();
-		int y=(int)p.getY();
-		char charRep=currentUnit.getCharRepresentation();
-		
-		if (gameBoard[x][y]==' ' || gameBoard[x][y]=='#')
+
+	public boolean checkIfEnemy(Unit currentUnit, Point p) {
+		int x = (int) p.getX();
+		int y = (int) p.getY();
+		char charRep = currentUnit.getCharRepresentation();
+
+		if (gameBoard[x][y] == ' ' || gameBoard[x][y] == '#')
 			return false;
-		else if(charRep<='z' && charRep>='a'){
-			//the character is on the team represented by lowercase chars
-			if(gameBoard[x][y]>='A' || gameBoard[x][y]<='Z')
+		else if (charRep <= 'z' && charRep >= 'a') {
+			// the character is on the team represented by lowercase chars
+			if (gameBoard[x][y] >= 'A' || gameBoard[x][y] <= 'Z')
 				return true;
-			else 
+			else
 				return false;
-		}
-		else{
-			//the character is on the team represented by lowercase chars
-			if(gameBoard[x][y]>='a' || gameBoard[x][y]<='z')
+		} else {
+			// the character is on the team represented by lowercase chars
+			if (gameBoard[x][y] >= 'a' || gameBoard[x][y] <= 'z')
 				return true;
-			else 
+			else
 				return false;
 		}
 	}
-	
+
 	/************************************************************************************/
-	
-	public boolean checkOpenLineOfFire(Unit u, Point p){
-		
+
+	public boolean checkOpenLineOfFire(Unit u, Point p) {
+
 		Point thisPoint = u.getLocation();
 		int thisRange = u.getAttackRange();
-		int thisX = (int)thisPoint.getX();
-		int thisY = (int)thisPoint.getY();
-		int otherX = (int)p.getX();
-		int otherY = (int)p.getY();
+		int thisX = (int) thisPoint.getX();
+		int thisY = (int) thisPoint.getY();
+		int otherX = (int) p.getX();
+		int otherY = (int) p.getY();
 		boolean isOpen = true;
 		Point change = new Point(0, 0);
-		
-		if(thisX != otherX && thisY != otherY)
+
+		if (thisX != otherX && thisY != otherY)
 			return false;
-		
-		if(thisX == otherX){
-			if(Math.abs(thisY - otherY) > thisRange)
+
+		if (thisX == otherX) {
+			if (Math.abs(thisY - otherY) > thisRange)
 				return false;
-			
-			if(thisY > otherY)
-				for(int i = otherY; i<=thisY; i++)
-				{
-					change.setLocation((double)thisX, (double)i);
-					if(!checkAvailable(change))
-					{
+
+			if (thisY > otherY)
+				for (int i = otherY; i <= thisY; i++) {
+					change.setLocation((double) thisX, (double) i);
+					if (!checkAvailable(change)) {
 						isOpen = false;
 						return isOpen;
 					}
-					
+
 				}
 			else
-				for(int i = thisY; i<=otherY ; i++)
-				{
-					change.setLocation((double)thisX, (double)i);
-					if(!checkAvailable(change))
-					{
+				for (int i = thisY; i <= otherY; i++) {
+					change.setLocation((double) thisX, (double) i);
+					if (!checkAvailable(change)) {
 						isOpen = false;
 						return isOpen;
 					}
-					
+
 				}
-		} //end thisX == otherX
-		
-		else{
-			if(Math.abs(thisX - otherX) > thisRange)
+		} // end thisX == otherX
+
+		else {
+			if (Math.abs(thisX - otherX) > thisRange)
 				return false;
-			
-			if(thisX > otherX)
-				for(int i = otherX; i<=thisX; i++)
-				{
-					change.setLocation((double)i, (double)thisY);
-					if(!checkAvailable(change))
-					{
+
+			if (thisX > otherX)
+				for (int i = otherX; i <= thisX; i++) {
+					change.setLocation((double) i, (double) thisY);
+					if (!checkAvailable(change)) {
 						isOpen = false;
 						return isOpen;
 					}
 				}
 			else
-				for(int i = thisX; i<=otherX; i++)
-				{
-					change.setLocation((double)i, (double)thisY);
-					if(!checkAvailable(change))
-					{
+				for (int i = thisX; i <= otherX; i++) {
+					change.setLocation((double) i, (double) thisY);
+					if (!checkAvailable(change)) {
 						isOpen = false;
 						return isOpen;
 					}
 				}
 		}
-		
+
 		return isOpen;
 	}
+
 	public void removeItem(Point p) {
-		gameBoard[(int) p.getY()][(int) p.getX()] = ' '; 
+		gameBoard[(int) p.getY()][(int) p.getX()] = ' ';
 	}
-	
+
 	/************************************************************************************/
 	/**
 	 * 
-	 * @param u - The Unit that needs to be moved
-	 * @param p - The location where the unit needs to be moved to
+	 * @param u
+	 *            - The Unit that needs to be moved
+	 * @param p
+	 *            - The location where the unit needs to be moved to
 	 * @return true if it moved successfully, false otherwise
 	 */
-	
-	public boolean setUnitToThisSpot(Unit u, Point p){
-		
+
+	public boolean setUnitToThisSpot(Unit u, Point p) {
+
 		int x = p.x;
 		int y = p.y;
-		
-		if(checkAvailable(p))
-		{
+
+		if (checkAvailable(p)) {
 			gameBoard[x][y] = u.getCharRepresentation();
 			u.setLocation(p);
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public void useThisItem(String client, Unit u, Item item) {
-		if(client.equals("Computer")){
-			for(Unit unit : compUnits){
-				if(unit == u)
+		if (client.equals("Computer")) {
+			for (Unit unit : compUnits) {
+				if (unit == u)
 					u.useItem(item);
-				
+
 			}
-		}
-		else{
-			for(Unit unit : userUnits)
-				if(unit == u)
+		} else {
+			for (Unit unit : userUnits)
+				if (unit == u)
 					u.useItem(item);
 		}
 	}
 
 	public void setBoard(char[][] board) {
 		gameBoard = board;
-		
+
 	}
+
 	public ArrayList<Unit> getCompUnits() {
 		return compUnits;
 	}
+
 	public void userUnitDied(Unit u) {
 		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
 		userUnits.remove(u);
 	}
+
 	public void compUnitDied(Unit u) {
 		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
 		compUnits.remove(u);
 	}
+
 	public void attackUnit(Unit from, Unit to) {
 		from.attack(to);
 	}
+
 	public void resetCompMoves() {
-		for(Unit u : compUnits){
-			u.setMovesLeft(u.getDistance());
-		}
-	}
-	public void resetUserMoves() {
-		for(Unit u : userUnits){
+		for (Unit u : compUnits) {
 			u.setMovesLeft(u.getDistance());
 		}
 	}
 
-	
+	public void resetUserMoves() {
+		for (Unit u : userUnits) {
+			u.setMovesLeft(u.getDistance());
+		}
+	}
+
+	private Point[] shortestPath = null;;
+	private int shortestLength;
+
+	// Method that finds the shortest path from one point to another
+	public Point[] shortestPath(Point start, Point end) {
+		Point[] path = new Point[gameBoard.length * gameBoard[0].length];
+		int tempPath[] = new int[gameBoard.length * gameBoard[0].length]; // used to help track paths
+		int length = 0;
+		for(int i=0; i<tempPath.length; i++){
+			tempPath[i]=-1;
+		}
+	 // initialize both arrays
+		shortestPath = new Point [gameBoard.length * gameBoard[0].length];
+		path = null;
+		shortestLength=30;
+		
+		findShortestPath(start.x, start.y, end.x, end.y, path, tempPath, length);
+		return shortestPath;
+	}
+
+	private void findShortestPath(int row, int col, int endRow, int endCol,
+			Point[] path, int[] tempPath, int length) {
+		// checks to see if the space exists and if it is open to move to
+		if (row < 0 || row > gameBoard.length || col < 0
+				|| col > gameBoard[0].length
+				|| !checkAvailable(new Point(row, col))) {
+			return; // returns if space cant be moved to
+		}
+		// check to see if we have already tried their for our path
+		if (alreadyTried(row, col, tempPath, length)) {
+			return; // return if already visited
+		}
+
+		Point currentPath[] = new Point[length + 1]; // makes the size of the
+														// current path bigger
+		int currentTempPath[] = new int[length + 1];
+		if (length > 0) { // if length is greater then 0, get the old path and
+					// put it into the new one
+			for (int i = 0; i < length; i++) {
+				currentPath[i] = path[i];
+				currentTempPath[i] = tempPath[i];
+			}
+		}
+
+		currentPath[length] = new Point(row, col);
+		currentTempPath[length] = row + col * 1000; // give spot a specific int
+		
+		if (row == endRow && col == endCol) {
+			if (length <= shortestLength) {
+				shortestLength = length;
+				shortestPath=new Point[length];
+				for (int i = 0; i < currentPath.length-1; i++) {
+					shortestPath[i] = currentPath[i];
+					
+				}
+				return;
+			}
+		}
+		
+		if(length>shortestLength){
+			return;
+		}
+		findShortestPath(row - 1, col, endRow, endCol, currentPath,
+				currentTempPath, length+1 );
+		findShortestPath(row, col - 1, endRow, endCol, currentPath,
+				currentTempPath, length+1 );
+		findShortestPath(row, col + 1, endRow, endCol, currentPath,
+				currentTempPath, length+1 );
+		findShortestPath(row + 1, col, endRow, endCol, currentPath,
+				currentTempPath, length+1);
+
+		
+		
+
+	}
+
+	// returns whether or not the spot has been gone to already on the path
+	private boolean alreadyTried(int row, int col, int[] tempPath, int length) {
+		// TODO Auto-generated method stub
+		int num = row + col * 1000; // this number gives each square on the maze
+									// a unique number
+		// go through path to make sure this specific pair is not in the list
+		for (int i = 0; i < tempPath.length; i++) {
+			if (tempPath[i] == num) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/************************************************************************************/
 }
