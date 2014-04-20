@@ -1,8 +1,9 @@
 package command;
 
+import client.Client;
 import client.TRPGClient;
 
-public class EndTurnCommand extends Command<TRPGClient>{
+public class EndTurnCommand extends Command<Client>{
 	
 	private String source;
 	
@@ -19,7 +20,7 @@ public class EndTurnCommand extends Command<TRPGClient>{
 	}
 
 	@Override
-	public void execute(TRPGClient executeOn) {
+	public void execute(Client executeOn) {
 		executeOn.endTurn(source);
 	}
 	

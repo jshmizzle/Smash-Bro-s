@@ -31,7 +31,6 @@ public class PickUpItemCommand extends Command<Client>{
 
 	@Override
 	public void execute(Client executeOn) {
-		// TODO Auto-generated method stub
 		executeOn.pickUpItem(source, u, item);
 	}
 
