@@ -452,94 +452,158 @@ public class GameBoard {
 		}
 	}
 
-	private Point[] shortestPath = null;;
-	private int shortestLength;
+	/*
+	 * private Point[] shortestPath = null;; private int shortestLength;
+	 * 
+	 * // Method that finds the shortest path from one point to another public
+	 * Point[] shortestPath(Point start, Point end) { Point[] path = new
+	 * Point[gameBoard.length * gameBoard[0].length]; int tempPath[] = new
+	 * int[gameBoard.length * gameBoard[0].length]; // used to help track paths
+	 * int length = 0; for(int i=0; i<tempPath.length; i++){ tempPath[i]=-1; }
+	 * // initialize both arrays shortestPath = new Point [gameBoard.length *
+	 * gameBoard[0].length]; path = null; shortestLength=30;
+	 * 
+	 * findShortestPath(start.x, start.y, end.x, end.y, path, tempPath, length);
+	 * return shortestPath; }
+	 * 
+	 * private void findShortestPath(int row, int col, int endRow, int endCol,
+	 * Point[] path, int[] tempPath, int length) { // checks to see if the space
+	 * exists and if it is open to move to if (row < 0 || row > gameBoard.length
+	 * || col < 0 || col > gameBoard[0].length || !checkAvailable(new Point(row,
+	 * col))) { return; // returns if space cant be moved to } // check to see
+	 * if we have already tried their for our path if (alreadyTried(row, col,
+	 * tempPath, length)) { return; // return if already visited }
+	 * 
+	 * Point currentPath[] = new Point[length + 1]; // makes the size of the //
+	 * current path bigger int currentTempPath[] = new int[length + 1]; if
+	 * (length > 0) { // if length is greater then 0, get the old path and //
+	 * put it into the new one for (int i = 0; i < length; i++) { currentPath[i]
+	 * = path[i]; currentTempPath[i] = tempPath[i]; } }
+	 * 
+	 * currentPath[length] = new Point(row, col); currentTempPath[length] = row
+	 * + col * 1000; // give spot a specific int
+	 * 
+	 * if (row == endRow && col == endCol) { if (length <= shortestLength) {
+	 * shortestLength = length; shortestPath=new Point[length]; for (int i = 0;
+	 * i < currentPath.length-1; i++) { shortestPath[i] = currentPath[i];
+	 * 
+	 * } return; } }
+	 * 
+	 * if(length>shortestLength){ return; }
+	 * 
+	 * //try to speed up process, logically determining which recursion to try
+	 * first if(row<endRow){ findShortestPath(row + 1, col, endRow, endCol,
+	 * currentPath, currentTempPath, length+1); findShortestPath(row - 1, col,
+	 * endRow, endCol, currentPath, currentTempPath, length+1 ); } else{
+	 * findShortestPath(row - 1, col, endRow, endCol, currentPath,
+	 * currentTempPath, length+1 ); findShortestPath(row + 1, col, endRow,
+	 * endCol, currentPath, currentTempPath, length+1); }
+	 * 
+	 * if(col <endCol){ findShortestPath(row, col + 1, endRow, endCol,
+	 * currentPath, currentTempPath, length+1 ); findShortestPath(row, col - 1,
+	 * endRow, endCol, currentPath, currentTempPath, length+1 ); } else{
+	 * findShortestPath(row, col - 1, endRow, endCol, currentPath,
+	 * currentTempPath, length+1 ); findShortestPath(row, col + 1, endRow,
+	 * endCol, currentPath, currentTempPath, length+1 ); }
+	 * 
+	 * }
+	 * 
+	 * // returns whether or not the spot has been gone to already on the path
+	 * private boolean alreadyTried(int row, int col, int[] tempPath, int
+	 * length) { // TODO Auto-generated method stub int num = row + col * 1000;
+	 * // this number gives each square on the maze // a unique number // go
+	 * through path to make sure this specific pair is not in the list for (int
+	 * i = 0; i < tempPath.length; i++) { if (tempPath[i] == num) { return true;
+	 * } } return false; }
+	 */
 
-	// Method that finds the shortest path from one point to another
-	public Point[] shortestPath(Point start, Point end) {
-		Point[] path = new Point[gameBoard.length * gameBoard[0].length];
-		int tempPath[] = new int[gameBoard.length * gameBoard[0].length]; // used to help track paths
-		int length = 0;
-		for(int i=0; i<tempPath.length; i++){
-			tempPath[i]=-1;
-		}
-	 // initialize both arrays
-		shortestPath = new Point [gameBoard.length * gameBoard[0].length];
-		path = null;
-		shortestLength=30;
-		
-		findShortestPath(start.x, start.y, end.x, end.y, path, tempPath, length);
-		return shortestPath;
-	}
+	// new faster algorithm
+	public ArrayList<Point> findShortestPath(Point start, Point end) {
+		Tiles tiles[][] = new Tiles[gameBoard.length][gameBoard[0].length];
 
-	private void findShortestPath(int row, int col, int endRow, int endCol,
-			Point[] path, int[] tempPath, int length) {
-		// checks to see if the space exists and if it is open to move to
-		if (row < 0 || row > gameBoard.length || col < 0
-				|| col > gameBoard[0].length
-				|| !checkAvailable(new Point(row, col))) {
-			return; // returns if space cant be moved to
-		}
-		// check to see if we have already tried their for our path
-		if (alreadyTried(row, col, tempPath, length)) {
-			return; // return if already visited
-		}
-
-		Point currentPath[] = new Point[length + 1]; // makes the size of the
-														// current path bigger
-		int currentTempPath[] = new int[length + 1];
-		if (length > 0) { // if length is greater then 0, get the old path and
-					// put it into the new one
-			for (int i = 0; i < length; i++) {
-				currentPath[i] = path[i];
-				currentTempPath[i] = tempPath[i];
+		// sets the status of each space on the board
+		for (int i = 0; i < gameBoard.length; i++) {
+			for (int j = 0; j < gameBoard[0].length; j++) {
+				tiles[i][j] = new Tiles();
 			}
 		}
+		tiles[start.x][start.y].distance = 0;
+		tiles = findDistance(tiles, start);
+		int currRow = start.x;
 
-		currentPath[length] = new Point(row, col);
-		currentTempPath[length] = row + col * 1000; // give spot a specific int
-		
-		if (row == endRow && col == endCol) {
-			if (length <= shortestLength) {
-				shortestLength = length;
-				shortestPath=new Point[length];
-				for (int i = 0; i < currentPath.length-1; i++) {
-					shortestPath[i] = currentPath[i];
+		int currCol = start.y;
+		boolean marked = true;
+		while (marked && !tiles[end.x][end.y].status.equals("marked")
+				&& !tiles[end.x][end.y].status.equals("fringe")) {
+			marked = false;
+			for (int i = 0; i < gameBoard.length; i++) {
+				for (int j = 0; j < gameBoard[0].length; j++) {
+					if (tiles[i][j].status.equals("fringe")) {
+						tiles=findDistance(tiles, new Point(i, j));
+					} else if (!tiles[i][j].status.equals("marked")) {
+						marked = true;
+					}
+				}
+			}
+		}
+		return tiles[end.x][end.y].points;
+	}
+
+	private Tiles[][] findDistance(Tiles[][] tiles, Point p) {
+		// TODO Auto-generated method stub
+		tiles[p.x][p.y].status = "marked";
+
+		tiles[p.x][p.y].points.add(new Point(p.x, p.y));
+		if (p.x+1>=0 && p.y>=0 && p.x+1< gameBoard.length && p.y< gameBoard[0].length&&checkAvailable(new Point(p.x + 1, p.y))) {
+			if(tiles[p.x + 1][p.y].status.equals("unmarked"))
+				tiles[p.x + 1][p.y].status = "fringe";
+			if (tiles[p.x][p.y].distance + 1 < tiles[p.x + 1][p.y].distance) {
+				tiles[p.x + 1][p.y].distance = tiles[p.x][p.y].distance + 1;
+				tiles[p.x + 1][p.y].points.clear();
+				for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
+					tiles[p.x + 1][p.y].points.add(tiles[p.x][p.y].points.get(i));
+				}
+				//tiles[p.x + 1][p.y].points.add(new Point(p.x + 1, p.y));
+			}
+		}
+		if (p.x-1>=0 && p.y>=0 && p.x-1< gameBoard.length && p.y< gameBoard[0].length &&checkAvailable(new Point(p.x - 1, p.y))) {
+			if(tiles[p.x - 1][p.y].status.equals("unmarked"))
+				tiles[p.x - 1][p.y].status = "fringe";
+			if (tiles[p.x][p.y].distance + 1 < tiles[p.x - 1][p.y].distance) {
+				tiles[p.x - 1][p.y].distance = tiles[p.x][p.y].distance + 1;
+				tiles[p.x - 1][p.y].points.clear();
+				for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
+					tiles[p.x -1][p.y].points.add(tiles[p.x][p.y].points.get(i));
+				}
+				//tiles[p.x - 1][p.y].points.add(new Point(p.x - 1, p.y));
+			}
+		}
+		if (p.x>=0 && p.y+1>=0 && p.x< gameBoard.length && p.y+1< gameBoard[0].length&&checkAvailable(new Point(p.x, p.y + 1))) {
+			if(tiles[p.x][p.y+1].status.equals("unmarked"))
+				tiles[p.x ][p.y+1].status = "fringe";
+			if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y + 1].distance) {
+				tiles[p.x][p.y + 1].distance = tiles[p.x][p.y].distance + 1;
+				tiles[p.x ][p.y+1].points.clear();
+				for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
+					tiles[p.x][p.y+1].points.add(tiles[p.x][p.y].points.get(i));
 					
 				}
-				return;
+				//tiles[p.x][p.y+1].points.add(new Point(p.x, p.y+1));
 			}
 		}
-		
-		if(length>shortestLength){
-			return;
-		}
-		findShortestPath(row - 1, col, endRow, endCol, currentPath,
-				currentTempPath, length+1 );
-		findShortestPath(row, col - 1, endRow, endCol, currentPath,
-				currentTempPath, length+1 );
-		findShortestPath(row, col + 1, endRow, endCol, currentPath,
-				currentTempPath, length+1 );
-		findShortestPath(row + 1, col, endRow, endCol, currentPath,
-				currentTempPath, length+1);
-
-		
-		
-
-	}
-
-	// returns whether or not the spot has been gone to already on the path
-	private boolean alreadyTried(int row, int col, int[] tempPath, int length) {
-		// TODO Auto-generated method stub
-		int num = row + col * 1000; // this number gives each square on the maze
-									// a unique number
-		// go through path to make sure this specific pair is not in the list
-		for (int i = 0; i < tempPath.length; i++) {
-			if (tempPath[i] == num) {
-				return true;
+		if (p.x>=0 && p.y-1>=0 && p.x< gameBoard.length && p.y-1< gameBoard[0].length&& checkAvailable(new Point(p.x, p.y - 1))) {
+			if(tiles[p.x ][p.y-1].status.equals("unmarked"))
+				tiles[p.x ][p.y-1].status = "fringe";
+			if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y - 1].distance) {
+				tiles[p.x][p.y - 1].distance = tiles[p.x][p.y].distance + 1;
+				tiles[p.x ][p.y-1].points.clear();
+				for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
+					tiles[p.x][p.y-1].points.add(tiles[p.x][p.y].points.get(i));
+					
+				}
 			}
 		}
-		return false;
+		return tiles;
 	}
 
 	/************************************************************************************/
