@@ -2,12 +2,13 @@ package model;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /*
  * Unit class. Holds all the information and methods for each unit
  */
-public class Unit{ 
+public class Unit implements Serializable{ 
 		
 	protected String name;
 	protected int health;

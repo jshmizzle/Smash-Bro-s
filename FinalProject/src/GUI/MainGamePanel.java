@@ -153,23 +153,35 @@ public class MainGamePanel extends JPanel {
 		MainGamePanel.this.add(statsPanel).setVisible(true);
 	}
 	
+	private ArrayList<Point> previousPath;
 	private void drawShortestPathLineToCursor(Graphics g){
 		Graphics2D g2=(Graphics2D)g;
+		
 		Point temp=new Point(cursorLocation.y, cursorLocation.x);
-		ArrayList<Point> path = gameBoard.findShortestPath(currentUnit.getLocation(), temp);
-		
-		
-		
-		//loop through the points on the path that the player will follow and draw a waypoint
-		//icon at each of those points on the board to visualize it for the player
-		if(path.get(0)!=null){
-			for (int i = 0; i < path.size(); i++) {
+		if(gameBoard.checkAvailable(temp)){
+			ArrayList<Point> path = gameBoard.findShortestPath(currentUnit.getLocation(), temp);
+			previousPath=path;
+			
+			//loop through the points on the path that the player will follow and draw a waypoint
+			//icon at each of those points on the board to visualize it for the player
+			if(path!=null){
+				for (int i = 0; i < path.size(); i++) {
+					System.out.println("drawing");
+					int x = path.get(i).y;
+					int y = path.get(i).x;
+					g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
+				}
+			}
+		}
+		else if(previousPath!=null){
+			for (int i = 0; i < previousPath.size(); i++) {
 				System.out.println("drawing");
-				int x = path.get(i).y;
-				int y = path.get(i).x;
+				int x = previousPath.get(i).y;
+				int y = previousPath.get(i).x;
 				g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
 			}
 		}
+		
 		if(!gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
 			if(!(currentUnit.getLocation().x==cursorLocation.y && currentUnit.getLocation().y==cursorLocation.x))
 				g2.drawImage(invalidMove, cursorLocation.x * gameTileWidth, cursorLocation.y * gameTileHeight, gameTileWidth, gameTileHeight, null);
