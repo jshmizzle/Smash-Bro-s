@@ -205,24 +205,51 @@ public class TRPGClient extends JFrame implements Client{
 		}
 	}
 
-	public void unitMoved(String source, Unit u, Point [] moves) {
+	/**
+	 * This method is called by the UnitMoved Command and it will be used to make sure that the
+	 * unit only moves up to as many times as it is able before its moves are up.
+	 */
+	public void unitMoved(String source, Unit u, ArrayList<Point> moves) {
 		// TODO We'll have this up and running when Lorenzo is finished with shortestPath
 		System.out.println("Unit moved");
 		int actualTotalMoveLength;
 		
 		//first, determine how many moves from the chosen list can actually be taken.
-		if(u.getMovesLeft()-moves.length>=0){
+		if(u.getMovesLeft()-moves.size()>=0){
 			actualTotalMoveLength=u.getMovesLeft();
 		}
 		else{ 
-			actualTotalMoveLength=moves.length;
+			actualTotalMoveLength=moves.size();
 		}
 		
-
 		//loop through each point on the path and tell the gameBoard the unit moved to each
 		//new point. Only allow the unit to take its specified maxNum of moves
-		for(u.getMovesLeft(); u.getMovesLeft()<actualTotalMoveLength; u.moveTaken()){
+		for(int i=0; i<actualTotalMoveLength; i++, u.moveTaken()){
+			int x=u.getLocation().x;
+			int y=u.getLocation().y;
+			int dx=moves.get(i).x;
+			int dy=moves.get(i).y;
 			
+			//if the move is upwards
+			if(x==dx && y<dy){
+				moveUnitUp(userName, u, moves.get(i));
+				gamePanel.update(currentBoard);
+			}
+			//if the move is downwards
+			else if(x==dx && y>dy){
+				moveUnitDown(userName, u, moves.get(i));
+				gamePanel.update(currentBoard);
+			}
+			//if the move is to the right
+			else if(x<dx && y==dy){
+				moveUnitRight(userName, u, moves.get(i));
+				gamePanel.update(currentBoard);
+			}
+			//if the move is left
+			else if(x>dx && y==dy){
+				moveUnitLeft(userName, u, moves.get(i));
+				gamePanel.update(currentBoard);
+			}
 		}
 	}
 }
