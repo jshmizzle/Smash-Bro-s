@@ -23,10 +23,10 @@ public class UnitStatusPanel extends JPanel {
 	 * player is cycling through units.
 	 * @param unit The unit who's current stats should be displayed.
 	 */
-	public UnitStatusPanel(Unit unit, int gameTileWidth, int gameTileHeight) {
+	public UnitStatusPanel(Unit unit) {
 		this.unit=unit;
 		initializeImage();
-		this.setPreferredSize(new Dimension((getWidth()/20)*2, (getHeight()/20)*2));
+		this.setPreferredSize(new Dimension((getWidth()/20)*2, (getHeight()/20)*3));
 		this.setVisible(true);
 	}
 	
@@ -43,6 +43,10 @@ public class UnitStatusPanel extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2=(Graphics2D) g;
 		
+		//make sure that the size of the panel is correctly set
+		this.setPreferredSize(new Dimension((getWidth()/20)*2, (getHeight()/20)*3));
+
+		
 		//fill in the background to be all black
 		g2.setColor(Color.black);
 		g2.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -58,6 +62,10 @@ public class UnitStatusPanel extends JPanel {
 		
 		//represent the unit's attack damage
 		g2.drawString("Damage:" +unit.getAttackPower(), 2, 54);
+		
+		//represent the unit's remaining number of moves
+		g2.drawString("Moves ", 2, 68);
+		g2.drawString("left: " + unit.getMovesLeft(), 2, 82);
 	}
 	
 	
@@ -81,10 +89,10 @@ public class UnitStatusPanel extends JPanel {
 		
 		//now you know how many hearts to draw
 		switch(heartsToDraw){
-		case(4): g.drawImage(health, 2+(this.getWidth()/4)*3, 14, this.getWidth()/4, this.getHeight()/4, null);
-		case(3): g.drawImage(health, 2+(this.getWidth()/4)*2, 14, this.getWidth()/4, this.getHeight()/4, null);
-		case(2): g.drawImage(health, 2+this.getWidth()/4, 14, this.getWidth()/4, this.getHeight()/4, null);
-		case(1): g.drawImage(health, 2, 14, this.getWidth()/4, this.getHeight()/4, null);
+		case(4): g.drawImage(health, (this.getWidth()/4)*3, 14, this.getWidth()/4, this.getHeight()/4-9, null);
+		case(3): g.drawImage(health, (this.getWidth()/4)*2, 14, this.getWidth()/4, this.getHeight()/4-9, null);
+		case(2): g.drawImage(health, this.getWidth()/4, 14, this.getWidth()/4, this.getHeight()/4-9, null);
+		case(1): g.drawImage(health, 0, 14, this.getWidth()/4, this.getHeight()/4-9, null);
 
 		}
 	}

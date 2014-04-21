@@ -267,5 +267,9 @@ public class Unit{
 		movesLeft = distance;
 	}
 	
+	public void moveTaken(){
+		movesLeft--;
+	}
+	
 	/************************************************************************************/
 }

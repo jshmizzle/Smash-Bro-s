@@ -11,12 +11,15 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import model.GameBoard;
 import model.Unit;
+
+import command.UnitMoved;
 
 public class MainGamePanel extends JPanel {
 
@@ -29,9 +32,11 @@ public class MainGamePanel extends JPanel {
 	private GameState currentGameState;
 	private Unit currentUnit;
 	private UnitStatusPanel statsPanel;
+	private String source;
 	
-	public MainGamePanel(GameBoard startingBoard, ObjectOutputStream serverOut) {
+	public MainGamePanel(String source, GameBoard startingBoard, ObjectOutputStream serverOut) {
 		this.serverOut=serverOut;
+		this.source=source;
 		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
@@ -125,6 +130,11 @@ public class MainGamePanel extends JPanel {
 		if(currentGameState==GameState.ChoosingMove){
 			drawShortestPathLineToCursor(g2);
 		}
+		if(currentGameState==GameState.CyclingThroughUnits){
+			if(this.showStats==true){
+				drawStatsPanel();
+			}
+		}
 	}
 	
 	private void drawCursor(Graphics2D g2){
@@ -136,19 +146,19 @@ public class MainGamePanel extends JPanel {
 		if(statsPanel!=null){
 			MainGamePanel.this.remove(statsPanel);
 		}
-		statsPanel=new UnitStatusPanel(currentUnit, gameTileWidth, gameTileHeight);
+		statsPanel=new UnitStatusPanel(currentUnit);
 		Point temp=currentUnit.getLocation();
-		statsPanel.setLocation( (temp.y+1)*gameTileHeight, (temp.x-2)*gameTileWidth);
-		statsPanel.setSize(gameTileWidth*2, gameTileHeight*2);
+		statsPanel.setLocation( (temp.y+1)*gameTileWidth, (temp.x-2)*gameTileHeight);
+		statsPanel.setSize(gameTileWidth*2, gameTileHeight*3);
 		MainGamePanel.this.add(statsPanel).setVisible(true);
-		repaint();
 	}
 	
 	private void drawShortestPathLineToCursor(Graphics g){
 		Graphics2D g2=(Graphics2D)g;
-
-		Point [] path = gameBoard.shortestPath(currentUnit.getLocation(), cursorLocation);
-		System.out.println(path.length);
+		Point temp=new Point(cursorLocation.y, cursorLocation.x);
+		Point [] path = gameBoard.shortestPath(currentUnit.getLocation(), temp);
+		
+		
 		
 		//loop through the points on the path that the player will follow and draw a waypoint
 		//icon at each of those points on the board to visualize it for the player
@@ -165,14 +175,13 @@ public class MainGamePanel extends JPanel {
 				g2.drawImage(invalidMove, cursorLocation.x * gameTileWidth, cursorLocation.y * gameTileHeight, gameTileWidth, gameTileHeight, null);
 			
 		}
-		else
-			g2.drawImage(waypoint, cursorLocation.x * gameTileWidth+7, cursorLocation.y * gameTileHeight+6, null);
 	}
 		
+	private boolean showStats=false;
+
 	private class KeyManager implements KeyListener{
 
 		private int unitIndex=1;
-		private boolean showStats=false;
 		
 		@Override
 		public void keyPressed(KeyEvent arg0) {
@@ -182,22 +191,18 @@ public class MainGamePanel extends JPanel {
 				if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
 					cursorLocation.translate(1, 0);
 					repaint();
-					drawShortestPathLineToCursor(MainGamePanel.this.getGraphics());
 				}
 				else if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
 					cursorLocation.translate(0,1);
 					repaint();
-					drawShortestPathLineToCursor(MainGamePanel.this.getGraphics());
 				}
 				else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
 					cursorLocation.translate(0, -1);
 					repaint();
-					drawShortestPathLineToCursor(MainGamePanel.this.getGraphics());
 				}
 				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
 					cursorLocation.translate(-1, 0);
 					repaint();
-					drawShortestPathLineToCursor(MainGamePanel.this.getGraphics());
 				}
 				else if(key==KeyEvent.VK_BACK_SPACE){
 					currentGameState=GameState.CyclingThroughUnits;
@@ -209,8 +214,20 @@ public class MainGamePanel extends JPanel {
 					repaint();
 				}
 				else if(key==KeyEvent.VK_ENTER){
-					
-					currentGameState=GameState.ChoosingAttack;
+					//The player wants this unit to move to this location so we have to go and
+					//check if that is a valid destination.
+					if(gameBoard.checkAvailable(cursorLocation)){
+						Point [] path=gameBoard.shortestPath(currentUnit.getLocation(), cursorLocation);
+						if(path!=null){
+							UnitMoved moveCommand =new UnitMoved(source, currentUnit, path);
+							try {
+								serverOut.writeObject(moveCommand);
+								currentGameState=GameState.ChoosingAttack;
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
 				}
 			}
 			//if the player is trying to just choose his current unit then the cursor will 
@@ -226,10 +243,6 @@ public class MainGamePanel extends JPanel {
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 					repaint();
-
-					if(showStats==true){
-						drawStatsPanel();
-					}
 				}
 				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
 					if(unitIndex>1){
@@ -240,9 +253,6 @@ public class MainGamePanel extends JPanel {
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 					repaint();
-					if(showStats==true){
-						drawStatsPanel();
-					}
 				}
 				//if the user presses enter while cycling through units
 				else if(key==KeyEvent.VK_ENTER){
@@ -262,7 +272,7 @@ public class MainGamePanel extends JPanel {
 					}
 					else{
 						showStats=true;
-						drawStatsPanel();
+						repaint();
 					}
 				}
 			}
