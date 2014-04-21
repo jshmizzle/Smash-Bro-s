@@ -115,7 +115,7 @@ public class ComputerClient extends JFrame implements Client{
 		// game comes first
 		initializeGameBoard();
 
-		gamePanel = new MainGamePanel(currentBoard, outputStream);
+		gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
 		currentPanel = gamePanel;
 		this.add(currentPanel).setVisible(true);
 		this.pack();
@@ -190,8 +190,13 @@ public class ComputerClient extends JFrame implements Client{
 		
 	}
 
-	@Override
 	public void unitMoved(String source, ArrayList<Point> moves) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void unitMoved(String source, Unit u, ArrayList<Point> moves) {
 		// TODO Auto-generated method stub
 		
 	}
