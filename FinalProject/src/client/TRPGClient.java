@@ -215,40 +215,51 @@ public class TRPGClient extends JFrame implements Client{
 		int actualTotalMoveLength;
 		
 		//first, determine how many moves from the chosen list can actually be taken.
-		if(u.getMovesLeft()-moves.size()>=0){
+		if(u.getMovesLeft()<=moves.size()){
 			actualTotalMoveLength=u.getMovesLeft();
 		}
 		else{ 
 			actualTotalMoveLength=moves.size();
 		}
 		
+		System.out.println(actualTotalMoveLength);
 		//loop through each point on the path and tell the gameBoard the unit moved to each
 		//new point. Only allow the unit to take its specified maxNum of moves
 		for(int i=0; i<actualTotalMoveLength; i++, u.moveTaken()){
 			int x=u.getLocation().x;
 			int y=u.getLocation().y;
-			int dx=moves.get(i).x;
-			int dy=moves.get(i).y;
+			int dx=moves.get(i+1).x;
+			int dy=moves.get(i+1).y;
 			
+			System.out.println("moving: " + u.getLocation());
+			System.out.println("target " + moves.get(i+1));
+			System.out.println(dx + " , " + dy);
+			if(x==dx && y==dy){
+				System.out.println("same");
+			}
 			//if the move is upwards
-			if(x==dx && y<dy){
-				moveUnitUp(userName, u, moves.get(i));
+			if(x>dx && y==dy){
+				moveUnitUp(userName, u, moves.get(i+1));
 				gamePanel.update(currentBoard);
+				System.out.println("move up");
 			}
 			//if the move is downwards
-			else if(x==dx && y>dy){
-				moveUnitDown(userName, u, moves.get(i));
+			else if(x<dx && y==dy){
+				moveUnitDown(userName, u, moves.get(i+1));
 				gamePanel.update(currentBoard);
+				System.out.println("move down");
 			}
 			//if the move is to the right
-			else if(x<dx && y==dy){
-				moveUnitRight(userName, u, moves.get(i));
+			else if(x==dx && y<dy){
+				moveUnitRight(userName, u, moves.get(i+1));
 				gamePanel.update(currentBoard);
+				System.out.println("move right");
 			}
 			//if the move is left
-			else if(x>dx && y==dy){
-				moveUnitLeft(userName, u, moves.get(i));
+			else if(x==dx && y>dy){
+				moveUnitLeft(userName, u, moves.get(i+1));
 				gamePanel.update(currentBoard);
+				System.out.println("move left");
 			}
 		}
 	}

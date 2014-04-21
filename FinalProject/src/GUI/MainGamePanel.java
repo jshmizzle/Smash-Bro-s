@@ -166,7 +166,6 @@ public class MainGamePanel extends JPanel {
 			//icon at each of those points on the board to visualize it for the player
 			if(path!=null){
 				for (int i = 0; i < path.size(); i++) {
-					System.out.println("drawing");
 					int x = path.get(i).y;
 					int y = path.get(i).x;
 					g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
@@ -229,7 +228,8 @@ public class MainGamePanel extends JPanel {
 					//The player wants this unit to move to this location so we have to go and
 					//check if that is a valid destination.
 					if(gameBoard.checkAvailable(cursorLocation)){
-						ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), cursorLocation);
+						Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
+						ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 						if(path!=null){
 							UnitMoved moveCommand =new UnitMoved(source, currentUnit, path);
 							try {
@@ -286,6 +286,26 @@ public class MainGamePanel extends JPanel {
 						showStats=true;
 						repaint();
 					}
+				}
+			}
+			//now after the player has had his unit move, he freely moves the cursor to 
+			//attempt to make an attack selection
+			else if(currentGameState==GameState.ChoosingAttack){
+				if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+					cursorLocation.translate(1, 0);
+					repaint();
+				}
+				else if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
+					cursorLocation.translate(0,1);
+					repaint();
+				}
+				else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
+					cursorLocation.translate(0, -1);
+					repaint();
+				}
+				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+					cursorLocation.translate(-1, 0);
+					repaint();
 				}
 			}
 		}
