@@ -16,6 +16,10 @@ public class GameBoard {
 	private int currentMap;
 	private int currentScenario;
 	private ArrayList<String> playerList;
+	private boolean userLost = false;
+	private boolean compLost = false;
+	private boolean compWon;
+	private boolean userWon;
 
 	/************************************************************************************/
 
@@ -23,7 +27,7 @@ public class GameBoard {
 	 * GameBoard constructor, takes a list of users units, list of comp units,
 	 * map level, and a scenario. Based on the arguments given, the board will
 	 * create a 2D char array representing the locations of game objects on the
-	 * board. Scenario 1 is Kill the Section Leader, scenario 2 is Death Match,
+	 * board. Scenario 1 is Kill the Princess, scenario 2 is Death Match,
 	 * scenario 3 is (dunno yet)
 	 */
 
@@ -483,6 +487,63 @@ public class GameBoard {
 			u.setMovesLeft(u.getDistance());
 		}
 	}
+	
+	/**
+	 * This method checks if there are no more units alive.
+	 * If a team has no units alive, it's lost boolean is set to true,
+	 * the other teams' won boolean is set to true,
+	 * and this method returns true.
+	 * If current scenario is "Kill the Princess," it checks if either teams'
+	 * princess is dead, then does likewise;
+	 * @return
+	 */
+	
+	public boolean gameOver(){
+		if(userUnits.isEmpty()){
+			userLost = true;
+			compWon = true;
+			return true;
+		}
+		if(compUnits.isEmpty()){
+			compLost = true;
+			userWon = true;
+			return true;
+		}
+		if(currentScenario == 1){
+			for(Unit u : userUnits){
+				if(u.getName().equals("Princess") && u.getHealth() == 0){
+					userLost = true;
+					compWon = true;
+					return true;
+				}
+			}
+			for(Unit u : compUnits){
+				if(u.getName().equals("Princess") && u.getHealth() == 0){
+					compLost = true;
+					userWon = true;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean userLost(){
+		return userLost;
+	}
+	
+	public boolean compLost(){
+		return compLost;
+	}
+	
+	public boolean compWon(){
+		return compWon;
+	}
+	
+	public boolean userWon(){
+		return userWon;
+	}
+	
 
 	/*
 	 * private Point[] shortestPath = null;; private int shortestLength;
