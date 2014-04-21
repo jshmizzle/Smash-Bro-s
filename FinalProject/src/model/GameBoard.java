@@ -125,7 +125,7 @@ public class GameBoard {
 
 		
 		int i = 0;
-		/*
+		
 		for (Unit u : compUnits) {
 			if (u.getCharRepresentation() == 'P'
 					|| u.getCharRepresentation() == 'p') {
@@ -153,7 +153,7 @@ public class GameBoard {
 				c.setLocation(p);
 				j++;
 			}
-		}*/
+		}
 		 
 	}
 
