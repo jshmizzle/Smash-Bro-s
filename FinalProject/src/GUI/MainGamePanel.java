@@ -156,17 +156,17 @@ public class MainGamePanel extends JPanel {
 	private void drawShortestPathLineToCursor(Graphics g){
 		Graphics2D g2=(Graphics2D)g;
 		Point temp=new Point(cursorLocation.y, cursorLocation.x);
-		Point [] path = gameBoard.shortestPath(currentUnit.getLocation(), temp);
+		ArrayList<Point> path = gameBoard.findShortestPath(currentUnit.getLocation(), temp);
 		
 		
 		
 		//loop through the points on the path that the player will follow and draw a waypoint
 		//icon at each of those points on the board to visualize it for the player
-		if(path[0]!=null){
-			for (int i = 0; i < path.length; i++) {
+		if(path.get(0)!=null){
+			for (int i = 0; i < path.size(); i++) {
 				System.out.println("drawing");
-				int x = path[i].y;
-				int y = path[i].x;
+				int x = path.get(i).y;
+				int y = path.get(i).x;
 				g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
 			}
 		}
@@ -217,7 +217,7 @@ public class MainGamePanel extends JPanel {
 					//The player wants this unit to move to this location so we have to go and
 					//check if that is a valid destination.
 					if(gameBoard.checkAvailable(cursorLocation)){
-						Point [] path=gameBoard.shortestPath(currentUnit.getLocation(), cursorLocation);
+						ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), cursorLocation);
 						if(path!=null){
 							UnitMoved moveCommand =new UnitMoved(source, currentUnit, path);
 							try {

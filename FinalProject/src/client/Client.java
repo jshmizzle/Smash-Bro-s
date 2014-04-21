@@ -28,7 +28,7 @@ public interface Client {
 	
 	public void pickUpItem(String client, Unit u, Item item);
 	
-	public void unitMoved(String source, Unit u, Point [] moves);
+	public void unitMoved(String source, Unit u, ArrayList<Point> moves);
 
 
 
