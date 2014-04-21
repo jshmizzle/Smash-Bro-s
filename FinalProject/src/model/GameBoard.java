@@ -125,7 +125,7 @@ public class GameBoard {
 
 		
 		int i = 0;
-		
+		/*
 		for (Unit u : compUnits) {
 			if (u.getCharRepresentation() == 'P'
 					|| u.getCharRepresentation() == 'p') {
@@ -136,6 +136,7 @@ public class GameBoard {
 				u.setLocation(p);
 				i++;
 			}
+			
 		}
 
 		int j = 0;
@@ -152,7 +153,7 @@ public class GameBoard {
 				c.setLocation(p);
 				j++;
 			}
-		}
+		}*/
 		 
 	}
 
@@ -564,8 +565,7 @@ public class GameBoard {
 
 		int currCol = start.y;
 		boolean marked = true;
-		while (marked && !tiles[end.x][end.y].status.equals("marked")
-				&& !tiles[end.x][end.y].status.equals("fringe")) {
+		while (marked && !tiles[end.x][end.y].status.equals("marked")) {
 			marked = false;
 			for (int i = 0; i < gameBoard.length; i++) {
 				for (int j = 0; j < gameBoard[0].length; j++) {
