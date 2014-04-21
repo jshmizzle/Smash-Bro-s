@@ -698,5 +698,9 @@ public class GameBoard {
 		return tiles;
 	}
 
+	public void startNewGame() {
+		
+	}
+
 	/************************************************************************************/
 }

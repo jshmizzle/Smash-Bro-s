@@ -200,4 +200,8 @@ public class ComputerClient extends JFrame implements Client{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void newGame(){
+		
+	}
 }
