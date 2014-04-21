@@ -263,4 +263,5 @@ public class TRPGClient extends JFrame implements Client{
 			}
 		}
 	}
+
 }

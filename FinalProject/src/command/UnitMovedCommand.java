@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import model.Unit;
 import client.Client;
 
-public class UnitMoved extends Command<Client>{
+public class UnitMovedCommand extends Command<Client>{
 
 	private String source;
 	private ArrayList<Point> moves;
 	private Unit unit;
 	
-	public UnitMoved(String source, Unit u, ArrayList<Point> moves) {
+	public UnitMovedCommand(String source, Unit u, ArrayList<Point> moves) {
 		super(source);
 		this.moves=moves;
 		this.unit=u;
@@ -20,7 +20,6 @@ public class UnitMoved extends Command<Client>{
 
 	@Override
 	public void execute(Client executeOn) {
-		// TODO Auto-generated method stub
 		executeOn.unitMoved(source, unit, moves);
 	}
 

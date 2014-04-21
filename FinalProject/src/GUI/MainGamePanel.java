@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 import model.GameBoard;
 import model.Unit;
 
-import command.UnitMoved;
+import command.UnitMovedCommand;
 
 public class MainGamePanel extends JPanel {
 
@@ -231,7 +231,7 @@ public class MainGamePanel extends JPanel {
 						Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
 						ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 						if(path!=null){
-							UnitMoved moveCommand =new UnitMoved(source, currentUnit, path);
+							UnitMovedCommand moveCommand =new UnitMovedCommand(source, currentUnit, path);
 							try {
 								serverOut.writeObject(moveCommand);
 								currentGameState=GameState.ChoosingAttack;
