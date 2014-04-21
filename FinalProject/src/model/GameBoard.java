@@ -440,16 +440,8 @@ public class GameBoard {
 	}
 
 	public void useThisItem(String client, Unit u, Item item) {
-		if (client.equals("Computer")) {
-			for (Unit unit : compUnits) {
-				if (unit == u)
-					u.useItem(item);
-
-			}
-		} else {
-			for (Unit unit : userUnits)
-				if (unit == u)
-					u.useItem(item);
+		if(u.isAlive()){
+			u.useItem(item);
 		}
 	}
 
