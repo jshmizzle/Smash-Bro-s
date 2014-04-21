@@ -11,6 +11,7 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -18,19 +19,24 @@ import javax.swing.JPanel;
 import model.GameBoard;
 import model.Unit;
 
+import command.UnitMoved;
+
 public class MainGamePanel extends JPanel {
 
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	private Image boulder, megaman, sonic, grass, mario, goku, link, princess; 
+	private Image boulder, megaman, sonic, grass, mario, goku, link, princess, waypoint, invalidMove; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
 	private Unit currentUnit;
+	private UnitStatusPanel statsPanel;
+	private String source;
 	
-	public MainGamePanel(GameBoard startingBoard, ObjectOutputStream serverOut) {
+	public MainGamePanel(String source, GameBoard startingBoard, ObjectOutputStream serverOut) {
 		this.serverOut=serverOut;
+		this.source=source;
 		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
@@ -38,6 +44,7 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
+		this.currentUnit=gameBoard.getUserUnits().get(1);
 		
 		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
@@ -51,7 +58,7 @@ public class MainGamePanel extends JPanel {
 		
 		initializeImages();
 		
-		
+		this.setLayout(null);
 		this.setFocusable(true);
 		this.requestFocusInWindow();
 		this.setVisible(true);
@@ -68,6 +75,8 @@ public class MainGamePanel extends JPanel {
 			goku=ImageIO.read(new File("images/gokuStanding.png"));
 			link=ImageIO.read(new File("images/linkStanding.png"));
 			princess=ImageIO.read(new File("images/princess.png"));
+			waypoint=ImageIO.read(new File("images/1GlowingOrb.png"));
+			invalidMove=ImageIO.read(new File("images/notValidCursor.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -118,13 +127,58 @@ public class MainGamePanel extends JPanel {
 			}
 		}
 		drawCursor(g2);
+		if(currentGameState==GameState.ChoosingMove){
+			drawShortestPathLineToCursor(g2);
+		}
+		if(currentGameState==GameState.CyclingThroughUnits){
+			if(this.showStats==true){
+				drawStatsPanel();
+			}
+		}
 	}
 	
 	private void drawCursor(Graphics2D g2){
 		g2.setColor(Color.RED);
 		g2.drawRect(cursorLocation.x*gameTileWidth, cursorLocation.y*gameTileHeight, gameTileWidth-1, gameTileHeight-1);
 	}
+	
+	private void drawStatsPanel(){
+		if(statsPanel!=null){
+			MainGamePanel.this.remove(statsPanel);
+		}
+		statsPanel=new UnitStatusPanel(currentUnit);
+		Point temp=currentUnit.getLocation();
+		statsPanel.setLocation( (temp.y+1)*gameTileWidth, (temp.x-2)*gameTileHeight);
+		statsPanel.setSize(gameTileWidth*2, gameTileHeight*3);
+		MainGamePanel.this.add(statsPanel).setVisible(true);
+	}
+	
+	private void drawShortestPathLineToCursor(Graphics g){
+		Graphics2D g2=(Graphics2D)g;
+		Point temp=new Point(cursorLocation.y, cursorLocation.x);
+		Point [] path = gameBoard.shortestPath(currentUnit.getLocation(), temp);
 		
+		
+		
+		//loop through the points on the path that the player will follow and draw a waypoint
+		//icon at each of those points on the board to visualize it for the player
+		if(path[0]!=null){
+			for (int i = 0; i < path.length; i++) {
+				System.out.println("drawing");
+				int x = path[i].y;
+				int y = path[i].x;
+				g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
+			}
+		}
+		if(!gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
+			if(!(currentUnit.getLocation().x==cursorLocation.y && currentUnit.getLocation().y==cursorLocation.x))
+				g2.drawImage(invalidMove, cursorLocation.x * gameTileWidth, cursorLocation.y * gameTileHeight, gameTileWidth, gameTileHeight, null);
+			
+		}
+	}
+		
+	private boolean showStats=false;
+
 	private class KeyManager implements KeyListener{
 
 		private int unitIndex=1;
@@ -144,7 +198,6 @@ public class MainGamePanel extends JPanel {
 				}
 				else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
 					cursorLocation.translate(0, -1);
-					
 					repaint();
 				}
 				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
@@ -155,11 +208,26 @@ public class MainGamePanel extends JPanel {
 					currentGameState=GameState.CyclingThroughUnits;
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+					if(statsPanel!=null){
+						MainGamePanel.this.add(statsPanel);
+					}
 					repaint();
 				}
 				else if(key==KeyEvent.VK_ENTER){
-					
-					currentGameState=GameState.ChoosingAttack;
+					//The player wants this unit to move to this location so we have to go and
+					//check if that is a valid destination.
+					if(gameBoard.checkAvailable(cursorLocation)){
+						Point [] path=gameBoard.shortestPath(currentUnit.getLocation(), cursorLocation);
+						if(path!=null){
+							UnitMoved moveCommand =new UnitMoved(source, currentUnit, path);
+							try {
+								serverOut.writeObject(moveCommand);
+								currentGameState=GameState.ChoosingAttack;
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					}
 				}
 			}
 			//if the player is trying to just choose his current unit then the cursor will 
@@ -170,6 +238,8 @@ public class MainGamePanel extends JPanel {
 					if(unitIndex<gameBoard.getUserUnits().size()-1){
 						unitIndex++;
 					}
+
+					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 					repaint();
@@ -178,6 +248,8 @@ public class MainGamePanel extends JPanel {
 					if(unitIndex>1){
 						unitIndex--;
 					}
+					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 					repaint();
@@ -186,6 +258,22 @@ public class MainGamePanel extends JPanel {
 				else if(key==KeyEvent.VK_ENTER){
 					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 					currentGameState=GameState.ChoosingMove;
+					if(MainGamePanel.this.statsPanel!=null){
+						MainGamePanel.this.remove(statsPanel);
+					}
+					repaint();
+				}
+				//if the user presses 's' the stats panel will be brought up for the current unit
+				else if(key==KeyEvent.VK_S){
+					if(showStats==true){
+						showStats=false;
+						MainGamePanel.this.remove(statsPanel);
+						repaint();
+					}
+					else{
+						showStats=true;
+						repaint();
+					}
 				}
 			}
 		}
@@ -202,6 +290,7 @@ public class MainGamePanel extends JPanel {
 	
 	public void update(GameBoard currentGameBoard){
 		this.currentBoard=currentGameBoard.getGameBoard();
+		this.gameBoard=currentGameBoard;
 		this.repaint();
 	}
 	

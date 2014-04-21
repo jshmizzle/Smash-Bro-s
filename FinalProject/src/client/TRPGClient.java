@@ -117,7 +117,7 @@ public class TRPGClient extends JFrame implements Client{
 		//mainMenuPanel = new MainMenuPanel(username, outputStream);
 		//start with MainGamePanel for testing menus will be added later the game comes first
 		initializeGameBoard();
-		gamePanel=new MainGamePanel(currentBoard, outputStream);
+		gamePanel=new MainGamePanel(userName, currentBoard, outputStream);
 		currentPanel=gamePanel;
 		this.add(currentPanel).setVisible(true);
 		this.pack();
@@ -205,8 +205,24 @@ public class TRPGClient extends JFrame implements Client{
 		}
 	}
 
-	public void unitMoved(String source, ArrayList<Point> moves) {
+	public void unitMoved(String source, Unit u, Point [] moves) {
 		// TODO We'll have this up and running when Lorenzo is finished with shortestPath
+		System.out.println("Unit moved");
+		int actualTotalMoveLength;
 		
+		//first, determine how many moves from the chosen list can actually be taken.
+		if(u.getMovesLeft()-moves.length>=0){
+			actualTotalMoveLength=u.getMovesLeft();
+		}
+		else{ 
+			actualTotalMoveLength=moves.length;
+		}
+		
+
+		//loop through each point on the path and tell the gameBoard the unit moved to each
+		//new point. Only allow the unit to take its specified maxNum of moves
+		for(u.getMovesLeft(); u.getMovesLeft()<actualTotalMoveLength; u.moveTaken()){
+			
+		}
 	}
 }

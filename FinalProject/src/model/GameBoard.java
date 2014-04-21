@@ -123,6 +123,37 @@ public class GameBoard {
 		gameBoard[boardHeight / 2 + 1][boardWidth - 1] = '#';
 		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
 
+		
+		int i = 0;
+		
+		for (Unit u : compUnits) {
+			if (u.getCharRepresentation() == 'P'
+					|| u.getCharRepresentation() == 'p') {
+
+			} else {
+				gameBoard[1][boardHeight / 2 - 2 + i] = u.getCharRepresentation();
+				Point p = new Point(1, boardHeight / 2 - 2 + i);
+				u.setLocation(p);
+				i++;
+			}
+		}
+
+		int j = 0;
+
+		gameBoard[boardHeight - 1][boardHeight / 2] = 'p';
+		for (Unit c : userUnits) {
+			if (c.getCharRepresentation() == 'P'|| c.getCharRepresentation() == 'p') {
+
+			}
+
+			else {
+				gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c.getCharRepresentation();
+				Point p = new Point(boardHeight - 2, boardWidth / 2 - 2 + j);
+				c.setLocation(p);
+				j++;
+			}
+		}
+		 
 	}
 
 	/************************************************************************************/
