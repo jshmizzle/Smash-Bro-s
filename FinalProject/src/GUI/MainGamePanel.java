@@ -26,7 +26,7 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	private Image boulder, megaman, sonic, grass, mario, goku, link, princess, waypoint, invalidMove; 
+	private Image boulder, megaman, sonic, grass, mario, goku, link, princess, waypoint, tree, invalidMove; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
@@ -77,6 +77,7 @@ public class MainGamePanel extends JPanel {
 			princess=ImageIO.read(new File("images/princess.png"));
 			waypoint=ImageIO.read(new File("images/1GlowingOrb.png"));
 			invalidMove=ImageIO.read(new File("images/notValidCursor.png"));
+			tree=ImageIO.read(new File("images/TreeSprites1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -123,6 +124,10 @@ public class MainGamePanel extends JPanel {
 				else if(currentBoard[row][col]=='P'|| currentBoard[row][col]=='p'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+				}
+				else if(currentBoard[row][col]=='!'){
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					g2.drawImage(tree, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 			}
 		}
