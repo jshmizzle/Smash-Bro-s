@@ -89,6 +89,8 @@ public class GameBoard {
 	}
 
 	private void setMapOne() {
+		
+		//rocks
 		gameBoard[boardHeight / 2 - 5][boardWidth / 2 - 2] = '#';
 		gameBoard[boardHeight / 2 - 4][boardWidth / 2 - 2] = '#';
 		gameBoard[boardHeight / 2 - 3][boardWidth / 2 - 2] = '#';
@@ -126,6 +128,12 @@ public class GameBoard {
 		gameBoard[boardHeight / 2 - 1][boardWidth - 2] = '#';
 		gameBoard[boardHeight / 2 + 1][boardWidth - 1] = '#';
 		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
+		
+		//trees
+		gameBoard[boardHeight / 4][boardWidth / 4] = '!';
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth/4)] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth /4] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth-(boardWidth/4)] = '!';
 
 		int i = 0;
 		/*
@@ -726,6 +734,9 @@ public class GameBoard {
 			}
 		}
 		return attRange;
+}
+	public void startNewGame() {
+		
 	}
 
 	/************************************************************************************/

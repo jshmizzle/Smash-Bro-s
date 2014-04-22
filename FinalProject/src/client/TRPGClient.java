@@ -171,6 +171,10 @@ public class TRPGClient extends JFrame implements Client{
 			t.start();
 		}
 	}
+	
+	public void newGame(){
+		currentBoard.startNewGame();
+	}
 
 	public void unitDied(String client, Unit u) {
 		if(client.equals(userName))

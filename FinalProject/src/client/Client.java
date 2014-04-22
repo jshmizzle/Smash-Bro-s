@@ -30,5 +30,7 @@ public interface Client {
 	
 	public void unitMoved(String source, Unit u, ArrayList<Point> moves);
 
+	public void newGame();
+
 
 }
