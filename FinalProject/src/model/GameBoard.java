@@ -127,38 +127,30 @@ public class GameBoard {
 		gameBoard[boardHeight / 2 + 1][boardWidth - 1] = '#';
 		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
 
-		
 		int i = 0;
-		
-		for (Unit u : compUnits) {
-			if (u.getCharRepresentation() == 'P'
-					|| u.getCharRepresentation() == 'p') {
+		/*
+		 * for (Unit u : compUnits) { if (u.getCharRepresentation() == 'P' ||
+		 * u.getCharRepresentation() == 'p') {
+		 * 
+		 * } else { gameBoard[1][boardHeight / 2 - 2 + i] = u
+		 * .getCharRepresentation(); Point p = new Point(1, boardHeight / 2 - 2
+		 * + i); u.setLocation(p); i++; }
+		 * 
+		 * }
+		 * 
+		 * int j = 0;
+		 * 
+		 * gameBoard[boardHeight - 1][boardHeight / 2] = 'p'; for (Unit c :
+		 * userUnits) { if (c.getCharRepresentation() == 'P' ||
+		 * c.getCharRepresentation() == 'p') {
+		 * 
+		 * }
+		 * 
+		 * else { gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
+		 * .getCharRepresentation(); Point p = new Point(boardHeight - 2,
+		 * boardWidth / 2 - 2 + j); c.setLocation(p); j++; } }
+		 */
 
-			} else {
-				gameBoard[1][boardHeight / 2 - 2 + i] = u.getCharRepresentation();
-				Point p = new Point(1, boardHeight / 2 - 2 + i);
-				u.setLocation(p);
-				i++;
-			}
-			
-		}
-
-		int j = 0;
-
-		gameBoard[boardHeight - 1][boardHeight / 2] = 'p';
-		for (Unit c : userUnits) {
-			if (c.getCharRepresentation() == 'P'|| c.getCharRepresentation() == 'p') {
-
-			}
-
-			else {
-				gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c.getCharRepresentation();
-				Point p = new Point(boardHeight - 2, boardWidth / 2 - 2 + j);
-				c.setLocation(p);
-				j++;
-			}
-		}
-		 
 	}
 
 	/************************************************************************************/
@@ -440,7 +432,7 @@ public class GameBoard {
 	}
 
 	public void useThisItem(String client, Unit u, Item item) {
-		if(u.isAlive()){
+		if (u.isAlive()) {
 			u.useItem(item);
 		}
 	}
@@ -479,38 +471,38 @@ public class GameBoard {
 			u.setMovesLeft(u.getDistance());
 		}
 	}
-	
+
 	/**
-	 * This method checks if there are no more units alive.
-	 * If a team has no units alive, it's lost boolean is set to true,
-	 * the other teams' won boolean is set to true,
-	 * and this method returns true.
-	 * If current scenario is "Kill the Princess," it checks if either teams'
-	 * princess is dead, then does likewise;
+	 * This method checks if there are no more units alive. If a team has no
+	 * units alive, it's lost boolean is set to true, the other teams' won
+	 * boolean is set to true, and this method returns true. If current scenario
+	 * is "Kill the Princess," it checks if either teams' princess is dead, then
+	 * does likewise;
+	 * 
 	 * @return
 	 */
-	
-	public boolean gameOver(){
-		if(userUnits.isEmpty()){
+
+	public boolean gameOver() {
+		if (userUnits.isEmpty()) {
 			userLost = true;
 			compWon = true;
 			return true;
 		}
-		if(compUnits.isEmpty()){
+		if (compUnits.isEmpty()) {
 			compLost = true;
 			userWon = true;
 			return true;
 		}
-		if(currentScenario == 1){
-			for(Unit u : userUnits){
-				if(u.getName().equals("Princess") && u.getHealth() == 0){
+		if (currentScenario == 1) {
+			for (Unit u : userUnits) {
+				if (u.getName().equals("Princess") && u.getHealth() == 0) {
 					userLost = true;
 					compWon = true;
 					return true;
 				}
 			}
-			for(Unit u : compUnits){
-				if(u.getName().equals("Princess") && u.getHealth() == 0){
+			for (Unit u : compUnits) {
+				if (u.getName().equals("Princess") && u.getHealth() == 0) {
 					compLost = true;
 					userWon = true;
 					return true;
@@ -519,23 +511,22 @@ public class GameBoard {
 		}
 		return false;
 	}
-	
-	public boolean userLost(){
+
+	public boolean userLost() {
 		return userLost;
 	}
-	
-	public boolean compLost(){
+
+	public boolean compLost() {
 		return compLost;
 	}
-	
-	public boolean compWon(){
+
+	public boolean compWon() {
 		return compWon;
 	}
-	
-	public boolean userWon(){
+
+	public boolean userWon() {
 		return userWon;
 	}
-	
 
 	/*
 	 * private Point[] shortestPath = null;; private int shortestLength;
@@ -623,7 +614,7 @@ public class GameBoard {
 			for (int i = 0; i < gameBoard.length; i++) {
 				for (int j = 0; j < gameBoard[0].length; j++) {
 					if (tiles[i][j].status.equals("fringe")) {
-						tiles=findDistance(tiles, new Point(i, j));
+						tiles = findDistance(tiles, new Point(i, j));
 					} else if (!tiles[i][j].status.equals("marked")) {
 						marked = true;
 					}
@@ -636,59 +627,229 @@ public class GameBoard {
 	private Tiles[][] findDistance(Tiles[][] tiles, Point p) {
 		// TODO Auto-generated method stub
 		tiles[p.x][p.y].status = "marked";
-
+		
 		tiles[p.x][p.y].points.add(new Point(p.x, p.y));
-		if (p.x+1>=0 && p.y>=0 && p.x+1< gameBoard.length && p.y< gameBoard[0].length&&checkAvailable(new Point(p.x + 1, p.y))) {
-			if(tiles[p.x + 1][p.y].status.equals("unmarked"))
+		if (p.x + 1 >= 0 && p.y >= 0 && p.x + 1 < gameBoard.length
+				&& p.y < gameBoard[0].length
+				&& checkAvailable(new Point(p.x + 1, p.y))) {
+			if (tiles[p.x + 1][p.y].status.equals("unmarked"))
 				tiles[p.x + 1][p.y].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x + 1][p.y].distance) {
 				tiles[p.x + 1][p.y].distance = tiles[p.x][p.y].distance + 1;
 				tiles[p.x + 1][p.y].points.clear();
 				for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
-					tiles[p.x + 1][p.y].points.add(tiles[p.x][p.y].points.get(i));
+					tiles[p.x + 1][p.y].points.add(tiles[p.x][p.y].points
+							.get(i));
 				}
-				//tiles[p.x + 1][p.y].points.add(new Point(p.x + 1, p.y));
+				// tiles[p.x + 1][p.y].points.add(new Point(p.x + 1, p.y));
 			}
 		}
-		if (p.x-1>=0 && p.y>=0 && p.x-1< gameBoard.length && p.y< gameBoard[0].length &&checkAvailable(new Point(p.x - 1, p.y))) {
-			if(tiles[p.x - 1][p.y].status.equals("unmarked"))
+		if (p.x - 1 >= 0 && p.y >= 0 && p.x - 1 < gameBoard.length
+				&& p.y < gameBoard[0].length
+				&& checkAvailable(new Point(p.x - 1, p.y))) {
+			if (tiles[p.x - 1][p.y].status.equals("unmarked"))
 				tiles[p.x - 1][p.y].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x - 1][p.y].distance) {
 				tiles[p.x - 1][p.y].distance = tiles[p.x][p.y].distance + 1;
 				tiles[p.x - 1][p.y].points.clear();
 				for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
-					tiles[p.x -1][p.y].points.add(tiles[p.x][p.y].points.get(i));
+					tiles[p.x - 1][p.y].points.add(tiles[p.x][p.y].points
+							.get(i));
 				}
-				//tiles[p.x - 1][p.y].points.add(new Point(p.x - 1, p.y));
+				// tiles[p.x - 1][p.y].points.add(new Point(p.x - 1, p.y));
 			}
 		}
-		if (p.x>=0 && p.y+1>=0 && p.x< gameBoard.length && p.y+1< gameBoard[0].length&&checkAvailable(new Point(p.x, p.y + 1))) {
-			if(tiles[p.x][p.y+1].status.equals("unmarked"))
-				tiles[p.x ][p.y+1].status = "fringe";
+		if (p.x >= 0 && p.y + 1 >= 0 && p.x < gameBoard.length
+				&& p.y + 1 < gameBoard[0].length
+				&& checkAvailable(new Point(p.x, p.y + 1))) {
+			if (tiles[p.x][p.y + 1].status.equals("unmarked"))
+				tiles[p.x][p.y + 1].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y + 1].distance) {
 				tiles[p.x][p.y + 1].distance = tiles[p.x][p.y].distance + 1;
-				tiles[p.x ][p.y+1].points.clear();
+				tiles[p.x][p.y + 1].points.clear();
 				for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
-					tiles[p.x][p.y+1].points.add(tiles[p.x][p.y].points.get(i));
-					
+					tiles[p.x][p.y + 1].points.add(tiles[p.x][p.y].points
+							.get(i));
+
 				}
-				//tiles[p.x][p.y+1].points.add(new Point(p.x, p.y+1));
+				// tiles[p.x][p.y+1].points.add(new Point(p.x, p.y+1));
 			}
 		}
-		if (p.x>=0 && p.y-1>=0 && p.x< gameBoard.length && p.y-1< gameBoard[0].length&& checkAvailable(new Point(p.x, p.y - 1))) {
-			if(tiles[p.x ][p.y-1].status.equals("unmarked"))
-				tiles[p.x ][p.y-1].status = "fringe";
+		if (p.x >= 0 && p.y - 1 >= 0 && p.x < gameBoard.length
+				&& p.y - 1 < gameBoard[0].length
+				&& checkAvailable(new Point(p.x, p.y - 1))) {
+			if (tiles[p.x][p.y - 1].status.equals("unmarked"))
+				tiles[p.x][p.y - 1].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y - 1].distance) {
 				tiles[p.x][p.y - 1].distance = tiles[p.x][p.y].distance + 1;
-				tiles[p.x ][p.y-1].points.clear();
+				tiles[p.x][p.y - 1].points.clear();
 				for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
-					tiles[p.x][p.y-1].points.add(tiles[p.x][p.y].points.get(i));
-					
+					tiles[p.x][p.y - 1].points.add(tiles[p.x][p.y].points
+							.get(i));
+
 				}
 			}
 		}
 		return tiles;
 	}
 
+	public ArrayList<Point> findAttackRange(Point p, int range) {
+		Tiles tiles[][] = new Tiles[gameBoard.length][gameBoard[0].length];
+		// sets the status of each space on the board
+		for (int i = 0; i < gameBoard.length; i++) {
+			for (int j = 0; j < gameBoard[0].length; j++) {
+				tiles[i][j] = new Tiles();
+			}
+		}
+		tiles[p.x][p.y].distance=0;
+		tiles = findRange(p, tiles);
+		boolean marked = true;
+		while (marked && !tiles[6][6].status.equals("marked")) {
+			marked = false;
+			for (int i = 0; i < gameBoard.length; i++) {
+				for (int j = 0; j < gameBoard[0].length; j++) {
+					if (tiles[i][j].status.equals("fringe")) {
+						tiles = findRange(new Point(i, j), tiles);
+						
+					} else if (tiles[i][j].status.equals("unmarked")) {
+						marked = true;
+					}
+				}
+			}
+		}
+		ArrayList<Point> attRange = new ArrayList<>();
+		for (int i = 0; i < gameBoard.length; i++) {
+			for (int j = 0; j < gameBoard[0].length; j++) {
+					if (tiles[i][j].distance <= range && checkAvailable(new Point (i,j))) {
+						attRange.add(new Point(i, j));
+					}
+			}
+		}
+		return attRange;
+	}
+
 	/************************************************************************************/
+
+	private Tiles[][] findRange(Point p, Tiles[][] tiles) {
+		tiles[p.x][p.y].status = "marked";	
+		tiles[p.x][p.y].points.add(new Point(p.x, p.y));
+		if (p.x + 1 >= 0 && p.y >= 0 && p.x + 1 < gameBoard.length
+				&& p.y < gameBoard[0].length) {
+			/*if (!checkAvailable(new Point(p.x + 1, p.y))) {
+				tiles = inWay(tiles, new Point(p.x + 1, p.y), 'd');
+			} else {*/
+				if (tiles[p.x + 1][p.y].status.equals("unmarked"))
+					tiles[p.x + 1][p.y].status = "fringe";
+				if (tiles[p.x][p.y].distance + 1 < tiles[p.x + 1][p.y].distance) {
+					tiles[p.x + 1][p.y].distance = tiles[p.x][p.y].distance + 1;
+					tiles[p.x + 1][p.y].points.clear();
+					for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
+						tiles[p.x + 1][p.y].points.add(tiles[p.x][p.y].points
+								.get(i));
+					}
+				//}
+			}
+		}
+		if (p.x - 1 >= 0 && p.y >= 0 && p.x - 1 < gameBoard.length
+				&& p.y < gameBoard[0].length
+				&& checkAvailable(new Point(p.x - 1, p.y))) {
+			 /*if(!checkAvailable(new Point(p.x - 1, p.y))) {
+				tiles = inWay(tiles, new Point(p.x - 1, p.y), 'u');
+			} else {*/
+				if (tiles[p.x - 1][p.y].status.equals("unmarked"))
+					tiles[p.x - 1][p.y].status = "fringe";
+				if (tiles[p.x][p.y].distance + 1 < tiles[p.x - 1][p.y].distance) {
+					tiles[p.x - 1][p.y].distance = tiles[p.x][p.y].distance + 1;
+					tiles[p.x - 1][p.y].points.clear();
+					for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
+						tiles[p.x - 1][p.y].points.add(tiles[p.x][p.y].points
+								.get(i));
+					}
+				//}
+			}
+		}
+		if (p.x >= 0 && p.y + 1 >= 0 && p.x < gameBoard.length
+				&& p.y + 1 < gameBoard[0].length
+				&& checkAvailable(new Point(p.x, p.y + 1))) {
+			/*if (!checkAvailable(new Point(p.x, p.y + 1))) {
+				tiles = inWay(tiles, new Point(p.x, p.y + 1), 'r');
+			} else {*/
+				if (tiles[p.x][p.y + 1].status.equals("unmarked"))
+					tiles[p.x][p.y + 1].status = "fringe";
+				if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y + 1].distance) {
+					tiles[p.x][p.y + 1].distance = tiles[p.x][p.y].distance + 1;
+					tiles[p.x][p.y + 1].points.clear();
+					for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
+						tiles[p.x][p.y + 1].points.add(tiles[p.x][p.y].points
+								.get(i));
+
+					}
+				//}
+			}
+		}
+		if (p.x >= 0 && p.y - 1 >= 0 && p.x < gameBoard.length
+				&& p.y - 1 < gameBoard[0].length
+				&& checkAvailable(new Point(p.x, p.y - 1))) {
+			/*if (!checkAvailable(new Point(p.x, p.y - 1))) {
+				tiles = inWay(tiles, new Point(p.x, p.y - 1), 'r');
+			} else {*/
+				if (tiles[p.x][p.y - 1].status.equals("unmarked"))
+					tiles[p.x][p.y - 1].status = "fringe";
+				if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y - 1].distance) {
+					tiles[p.x][p.y - 1].distance = tiles[p.x][p.y].distance + 1;
+					tiles[p.x][p.y - 1].points.clear();
+					for (int i = 0; i < tiles[p.x][p.y].points.size(); i++) {
+						tiles[p.x][p.y - 1].points.add(tiles[p.x][p.y].points
+								.get(i));
+
+					}
+				}
+			//}
+		}
+		return tiles;
+	}
+
+	// gets rid of objects that are not in range
+	private Tiles[][] inWay(Tiles[][] tiles, Point p, char c) {
+		tiles[p.x][p.y].open = "blocked";
+		
+		if (c == 'u') {
+			for (int i = p.x; i >= 0; i--) {
+				tiles[i][p.y].open = "blocked";
+				for (int j = (p.y - (p.x - i)); j < (p.y + (p.x - i)); j++) {
+					if (i >= 0 && j >= 0 && i < gameBoard.length
+							&& j < gameBoard[0].length)
+						tiles[i][j].open = "blocked";
+				}
+			}
+		} else if (c == 'd') {
+			for (int i = p.x; i < gameBoard.length; i++) {
+				tiles[i][p.y].open = "blocked";
+				for (int j = (p.y - (i - p.x)); j < (p.y + (i - p.x)); j++) {
+					if (i >= 0 && j >= 0 && i < gameBoard.length
+							&& j < gameBoard[0].length)
+						tiles[i][j].open = "blocked";
+				}
+			}
+		} else if (c == 'r') {
+			for (int i = p.y; i < gameBoard[0].length; i++) {
+				tiles[p.x][i].open = "blocked";
+				for (int j = (p.x - (i - p.y)); j < (p.x + (i - p.y)); j++) {
+					if (i >= 0 && j >= 0 && i < gameBoard.length
+							&& j < gameBoard[0].length)
+						tiles[j][i].open = "blocked";
+				}
+			}
+		} else {
+			for (int i = p.y; i >= 0; i--) {
+				tiles[p.x][i].open = "blocked";
+				for (int j = (p.x - (p.y - i)); j < (p.x + (p.y - i)); j++) {
+					if (i >= 0 && j >= 0 && i < gameBoard.length
+							&& j < gameBoard[0].length)
+						tiles[j][i].open = "blocked";
+				}
+			}
+		}
+		return tiles;
+	}
 }

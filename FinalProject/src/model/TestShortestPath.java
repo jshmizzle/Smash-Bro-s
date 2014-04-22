@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class TestShortestPath {
 	public static void main(String[] args) {
 		GameBoard game = new GameBoard(null, null, 1, 1);
-		ArrayList<Point> a = game.findShortestPath(new Point(7, 7), new Point(8, 8));
+		ArrayList<Point> a = game.findAttackRange(new Point(7, 7), 4);
 		if (a == null) {
 			System.out.println("hi");
 		} else {
