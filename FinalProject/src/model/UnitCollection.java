@@ -11,7 +11,7 @@ public class UnitCollection {
 		unitList = new ArrayList<>();
 		Unit goku = new Goku('g');
 		Unit link = new Link('l');
-		Unit mario = new Mario('m');
+		Unit mario = new Mario('w');
 		Unit megaMan = new MegaMan('M');
 		Unit sonic = new Sonic('s');
 		//can add more
