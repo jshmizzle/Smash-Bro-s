@@ -11,7 +11,6 @@ import server.TRPGServer;
 
 public class PickUpItemCommand extends Command<Client>{
 	
-	private String source;
 	private Point p;
 	
 	
@@ -28,7 +27,7 @@ public class PickUpItemCommand extends Command<Client>{
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.pickUpItem(source, p);
+		executeOn.pickUpItem(getSource(), p);
 	}
 
 	

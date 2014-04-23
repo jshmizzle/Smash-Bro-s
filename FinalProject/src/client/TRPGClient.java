@@ -44,7 +44,7 @@ public class TRPGClient extends JFrame implements Client{
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
 	private boolean myTurn = true;
-	private ArrayList<Item> itemList;
+	private ArrayList<Item> itemList=new ArrayList<Item>();
 
 	public static void main(String[] args) {
 //		try {
@@ -211,11 +211,11 @@ public class TRPGClient extends JFrame implements Client{
 			list.add(sneakers);
 			
 			Random random = new Random();
-			int num = random.nextInt(list.size());
+			int num = random.nextInt(list.size()-1);
 			
 			Item item = (list.get(num));
 			itemList.add(item);
-			System.out.println("Picked up item");
+			System.out.println("Picked up item: " + item.getName());
 			currentBoard.removeItem(p);
 		}
 		else
