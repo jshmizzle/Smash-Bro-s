@@ -143,9 +143,10 @@ public class GameBoard {
 		int i = 0;
 		for (Unit u : compUnits) {
 			if (u.getCharRepresentation() == 'P'
-					|| u.getCharRepresentation() == 'p')
-				; // do nothing
-
+					|| u.getCharRepresentation() == 'p'){
+				u.setLocation(new Point(0,boardHeight / 2));
+			}
+			
 			else {
 				gameBoard[1][boardHeight / 2 - 2 + i] = u
 						.getCharRepresentation();
@@ -162,7 +163,7 @@ public class GameBoard {
 		for (Unit c : userUnits) {
 			if (c.getCharRepresentation() == 'P'
 					|| c.getCharRepresentation() == 'p') {
-
+				c.setLocation(new Point(0,boardHeight / 2));
 			}
 
 			else {
@@ -374,15 +375,18 @@ public class GameBoard {
 		boolean isOpen = true;
 		Point change = new Point(0, 0);
 
-		if (thisX != otherX && thisY != otherY)
+		if (!(thisX == otherX || thisY == otherY))
 			return false;
 
 		if (thisX == otherX) {
 			if (Math.abs(thisY - otherY) > thisRange)
 				return false;
 
-			if (thisY > otherY)
-				for (int i = otherY; i <= thisY; i++) {
+
+			if (thisY > otherY){
+				if (thisY-otherY==1)
+					return true;
+				for (int i = thisY-1; i > otherY; i--) {
 					change.setLocation((double) thisX, (double) i);
 					if (!checkAvailable(change)) {
 						isOpen = false;
@@ -390,8 +394,11 @@ public class GameBoard {
 					}
 
 				}
-			else
-				for (int i = thisY; i <= otherY; i++) {
+			}
+			else{
+				if(otherY-thisY==1)
+					return true;
+				for (int i = thisY+1; i < otherY; i++) {
 					change.setLocation((double) thisX, (double) i);
 					if (!checkAvailable(change)) {
 						isOpen = false;
@@ -399,14 +406,18 @@ public class GameBoard {
 					}
 
 				}
+			}
 		} // end thisX == otherX
 
 		else {
 			if (Math.abs(thisX - otherX) > thisRange)
 				return false;
 
-			if (thisX > otherX)
-				for (int i = otherX; i <= thisX; i++) {
+			if(thisX-otherX==1){
+				return true;
+			}
+			else if (thisX > otherX)
+				for (int i = thisX-1; i > otherX; i--) {
 					change.setLocation((double) i, (double) thisY);
 					if (!checkAvailable(change)) {
 						isOpen = false;
@@ -414,7 +425,10 @@ public class GameBoard {
 					}
 				}
 			else
-				for (int i = thisX; i <= otherX; i++) {
+				if(otherX-thisX==1){
+					return true;
+				}
+				for (int i = thisX+1; i < otherX; i++) {
 					change.setLocation((double) i, (double) thisY);
 					if (!checkAvailable(change)) {
 						isOpen = false;
@@ -774,7 +788,7 @@ public class GameBoard {
 		for (int i = 0; i < gameBoard.length; i++) {
 			for (int j = 0; j < gameBoard[0].length; j++) {
 				if (tiles[i][j].distance <= range
-						&& checkAvailable(new Point(i, j))) {
+						&& checkAvailable(new Point(i, j))){
 					attRange.add(new Point(i, j));
 				}
 			}

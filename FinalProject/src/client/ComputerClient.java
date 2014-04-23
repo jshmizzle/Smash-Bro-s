@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -185,6 +184,7 @@ public class ComputerClient extends JFrame implements Client {
 		sendEndTurnCommand();
 	}
 
+	int florb=1;
 	private void moveTurn() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getCompUnits();
@@ -203,6 +203,9 @@ public class ComputerClient extends JFrame implements Client {
 			ArrayList<Point> path = new ArrayList<>();
 			ArrayList<Point> moves = new ArrayList<>();
 			Unit u = compUnits.get(i);
+			if(!u.isAlive()){
+				return;
+			}
 			System.out.println(u.getName()+" "+u.getMovesLeft());
 			Random random=new Random();
 			boolean yes=true;
@@ -231,13 +234,16 @@ public class ComputerClient extends JFrame implements Client {
 			for(int h=0; h<moves.size(); h++){
 				System.out.println("before " +moves.get(h).toString());
 			}
+			for (int j = 1; j < u.getDistance()+1 ; j++) {
+				moves.add(path.get(j));
+			}
 			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
 			try{
 				outputStream.writeObject(moveCommand);
 			}catch(IOException e){
 				e.printStackTrace();
 			}
-		}
+			}
 	}
 
 	private void attackTurn() {
@@ -279,9 +285,6 @@ public class ComputerClient extends JFrame implements Client {
 		}
 	}
 
-	public void unitMoved(String source, ArrayList<Point> moves) {
-		
-	}
 	private boolean moving=true;
 	
 	public boolean isMoving(){
@@ -363,7 +366,11 @@ public class ComputerClient extends JFrame implements Client {
 				System.out.println(u.getName()+"move left");
 			}
 		}
+
 		System.out.println(u.getLocation() + "test");
+	System.out.println(u.getLocation() + "testComp");
+		moving=false;
+
 
 	}
 
