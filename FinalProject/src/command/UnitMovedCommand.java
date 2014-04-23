@@ -8,7 +8,7 @@ import client.Client;
 
 public class UnitMovedCommand extends Command<Client>{
 
-	private String source;
+	//private String source;
 	private ArrayList<Point> moves;
 	private int unitIndex;
 	
@@ -22,7 +22,7 @@ public class UnitMovedCommand extends Command<Client>{
 	@Override
 	public void execute(Client executeOn) {
 		System.out.println("command sent");
-		executeOn.unitMoved(source, unitIndex, moves);
+		executeOn.unitMoved(getSource(), unitIndex, moves);
 	}
 
 }
