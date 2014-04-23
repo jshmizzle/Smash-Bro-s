@@ -203,7 +203,7 @@ public class ComputerClient extends JFrame implements Client {
 				florb=2;
 			}
 			else {
-				path = currentBoard.findShortestPath(u.getLocation(), new Point(19, 19));
+				path = currentBoard.findShortestPath(u.getLocation(), new Point(19, 0));
 				florb=1;
 			}
 			
