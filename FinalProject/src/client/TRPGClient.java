@@ -134,9 +134,9 @@ public class TRPGClient extends JFrame implements Client{
 		playingAlready = true;
 	}
 
-	public void useItem(String client, Unit u, Item item) {
-		if(client.equals(userName)){
-			currentBoard.useThisItem(client, u, item);
+	public void useItem(String client, int index, Item item) {
+		if(!client.equals("Computer")){
+			currentBoard.useThisItem(client, currentBoard.getUserUnits().get(index), item);
 		}
 		else
 			; // do nothing
@@ -161,15 +161,14 @@ public class TRPGClient extends JFrame implements Client{
 		currentBoard.startNewGame();
 	}
 
-	public void unitDied(String client, Unit u) {
-		if(client.equals(userName))
-			currentBoard.userUnitDied(u);
-		else
-			currentBoard.compUnitDied(u);
-	}
 
-	public void attackUnit(String client, Unit from, Unit to) {
-			currentBoard.attackUnit(from,to);
+
+	public void attackUnit(String client, int fromIndex, int toIndex) {
+		if(!client.equals("Computer")){
+			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),currentBoard.getCompUnits().get(toIndex) );
+		}
+		else
+			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),currentBoard.getUserUnits().get(toIndex));
 	}
 
 	public void endTurn(String client) {
@@ -188,10 +187,12 @@ public class TRPGClient extends JFrame implements Client{
 		}
 	}
 
-	public void pickUpItem(String client, Unit u, Item item) {
+	public void pickUpItem(String client, Item item) {
 		if(client.equals(userName)){
 			itemList.add(item);
 		}
+		else
+			; // do nothing
 	}
 
 	/**
@@ -263,4 +264,12 @@ public class TRPGClient extends JFrame implements Client{
 	public boolean isMoving(){
 		return moving;
 	}
+
+
+	@Override
+	public void pickUpItem(String source, int index, Item item) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

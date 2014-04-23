@@ -42,7 +42,7 @@ public class GameBoard {
 		currentScenario = scenario;
 		playerList = new ArrayList<>();
 
-		// playerList.add(player1);
+		 //playerList.add(player1);
 		// playerList.add(player2);
 
 		for (int i = 0; i < gameBoard.length; i++)
@@ -53,26 +53,26 @@ public class GameBoard {
 		gameBoard[0][boardHeight / 2] = 'P';
 
 		int i = 0;
-		/*
-		 * for (Unit u : compUnits) { if (u.getCharRepresentation() == 'P' ||
-		 * u.getCharRepresentation() == 'p') {
-		 * 
-		 * } else { gameBoard[1][boardHeight / 2 - 2 + i] = u
-		 * .getCharRepresentation(); Point p = new Point(1, boardHeight / 2 - 2
-		 * + i); u.setLocation(p); i++; } }
-		 * 
-		 * int j = 0;
-		 * 
-		 * gameBoard[boardHeight - 1][boardHeight / 2] = 'p'; for (Unit c :
-		 * userUnits) { if (c.getCharRepresentation() == 'P' ||
-		 * c.getCharRepresentation() == 'p') {
-		 * 
-		 * }
-		 * 
-		 * else { gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
-		 * .getCharRepresentation(); Point p = new Point(boardHeight - 2,
-		 * boardWidth / 2 - 2 + j); c.setLocation(p); j++; } }
-		 */
+		
+		  for (Unit u : compUnits) { if (u.getCharRepresentation() == 'P' ||
+		  u.getCharRepresentation() == 'p') {
+		  
+		  } else { gameBoard[1][boardHeight / 2 - 2 + i] = u
+		  .getCharRepresentation(); Point p = new Point(1, boardHeight / 2 - 2
+		  + i); u.setLocation(p); i++; } }
+		  
+		  int j = 0;
+		  
+		  gameBoard[boardHeight - 1][boardHeight / 2] = 'p'; for (Unit c :
+		  userUnits) { if (c.getCharRepresentation() == 'P' ||
+		  c.getCharRepresentation() == 'p') {
+		  
+		  }
+		  
+		  else { gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
+		  .getCharRepresentation(); Point p = new Point(boardHeight - 2,
+		  boardWidth / 2 - 2 + j); c.setLocation(p); j++; } }
+		 
 
 		if (currentMap == 1) {
 			setMapOne();
@@ -464,18 +464,15 @@ public class GameBoard {
 		return compUnits;
 	}
 
-	public void userUnitDied(Unit u) {
+	public void unitDied(Unit u) {
 		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
-		userUnits.remove(u);
-	}
-
-	public void compUnitDied(Unit u) {
-		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
-		compUnits.remove(u);
 	}
 
 	public void attackUnit(Unit from, Unit to) {
 		from.attack(to);
+		if(to.getHealth()==0){
+			unitDied(to);
+		}
 	}
 
 	public void resetCompMoves() {
@@ -501,16 +498,7 @@ public class GameBoard {
 	 */
 
 	public boolean gameOver() {
-		if (userUnits.isEmpty()) {
-			userLost = true;
-			compWon = true;
-			return true;
-		}
-		if (compUnits.isEmpty()) {
-			compLost = true;
-			userWon = true;
-			return true;
-		}
+		
 		if (currentScenario == 1) {
 			for (Unit u : userUnits) {
 				if (u.getName().equals("Princess") && u.getHealth() == 0) {
@@ -527,7 +515,38 @@ public class GameBoard {
 				}
 			}
 		}
+		userLost = checkIfUserLost();
+		compLost = checkIfCompLost();
+		
+		
+		if (userLost) {
+			compWon = true;
+			return true;
+		}
+		if (compLost) {
+			userWon = true;
+			return true;
+		}
+		
 		return false;
+	}
+
+	private boolean checkIfCompLost() {
+		for(Unit unit : compUnits){
+			if(unit.getHealth()>0){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean checkIfUserLost() {
+		for(Unit unit : userUnits){
+			if(unit.getHealth()>0){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean userLost() {
@@ -722,7 +741,23 @@ public class GameBoard {
 		tiles[p.x][p.y].distance=0;
 		tiles = findRange(p, tiles);
 		boolean marked = true;
-		while (marked && !tiles[6][6].status.equals("marked")) {
+		
+		//check to see which square to use as a reference
+		int l,k;
+		int row1=19-p.x;
+		int row2=p.x-0;
+		int col1=19-p.x;
+		int col2=p.x-0;
+		if(row1>row2)
+			l=19;
+		else
+			l=0;
+		if(col1>col2)
+			k=19;
+		else
+			k=0;
+	
+		while (marked && !tiles[l][k].status.equals("marked")) {
 			marked = false;
 			for (int i = 0; i < gameBoard.length; i++) {
 				for (int j = 0; j < gameBoard[0].length; j++) {

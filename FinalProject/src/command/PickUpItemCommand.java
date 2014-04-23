@@ -13,7 +13,7 @@ public class PickUpItemCommand extends Command<Client>{
 	
 	private String source;
 	private Item item;
-	private Unit u;;
+	private int index;
 	
 	
 	/**
@@ -23,15 +23,15 @@ public class PickUpItemCommand extends Command<Client>{
 	 * @param source
 	 * @param itemChanges
 	 */
-	public PickUpItemCommand(String source,Unit u,Item item) {
+	public PickUpItemCommand(String source,int index,Item item) {
 		super(source);
 		this.item=item;
-		this.u=u;
+		this.index=index;
 	}
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.pickUpItem(source, u, item);
+		executeOn.pickUpItem(source, index, item);
 	}
 
 	
