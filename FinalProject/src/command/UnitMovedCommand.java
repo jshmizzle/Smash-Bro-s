@@ -14,7 +14,6 @@ public class UnitMovedCommand extends Command<Client>{
 	
 	public UnitMovedCommand(String source, int unitIndex, ArrayList<Point> moves) {
 		super(source);
-		this.source=source;
 		this.moves=moves;
 		this.unitIndex=unitIndex;
 	}

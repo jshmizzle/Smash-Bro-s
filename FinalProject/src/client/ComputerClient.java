@@ -56,7 +56,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
-		// initializeFrame();
+		initializeGameBoard();
 		ComputerServerHandler handler = new ComputerServerHandler(this,
 				inputStream);
 		Thread t = new Thread(handler);
