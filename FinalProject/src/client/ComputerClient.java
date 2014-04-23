@@ -184,7 +184,6 @@ public class ComputerClient extends JFrame implements Client{
 	private void executeProtocol() {
 		// TODO Auto-generated method stub
 		
-		
 		sendEndTurnCommand();
 	}
 
@@ -223,7 +222,7 @@ public class ComputerClient extends JFrame implements Client{
 	}
 
 	@Override
-	public void pickUpItem(String source, int index, Item item) {
+	public void pickUpItem(String source, Point p) {
 		// TODO Auto-generated method stub
 		
 	}
