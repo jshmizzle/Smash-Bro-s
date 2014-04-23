@@ -177,19 +177,7 @@ public class Unit implements Serializable{
 		boolean hasTwo=false;
 		SecondChance two=new SecondChance();
 		if (health<0){//checks if health goes to 0 or less
-			for(Item obj: items){
-				if(two.compareTo(obj)==0){ //checks if any items in the list are secondchances
-					items.remove(obj);
-					hasTwo=true;
-					break;
-				}
-			}
-			if(hasTwo==true){ //if they have second chance they dont die
-				health=healthFull/2;
-			}
-			else{ //if not they die
-				dead();
-			}
+			dead();
 		}
 
 	}

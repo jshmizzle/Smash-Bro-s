@@ -172,6 +172,7 @@ public class TRPGClient extends JFrame implements Client{
 	public void attackUnit(String client, int fromIndex, int toIndex) {
 		if(!client.equals("Computer")){
 			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),currentBoard.getCompUnits().get(toIndex) );
+			System.out.println(currentBoard.getCompUnits().get(2).getHealth());
 		}
 		else
 			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),currentBoard.getUserUnits().get(toIndex));
@@ -228,8 +229,12 @@ public class TRPGClient extends JFrame implements Client{
 	public void unitMoved(String source, int unitIndex, ArrayList<Point> moves) {
 		//indicate that the movement has begun
 		moving=true;
-		System.out.println("Unit moved");
 		int actualTotalMoveLength;
+		
+		System.out.println(source + ":  ");
+		for(int i=0; i<moves.size(); i++){
+			System.out.println(moves.get(i));
+		}
 		
 		Unit u;
 		if(source.equals(userName)){
@@ -246,14 +251,15 @@ public class TRPGClient extends JFrame implements Client{
 			actualTotalMoveLength=moves.size()-1;
 		}
 		
-		System.out.println(actualTotalMoveLength);
 		//loop through each point on the path and tell the gameBoard the unit moved to each
 		//new point. Only allow the unit to take its specified maxNum of moves
 		for(int i=0; i<actualTotalMoveLength; i++, u.moveTaken()){
+			
 			int x=u.getLocation().x;
 			int y=u.getLocation().y;
 			int dx=moves.get(i+1).x;
 			int dy=moves.get(i+1).y;
+			
 			
 			if(x==dx && y==dy){
 				System.out.println("same");
@@ -282,8 +288,10 @@ public class TRPGClient extends JFrame implements Client{
 				gamePanel.update(currentBoard);
 				System.out.println("move left");
 			}
+			else{
+				System.out.println("awkward position");
+			}
 		}
-		System.out.println(u.getLocation() + "test");
 		gamePanel.update(currentBoard);
 
 		moving=false;

@@ -266,9 +266,6 @@ public class ComputerClient extends JFrame implements Client {
 		}
 	}
 
-	public void unitMoved(String source, ArrayList<Point> moves) {
-		
-	}
 	private boolean moving=true;
 	
 	public boolean isMoving(){

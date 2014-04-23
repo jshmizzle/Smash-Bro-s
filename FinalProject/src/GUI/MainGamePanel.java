@@ -29,7 +29,7 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	private Image boulder, megaman, sonic, grass, mario, goku, link, princess, waypoint, tree, invalidMove, chest; 
+	private Image boulder, megaman, sonic, grass, mario, headstone, goku, link, princess, waypoint, tree, invalidMove, chest; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
@@ -87,6 +87,7 @@ public class MainGamePanel extends JPanel {
 			invalidMove=ImageIO.read(new File("images/notValidCursor.png"));
 			tree=ImageIO.read(new File("images/TreeSprites1.png"));
 			chest=ImageIO.read(new File("images/chestClosed.png"));
+			headstone=ImageIO.read(new File("images/headstone.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -116,7 +117,13 @@ public class MainGamePanel extends JPanel {
 				}
 				else if(currentBoard[row][col]=='M' || currentBoard[row][col]=='m'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					
+					//check if this unit is dead
+					if(gameBoard.getCompUnits().get(2).isAlive()){
 					g2.drawImage(megaman, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					}else{
+						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					}
 				}
 				else if(currentBoard[row][col]=='W' || currentBoard[row][col]=='w'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -128,11 +135,32 @@ public class MainGamePanel extends JPanel {
 				}
 				else if(currentBoard[row][col]=='L'|| currentBoard[row][col]=='l'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					
+					//check if this unit is dead
+					if(gameBoard.getCompUnits().get(1).isAlive()){
 					g2.drawImage(link, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					}else{
+						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					}
 				}
 				else if(currentBoard[row][col]=='P'|| currentBoard[row][col]=='p'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					
+					//check if this unit is dead
+					if(currentBoard[row][col]=='P'){
+						if(gameBoard.getCompUnits().get(0).isAlive()){
+						g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+						}else{
+							g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+						}
+					}
+					else{//then this is the friendly princess
+						if(gameBoard.getUserUnits().get(0).isAlive()){
+							g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+							}else{
+								g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+							}
+					}
 				}
 				else if(currentBoard[row][col]=='!'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -257,11 +285,10 @@ public class MainGamePanel extends JPanel {
 									//the progression should be to know have the user select an attack 
 									//but for now for testing purposes we will jump straight
 									//to choosing another unit's move
-	//								currentGameState=GameState.ChoosingAttack;
 	
 									gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
 	
-									currentGameState=GameState.CyclingThroughUnits;
+									currentGameState=GameState.ChoosingAttack;
 									previousPath=null;
 								} catch (IOException e) {
 									e.printStackTrace();
@@ -365,18 +392,20 @@ public class MainGamePanel extends JPanel {
 						repaint();
 					}
 					else if(key==KeyEvent.VK_ENTER){
-						if(gameBoard.checkIfEnemy(currentUnit, cursorLocation)){
+						if(gameBoard.checkIfEnemy(currentUnit,new Point(cursorLocation.y, cursorLocation.x))){
+							System.out.println("found enemy");
 							int enemyIndex=-99;
 							ArrayList<Unit> temp=gameBoard.getCompUnits();
 							for(int i=0; i<temp.size(); i++){
-								if(temp.get(i).getLocation()==new Point(cursorLocation.y, cursorLocation.x)){
+								if(temp.get(i).getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
 									enemyIndex=i;
 								}
 							}
 							//only actually send the command if the unit is within range and its
 							//line of fire is not obstructed
-							if (gameBoard.checkOpenLineOfFire(currentUnit,new Point(cursorLocation.y, cursorLocation.x))) {
+							if (gameBoard.checkOpenLineOfFire(currentUnit, new Point(cursorLocation.y, cursorLocation.x))) {
 								UnitAttackCommand moveCommand = new UnitAttackCommand(source, unitIndex, enemyIndex);
+								System.out.println("attacking");
 								try {
 									serverOut.writeObject(moveCommand);
 	
