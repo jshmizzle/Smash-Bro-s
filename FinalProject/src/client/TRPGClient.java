@@ -184,8 +184,9 @@ public class TRPGClient extends JFrame implements Client{
 		else{
 			myTurn = true;
 			//TODO: gonna need to change this for multiplayer
-			if(userName.equals("Computer"))
+			if(userName.equals("Computer")){
 				currentBoard.resetCompMoves();
+			}
 			if(!userName.equals("Computer"))
 				currentBoard.resetUserMoves();
 			else

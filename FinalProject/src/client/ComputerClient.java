@@ -56,7 +56,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
-		// initializeFrame();
+		 initializeGameBoard();
 		ComputerServerHandler handler = new ComputerServerHandler(this,
 				inputStream);
 		Thread t = new Thread(handler);
@@ -208,6 +208,11 @@ public class ComputerClient extends JFrame implements Client {
 				moves.add(path.get(j));
 			}
 			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
+			try{
+				outputStream.writeObject(moveCommand);
+			}catch(IOException e){
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -226,6 +231,11 @@ public class ComputerClient extends JFrame implements Client {
 					for(int l=0; l<user.size(); l++ ){
 						if(temp == user.get(l).getLocation()){
 							UnitAttackCommand attCommand= new UnitAttackCommand (userName,i, l );
+							try{
+								outputStream.writeObject(attCommand);
+							}catch(IOException e){
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -314,31 +324,25 @@ public class ComputerClient extends JFrame implements Client {
 			//if the move is upwards
 			if(x>dx && y==dy){
 				currentBoard.moveUp(userName, u);
-				gamePanel.update(currentBoard);
 				System.out.println("move up");
 			}
 			//if the move is downwards
 			else if(x<dx && y==dy){
 				currentBoard.moveDown(userName, u);
-				gamePanel.update(currentBoard);
 				System.out.println("move down");
 			}
 			//if the move is to the right
 			else if(x==dx && y<dy){
 				currentBoard.moveRight(userName, u);
-				gamePanel.update(currentBoard);
 				System.out.println("move right");
 			}
 			//if the move is left
 			else if(x==dx && y>dy){
 				currentBoard.moveLeft(userName, u);
-				gamePanel.update(currentBoard);
 				System.out.println("move left");
 			}
 		}
 		System.out.println(u.getLocation() + "test");
-		gamePanel.update(currentBoard);
-		gamePanel.updateCurrentUnitAfterMove(u);
 		moving=false;
 
 	}

@@ -31,8 +31,7 @@ public class GameBoard {
 	 * scenario 3 is (dunno yet)
 	 */
 
-	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits,
-			int map, int scenario) {
+	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits,int map, int scenario) {
 
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
