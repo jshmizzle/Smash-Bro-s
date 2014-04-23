@@ -26,9 +26,10 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import command.Command;
 import command.EndTurnCommand;
+import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
-public class ComputerClient extends JFrame implements Client{
+public class ComputerClient extends JFrame implements Client {
 
 	private String host, userName;
 	private int port = 0;
@@ -55,8 +56,9 @@ public class ComputerClient extends JFrame implements Client{
 
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
-		//initializeFrame();
-		ComputerServerHandler handler = new ComputerServerHandler(this, inputStream);
+		// initializeFrame();
+		ComputerServerHandler handler = new ComputerServerHandler(this,
+				inputStream);
 		Thread t = new Thread(handler);
 		t.start();
 	}
@@ -113,18 +115,16 @@ public class ComputerClient extends JFrame implements Client{
 		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0);
 	}
 
-	/*private void initializeFrame() {
-		// mainMenuPanel = new MainMenuPanel(username, outputStream);
-		// start with MainGamePanel for testing menus will be added later the
-		// game comes first
-		initializeGameBoard();
-
-		gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
-		currentPanel = gamePanel;
-		this.add(currentPanel).setVisible(true);
-		this.pack();
-		this.setVisible(true);
-	}*/
+	/*
+	 * private void initializeFrame() { // mainMenuPanel = new
+	 * MainMenuPanel(username, outputStream); // start with MainGamePanel for
+	 * testing menus will be added later the // game comes first
+	 * initializeGameBoard();
+	 * 
+	 * gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
+	 * currentPanel = gamePanel; this.add(currentPanel).setVisible(true);
+	 * this.pack(); this.setVisible(true); }
+	 */
 
 	private void update(Command<?> command) {
 		this.gamePanel.update(currentBoard);
@@ -136,9 +136,10 @@ public class ComputerClient extends JFrame implements Client{
 		playingAlready = true;
 	}
 
-	/*public void useItem(String client, Unit u, Item item) {
-		currentBoard.useThisItem(client, u, item);
-	}*/
+	/*
+	 * public void useItem(String client, Unit u, Item item) {
+	 * currentBoard.useThisItem(client, u, item); }
+	 */
 
 	public void welcomeToLobby(String client) {
 		// open lobby for whoever connected
@@ -147,52 +148,98 @@ public class ComputerClient extends JFrame implements Client{
 		} else {
 			// load lobby (probably needs work)
 			askUserForInfo();// now the client has been logged into the server
-			//initializeFrame();
-			ComputerServerHandler handler = new ComputerServerHandler(this, inputStream);
+			// initializeFrame();
+			ComputerServerHandler handler = new ComputerServerHandler(this,
+					inputStream);
 			Thread t = new Thread(handler);
 			t.start();
 		}
 	}
 
 	public void attackUnit(String client, int fromIndex, int toIndex) {
-		if(!client.equals("Computer")){
-			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),currentBoard.getCompUnits().get(toIndex) );
-		}
-		else
-			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),currentBoard.getUserUnits().get(toIndex));
+		if (!client.equals("Computer")) {
+			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),
+					currentBoard.getCompUnits().get(toIndex));
+		} else
+			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),
+					currentBoard.getUserUnits().get(toIndex));
 	}
 
 	public void endTurn(String client) {
-		if(client.equals(userName)){
+		if (client.equals(userName)) {
 			myTurn = false;
-		}
-		else{
+		} else {
 			myTurn = true;
-			//TODO: gonna need to change this for multiplayer
-			if(userName.equals("Computer"))
+			// TODO: gonna need to change this for multiplayer
+			if (userName.equals("Computer"))
 				currentBoard.resetCompMoves();
-				executeProtocol();
-			if(!userName.equals("Computer"))
+			executeProtocol();
+			if (!userName.equals("Computer"))
 				currentBoard.resetUserMoves();
 			else
-				;  //stuff to fill in for multiplayer
+				; // stuff to fill in for multiplayer
 		}
 	}
 
-
-
 	private void executeProtocol() {
 		// TODO Auto-generated method stub
-		
+		moveTurn();
+		attackTurn();
 		sendEndTurnCommand();
+	}
+
+	private void moveTurn() {
+		ArrayList<Unit> compUnits = new ArrayList<>();
+		compUnits = currentBoard.getCompUnits();
+		Point princess = null;
+		for (int j = 0; j < currentBoard.getGameBoard().length; j++) {
+			for (int k = 0; k < currentBoard.getGameBoard()[0].length; k++) {
+				if (currentBoard.getGameBoard()[j][k] == 'P') {
+					princess = new Point(j, k);
+				}
+			}
+		}
+		for (int i = 0; i < compUnits.size(); i++) {
+			ArrayList<Point> path = new ArrayList<>();
+			ArrayList<Point> moves = new ArrayList<>();
+			Unit u = compUnits.get(i);
+			path = currentBoard.findShortestPath(u.getLocation(), princess);
+			for (int j = 0; j < u.getDistance() + 1; j++) {
+				moves.add(path.get(j));
+			}
+			UnitMovedCommand moveCommand = new UnitMovedCommand("Computer", i, moves);
+		}
+	}
+
+	private void attackTurn() {
+		ArrayList<Unit> compUnits = new ArrayList<>();
+		compUnits = currentBoard.getCompUnits();
+		ArrayList<Point> range = new ArrayList<>();
+		for (int i = 0; i < compUnits.size(); i++) {
+			Unit u = compUnits.get(i);
+			range = currentBoard.findAttackRange(u.getLocation(), u.getAttackRange());
+			for (int j = 0; j < range.size(); j++) {
+				Point temp = new Point(range.get(j));
+				if(currentBoard.checkIfEnemy(u, temp)){
+					ArrayList <Unit> user= new ArrayList <>();
+					user=currentBoard.getUserUnits();
+					for(int l=0; l<user.size(); l++ ){
+						if(temp == user.get(l).getLocation()){
+							UnitAttackCommand attCommand= new UnitAttackCommand ("Computer",i, l );
+						}
+					}
+				}
+			}
+		}
+
 	}
 
 	private void sendEndTurnCommand() {
 		// TODO Auto-generated method stub
-		EndTurnCommand command =new EndTurnCommand("Computer");
+		EndTurnCommand command = new EndTurnCommand("Computer");
 		try {
 			outputStream.writeObject(command);
-			//currentGameState=GameState.ChoosingAttack;
+			// currentGameState=GameState.ChoosingAttack;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -200,30 +247,28 @@ public class ComputerClient extends JFrame implements Client{
 
 	public void unitMoved(String source, ArrayList<Point> moves) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
-	public void newGame(){
-		
+	public void newGame() {
+
 	}
 
 	@Override
 	public void useItem(String source, int index, Item item) {
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
 
 	@Override
 	public void unitMoved(String source, int index, ArrayList<Point> moves) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pickUpItem(String source, Point p) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
