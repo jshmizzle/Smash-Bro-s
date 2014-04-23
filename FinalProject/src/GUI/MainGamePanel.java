@@ -294,7 +294,7 @@ public class MainGamePanel extends JPanel {
 								UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
 								try {
 									serverOut.writeObject(moveCommand);
-									//the progression should be to know have the user select an attack 
+									//the progression should be to now have the user select an attack 
 									//but for now for testing purposes we will jump straight
 									//to choosing another unit's move
 	

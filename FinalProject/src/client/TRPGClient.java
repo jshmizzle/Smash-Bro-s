@@ -217,6 +217,7 @@ public class TRPGClient extends JFrame implements Client{
 			itemList.add(item);
 			
 			currentBoard.removeItem(p);
+			System.out.println("Picked up item");
 		}
 		else
 			; // do nothing
