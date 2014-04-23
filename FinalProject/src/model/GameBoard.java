@@ -42,7 +42,7 @@ public class GameBoard {
 		currentScenario = scenario;
 		playerList = new ArrayList<>();
 
-		// playerList.add(player1);
+		 //playerList.add(player1);
 		// playerList.add(player2);
 
 		for (int i = 0; i < gameBoard.length; i++)
@@ -53,26 +53,26 @@ public class GameBoard {
 		gameBoard[0][boardHeight / 2] = 'P';
 
 		int i = 0;
-		/*
-		 * for (Unit u : compUnits) { if (u.getCharRepresentation() == 'P' ||
-		 * u.getCharRepresentation() == 'p') {
-		 * 
-		 * } else { gameBoard[1][boardHeight / 2 - 2 + i] = u
-		 * .getCharRepresentation(); Point p = new Point(1, boardHeight / 2 - 2
-		 * + i); u.setLocation(p); i++; } }
-		 * 
-		 * int j = 0;
-		 * 
-		 * gameBoard[boardHeight - 1][boardHeight / 2] = 'p'; for (Unit c :
-		 * userUnits) { if (c.getCharRepresentation() == 'P' ||
-		 * c.getCharRepresentation() == 'p') {
-		 * 
-		 * }
-		 * 
-		 * else { gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
-		 * .getCharRepresentation(); Point p = new Point(boardHeight - 2,
-		 * boardWidth / 2 - 2 + j); c.setLocation(p); j++; } }
-		 */
+		
+		  for (Unit u : compUnits) { if (u.getCharRepresentation() == 'P' ||
+		  u.getCharRepresentation() == 'p') {
+		  
+		  } else { gameBoard[1][boardHeight / 2 - 2 + i] = u
+		  .getCharRepresentation(); Point p = new Point(1, boardHeight / 2 - 2
+		  + i); u.setLocation(p); i++; } }
+		  
+		  int j = 0;
+		  
+		  gameBoard[boardHeight - 1][boardHeight / 2] = 'p'; for (Unit c :
+		  userUnits) { if (c.getCharRepresentation() == 'P' ||
+		  c.getCharRepresentation() == 'p') {
+		  
+		  }
+		  
+		  else { gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
+		  .getCharRepresentation(); Point p = new Point(boardHeight - 2,
+		  boardWidth / 2 - 2 + j); c.setLocation(p); j++; } }
+		 
 
 		if (currentMap == 1) {
 			setMapOne();
