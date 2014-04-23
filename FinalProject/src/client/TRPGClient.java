@@ -204,14 +204,18 @@ public class TRPGClient extends JFrame implements Client{
 		moving=true;
 		System.out.println("Unit moved");
 		int actualTotalMoveLength;
-		Unit u=currentBoard.getUserUnits().get(unitIndex);
 		
-		//first, determine how many moves from the chosen list can actually be taken.
-		if(u.getMovesLeft()<moves.size()){
-			actualTotalMoveLength=u.getMovesLeft();
+		Unit u;
+		
+		if(source.equals(userName)){
+			u=currentBoard.getUserUnits().get(unitIndex);
 		}
-		else if(u.getMovesLeft()==moves.size()){
-			actualTotalMoveLength=u.getMovesLeft()+1;
+		else{
+			u=currentBoard.getCompUnits().get(unitIndex);
+		}
+		//first, determine how many moves from the chosen list can actually be taken.
+		if(u.getMovesLeft()<=moves.size()-1){
+			actualTotalMoveLength=u.getMovesLeft();
 		}
 		else{ 
 			actualTotalMoveLength=moves.size()-1;
