@@ -185,14 +185,8 @@ public class TRPGClient extends JFrame implements Client{
 		else{
 			myTurn = true;
 			gamePanel.myTurn();
-			//TODO: gonna need to change this for multiplayer
-			if(userName.equals("Computer")){
-				currentBoard.resetCompMoves();
-			}
 			if(!userName.equals("Computer"))
 				currentBoard.resetUserMoves();
-			else
-				;  //stuff to fill in for multiplayer
 		}
 	}
 	
@@ -289,7 +283,7 @@ public class TRPGClient extends JFrame implements Client{
 		}
 		System.out.println(u.getLocation() + "test");
 		gamePanel.update(currentBoard);
-		gamePanel.updateCurrentUnitAfterMove(u);
+
 		moving=false;
 	}
 	private boolean moving=true;
