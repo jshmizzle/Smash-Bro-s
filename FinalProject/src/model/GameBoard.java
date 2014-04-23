@@ -346,7 +346,8 @@ public class GameBoard {
 		int y = (int) p.getY();
 		char charRep = currentUnit.getCharRepresentation();
 
-		if (gameBoard[x][y] == ' ' || gameBoard[x][y] == '#')
+		if (gameBoard[x][y] == ' ' || gameBoard[x][y] == '#' || gameBoard[x][y] == '@'
+				|| gameBoard[x][y] == '!')
 			return false;
 		else if (charRep <= 'z' && charRep >= 'a') {
 			// the character is on the team represented by lowercase chars

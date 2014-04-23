@@ -21,6 +21,7 @@ import model.GameBoard;
 import model.Unit;
 import client.TRPGClient;
 import command.EndTurnCommand;
+import command.PickUpItemCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
@@ -288,13 +289,23 @@ public class MainGamePanel extends JPanel {
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
 						if(gameBoard.checkAvailable(cursorLocation)){
+							/*if(currentBoard[cursorLocation.y][cursorLocation.x] == '@'){
+								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
+								PickUpItemCommand command = new PickUpItemCommand(source,toMove);
+								try {
+									serverOut.writeObject(command);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}*/
 							Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
 							ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 							if(path!=null){
 								UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
 								try {
 									serverOut.writeObject(moveCommand);
-									//the progression should be to know have the user select an attack 
+									//the progression should be to now have the user select an attack 
 									//but for now for testing purposes we will jump straight
 									//to choosing another unit's move
 	
