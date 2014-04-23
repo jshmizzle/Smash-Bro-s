@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 
 import model.GameBoard;
 import model.Unit;
+import client.TRPGClient;
 
 import command.UnitMovedCommand;
 
@@ -26,17 +27,20 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	private Image boulder, megaman, sonic, grass, mario, goku, link, princess, waypoint, invalidMove; 
+	private Image boulder, megaman, sonic, grass, mario, goku, link, princess, waypoint, tree, invalidMove; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
 	private Unit currentUnit;
 	private UnitStatusPanel statsPanel;
 	private String source;
+	private TRPGClient client;
+	private ArrayList<Unit> localUserUnitList;
 	
-	public MainGamePanel(String source, GameBoard startingBoard, ObjectOutputStream serverOut) {
+	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut) {
 		this.serverOut=serverOut;
 		this.source=source;
+		this.client=client;
 		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
@@ -44,7 +48,9 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
-		this.currentUnit=gameBoard.getUserUnits().get(1);
+		this.localUserUnitList=gameBoard.getUserUnits();
+		this.currentUnit=localUserUnitList.get(1);
+//		this.currentUnit=gameBoard.getUserUnits().get(1);
 		
 		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
@@ -77,6 +83,7 @@ public class MainGamePanel extends JPanel {
 			princess=ImageIO.read(new File("images/princess.png"));
 			waypoint=ImageIO.read(new File("images/1GlowingOrb.png"));
 			invalidMove=ImageIO.read(new File("images/notValidCursor.png"));
+			tree=ImageIO.read(new File("images/TreeSprites1.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -123,6 +130,10 @@ public class MainGamePanel extends JPanel {
 				else if(currentBoard[row][col]=='P'|| currentBoard[row][col]=='p'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+				}
+				else if(currentBoard[row][col]=='!'){
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					g2.drawImage(tree, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 			}
 		}
@@ -189,10 +200,11 @@ public class MainGamePanel extends JPanel {
 	}
 		
 	private boolean showStats=false;
+	private int unitIndex=1;
+
 
 	private class KeyManager implements KeyListener{
 
-		private int unitIndex=1;
 		
 		@Override
 		public void keyPressed(KeyEvent arg0) {
@@ -231,10 +243,21 @@ public class MainGamePanel extends JPanel {
 						Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
 						ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 						if(path!=null){
-							UnitMovedCommand moveCommand =new UnitMovedCommand(source, currentUnit, path);
+							UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
 							try {
 								serverOut.writeObject(moveCommand);
-								currentGameState=GameState.ChoosingAttack;
+								//the progression should be to know have the user select an attack 
+								//but for now for testing purposes we will jump straight
+								//to choosing another unit's move
+//								currentGameState=GameState.ChoosingAttack;
+
+								
+								System.out.println(currentUnit.getLocation());
+								gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+								System.out.println(currentUnit==gameBoard.getUserUnits().get(unitIndex));
+								System.out.println(gameBoard.getUserUnits().get(unitIndex).getLocation());
+								currentGameState=GameState.CyclingThroughUnits;
+								previousPath=null;
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -250,8 +273,13 @@ public class MainGamePanel extends JPanel {
 					if(unitIndex<gameBoard.getUserUnits().size()-1){
 						unitIndex++;
 					}
+					else if(unitIndex==gameBoard.getUserUnits().size()-1){
+						unitIndex=1;
+					}
 
-					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+					currentUnit=localUserUnitList.get(unitIndex);
+					
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 					repaint();
@@ -260,15 +288,21 @@ public class MainGamePanel extends JPanel {
 					if(unitIndex>1){
 						unitIndex--;
 					}
-					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-
+					else if (unitIndex==1){
+						unitIndex=gameBoard.getUserUnits().size()-1;
+					}
+//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+					currentUnit=localUserUnitList.get(unitIndex);
+					
 					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
 					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 					repaint();
 				}
 				//if the user presses enter while cycling through units
 				else if(key==KeyEvent.VK_ENTER){
-					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+					currentUnit=localUserUnitList.get(unitIndex);
+
 					currentGameState=GameState.ChoosingMove;
 					if(MainGamePanel.this.statsPanel!=null){
 						MainGamePanel.this.remove(statsPanel);
@@ -326,5 +360,8 @@ public class MainGamePanel extends JPanel {
 		this.repaint();
 	}
 	
+	public void updateCurrentUnitAfterMove(Unit u){
+		this.localUserUnitList.set(unitIndex, u);
+	}
 	
 }

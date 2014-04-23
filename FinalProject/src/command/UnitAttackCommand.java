@@ -12,8 +12,8 @@ import server.TRPGServer;
 public class UnitAttackCommand extends Command<Client>{
 	
 	private String source;
-	private Unit from;
-	private Unit to;
+	private int fromIndex;
+	private int toIndex;
 	
 	
 	/**
@@ -23,15 +23,15 @@ public class UnitAttackCommand extends Command<Client>{
 	 * @param source
 	 * @param itemChanges
 	 */
-	public UnitAttackCommand(String source,Unit from,Unit to) {
+	public UnitAttackCommand(String source,int fromIndex,int toIndex) {
 		super(source);
-		this.from=from;
-		this.to=to;
+		this.fromIndex=fromIndex;
+		this.toIndex=toIndex;
 	}
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.attackUnit(source,from, to);
+		executeOn.attackUnit(source,fromIndex, toIndex);
 	}
 	
 
