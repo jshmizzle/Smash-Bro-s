@@ -234,7 +234,7 @@ public class ComputerClient extends JFrame implements Client {
 			for(int h=0; h<moves.size(); h++){
 				System.out.println("before " +moves.get(h).toString());
 			}
-			for (int j = 1; j < u.getDistance()+1 ; j++) {
+			for (int j = 1; j < u.getDistance() ; j++) {
 				moves.add(path.get(j));
 			}
 			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
