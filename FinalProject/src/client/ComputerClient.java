@@ -6,7 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-
+import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -56,7 +56,9 @@ public class ComputerClient extends JFrame implements Client {
 
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
-		 initializeGameBoard();
+
+		initializeGameBoard();
+
 		ComputerServerHandler handler = new ComputerServerHandler(this,
 				inputStream);
 		Thread t = new Thread(handler);
@@ -115,16 +117,14 @@ public class ComputerClient extends JFrame implements Client {
 		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0);
 	}
 
-	/*
-	 * private void initializeFrame() { // mainMenuPanel = new
-	 * MainMenuPanel(username, outputStream); // start with MainGamePanel for
-	 * testing menus will be added later the // game comes first
-	 * initializeGameBoard();
-	 * 
-	 * gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
-	 * currentPanel = gamePanel; this.add(currentPanel).setVisible(true);
-	 * this.pack(); this.setVisible(true); }
-	 */
+	
+	  /*private void initializeFrame() { 
+	  initializeGameBoard();
+	  
+	  //gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
+	  //currentPanel = gamePanel; this.add(currentPanel).setVisible(true);
+	  this.pack(); this.setVisible(true); }*/
+	 
 
 	private void update(Command<?> command) {
 		this.gamePanel.update(currentBoard);
@@ -178,7 +178,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void executeProtocol() {
 		// TODO Auto-generated method stub
-		
+		System.out.println("h");
 		moveTurn();
 		attackTurn();
 		sendEndTurnCommand();
@@ -199,23 +199,43 @@ public class ComputerClient extends JFrame implements Client {
 			}
 		}*/
 		
-		for (int i = 0; i < compUnits.size(); i++) {
+		for (int i = 1; i < compUnits.size(); i++) {
 			ArrayList<Point> path = new ArrayList<>();
 			ArrayList<Point> moves = new ArrayList<>();
 			Unit u = compUnits.get(i);
-			
-			if(florb==1){
-				path = currentBoard.findShortestPath(u.getLocation(), new Point(19, 0));
-				florb=2;
+			if(!u.isAlive()){
+				return;
 			}
-			else {
-				path = currentBoard.findShortestPath(u.getLocation(), new Point(19, 19));
-				florb=1;
+			System.out.println(u.getName()+" "+u.getMovesLeft());
+			Random random=new Random();
+			boolean yes=true;
+			int rand1=0;
+			int rand2=0;
+			while (yes){
+				rand1 = random.nextInt(19);
+				rand2 = random.nextInt(19);
+				if (currentBoard.checkAvailable(new Point(rand1,rand2))){
+					yes=false;
+				}
 			}
-			
-			for (int j = 1; j < u.getDistance()+1 ; j++) {
+			path = currentBoard.findShortestPath(u.getLocation(), new Point(rand1,rand2));
+			System.out.println("path :" +path.size());
+			int use=0;
+			if(path.size()> u.getDistance()+1){
+				for (int j = 1; j < u.getDistance()+1 ; j++) {
+					moves.add(path.get(j));
+				}
+			}
+			else{
+				for (int j = 0; j < path.size() ; j++) {
+					moves.add(path.get(j));
+				}
+			}
+			for(int h=0; h<moves.size(); h++){
+				System.out.println("before " +moves.get(h).toString());
+			}
+			for (int j = 1; j < u.getDistance() ; j++) {
 				moves.add(path.get(j));
-				
 			}
 			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
 			try{
@@ -223,7 +243,7 @@ public class ComputerClient extends JFrame implements Client {
 			}catch(IOException e){
 				e.printStackTrace();
 			}
-		}
+			}
 	}
 
 	private void attackTurn() {
@@ -256,7 +276,6 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void sendEndTurnCommand() {
 		// TODO Auto-generated method stub
-		System.out.println("send end turn");
 		EndTurnCommand command = new EndTurnCommand(userName);
 		try {
 			outputStream.writeObject(command);
@@ -297,8 +316,10 @@ public class ComputerClient extends JFrame implements Client {
 
 	@Override
 	public void unitMoved(String source, int index, ArrayList<Point> moves) {
-		moving=true;
-		System.out.println("Unit moved");
+		
+		for(int h=0; h<moves.size(); h++){
+		System.out.println("after"+moves.get(h).toString());
+		}
 		int actualTotalMoveLength;
 		
 		Unit u;
@@ -310,17 +331,12 @@ public class ComputerClient extends JFrame implements Client {
 			u=currentBoard.getUserUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
-		if(u.getMovesLeft()<=moves.size()-1){
-			actualTotalMoveLength=u.getMovesLeft();
-		}
-		else{ 
-			actualTotalMoveLength=moves.size()-1;
-		}
+		u.setLocation(moves.get(index));
+		this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
 		
-		System.out.println(actualTotalMoveLength);
 		//loop through each point on the path and tell the gameBoard the unit moved to each
 		//new point. Only allow the unit to take its specified maxNum of moves
-		for(int i=0; i<actualTotalMoveLength; i++, u.moveTaken()){
+		for(int i=0; i<moves.size()-1; i++){
 			int x=u.getLocation().x;
 			int y=u.getLocation().y;
 			int dx=moves.get(i+1).x;
@@ -332,26 +348,29 @@ public class ComputerClient extends JFrame implements Client {
 			//if the move is upwards
 			if(x>dx && y==dy){
 				currentBoard.moveUp(userName, u);
-				System.out.println("move up");
+				System.out.println(u.getName()+"move up");
 			}
 			//if the move is downwards
 			else if(x<dx && y==dy){
 				currentBoard.moveDown(userName, u);
-				System.out.println("move down");
+				System.out.println(u.getName()+"move down");
 			}
 			//if the move is to the right
 			else if(x==dx && y<dy){
 				currentBoard.moveRight(userName, u);
-				System.out.println("move right");
+				System.out.println(u.getName()+"move right");
 			}
 			//if the move is left
 			else if(x==dx && y>dy){
 				currentBoard.moveLeft(userName, u);
-				System.out.println("move left");
+				System.out.println(u.getName()+"move left");
 			}
 		}
-		System.out.println(u.getLocation() + "testComp");
+
+		System.out.println(u.getLocation() + "test");
+	System.out.println(u.getLocation() + "testComp");
 		moving=false;
+
 
 	}
 
