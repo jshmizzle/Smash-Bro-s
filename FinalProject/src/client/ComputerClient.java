@@ -114,7 +114,7 @@ public class ComputerClient extends JFrame implements Client {
 		compUnits.add(p);
 		compUnits.add(l);
 		compUnits.add(m);
-		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0);
+		currentBoard = new GameBoard(playerUnits, compUnits, 1, 1);
 	}
 
 	

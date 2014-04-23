@@ -443,7 +443,8 @@ public class GameBoard {
 	}
 
 	public void removeItem(Point p) {
-		gameBoard[(int) p.getY()][(int) p.getX()] = ' ';
+		if(gameBoard[(int) p.getY()][(int) p.getX()] == '@')
+			gameBoard[(int) p.getY()][(int) p.getX()] = ' ';
 	}
 
 	/************************************************************************************/
