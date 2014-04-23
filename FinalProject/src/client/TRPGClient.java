@@ -189,6 +189,7 @@ public class TRPGClient extends JFrame implements Client{
 			if(!userName.equals("Computer"))
 				currentBoard.resetUserMoves();
 			currentBoard.resetCompMoves();
+			currentPanel.repaint();
 		}
 	}
 	

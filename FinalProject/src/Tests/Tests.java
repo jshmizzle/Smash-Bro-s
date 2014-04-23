@@ -33,7 +33,7 @@ public class Tests {
 		 ArrayList<Unit> player = new ArrayList<Unit>();
 		 ArrayList<Unit> computer = new ArrayList<Unit>();
 		 
-		 Sonic s = new Sonic("Sonic", 10000, 10, b);
+		 Sonic s = new Sonic('s');
 		 Sonic t = new Sonic("Sonic", 10000, 10, b);
 		 Sonic r = new Sonic("Sonic", 10000, 10, b);
 		 Sonic e = new Sonic("Sonic", 10000, 10, b);
@@ -67,9 +67,9 @@ public class Tests {
      public void testOpenLineOfFire() {
 		
 		 Point b = new Point(0, 0);
-		 Sonic sonic = new Sonic("Sonic", 50, 10, b);
+		 Sonic sonic = new Sonic('s');
 		 MegaMan m = new MegaMan('M');
-		 Sonic sComputer = new Sonic("Sonic", 50, 10, b);
+		 Sonic sComputer = new Sonic('S');
 		 ArrayList<Unit> player = new ArrayList<Unit>();
 		 ArrayList<Unit> computer = new ArrayList<Unit>();
 		 player.add(sonic);
@@ -79,7 +79,8 @@ public class Tests {
 		 GameBoard g = new GameBoard(player, computer, 1, 0);
 		 sonic.setLocation(new Point(0, 1));
 		 sComputer.setLocation(new Point(0, 2));
-		 
+		 g.setUnitToThisSpot(sonic, new Point(0, 1));
+		 g.setUnitToThisSpot(sComputer, new Point(0, 2));
 		 /*
 		  * Sonic is at (0, 1) so he should be able to attack enemies at:
 		  * (0, 0), (0, 2), (1, 1)
