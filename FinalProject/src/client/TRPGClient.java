@@ -225,6 +225,9 @@ public class TRPGClient extends JFrame implements Client{
 	 */
 	public void unitMoved(String source, int unitIndex, ArrayList<Point> moves) {
 		//indicate that the movement has begun
+		for(int h=0; h<moves.size(); h++){
+			System.out.println("after"+moves.get(h).toString());
+			}
 		moving=true;
 		System.out.println("Unit moved");
 		int actualTotalMoveLength;
@@ -283,7 +286,6 @@ public class TRPGClient extends JFrame implements Client{
 		}
 		System.out.println(u.getLocation() + "test");
 		gamePanel.update(currentBoard);
-
 		moving=false;
 	}
 	private boolean moving=true;
