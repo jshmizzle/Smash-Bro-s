@@ -9,14 +9,6 @@ import model.Unit;
 public interface Client {
 	
 	public void useItem(String client, Unit u, Item item);
-	
-	public void moveUnitLeft(String client, Unit u, Point p);
-	
-	public void moveUnitRight(String client, Unit u, Point p);
-	
-	public void moveUnitDown(String client, Unit u, Point p);
-	
-	public void moveUnitUp(String client, Unit u, Point p);
 
 	public void welcomeToLobby(String client);
 
@@ -28,7 +20,7 @@ public interface Client {
 	
 	public void pickUpItem(String client, Unit u, Item item);
 	
-	public void unitMoved(String source, Unit u, ArrayList<Point> moves);
+	public void unitMoved(String source, int unitIndex, ArrayList<Point> moves);
 
 	public void newGame();
 
