@@ -208,6 +208,7 @@ public class MainGamePanel extends JPanel {
 		
 	private boolean showStats=false;
 	private int unitIndex=1;
+	private boolean myTurn=true;
 
 
 	private class KeyManager implements KeyListener{
@@ -216,7 +217,7 @@ public class MainGamePanel extends JPanel {
 		@Override
 		public void keyPressed(KeyEvent arg0) {
 			int key=arg0.getKeyCode();
-			if(client.myTurn()){
+			if(myTurn){
 				if(currentGameState==GameState.ChoosingMove){
 					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
 						cursorLocation.translate(1, 0);
@@ -422,4 +423,10 @@ public class MainGamePanel extends JPanel {
 		this.localUserUnitList.set(unitIndex, u);
 	}
 	
+	public void myTurn(){
+		if(myTurn==false)
+			myTurn=true;
+		else 
+			myTurn=false;
+	}
 }

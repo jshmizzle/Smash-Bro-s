@@ -183,6 +183,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void executeProtocol() {
 		// TODO Auto-generated method stub
+		
 		moveTurn();
 		attackTurn();
 		sendEndTurnCommand();
@@ -192,20 +193,25 @@ public class ComputerClient extends JFrame implements Client {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getCompUnits();
 		Point princess = null;
-		for (int j = 0; j < currentBoard.getGameBoard().length; j++) {
+		/*for (int j = 0; j < currentBoard.getGameBoard().length; j++) {
 			for (int k = 0; k < currentBoard.getGameBoard()[0].length; k++) {
-				if (currentBoard.getGameBoard()[j][k] == 'P') {
+				if (currentBoard.getGameBoard()[j][k] == 'p') {
 					princess = new Point(j, k);
+					System.out.println(princess); 
+					break;
 				}
 			}
-		}
+		}*/
+		
 		for (int i = 0; i < compUnits.size(); i++) {
 			ArrayList<Point> path = new ArrayList<>();
 			ArrayList<Point> moves = new ArrayList<>();
 			Unit u = compUnits.get(i);
-			path = currentBoard.findShortestPath(u.getLocation(), princess);
-			for (int j = 0; j < u.getDistance() + 1; j++) {
+			path = currentBoard.findShortestPath(u.getLocation(), new Point(19,11));
+			
+			for (int j = 1; j < u.getDistance()+1 ; j++) {
 				moves.add(path.get(j));
+				
 			}
 			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
 			try{
@@ -246,6 +252,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void sendEndTurnCommand() {
 		// TODO Auto-generated method stub
+		System.out.println("send end turn");
 		EndTurnCommand command = new EndTurnCommand(userName);
 		try {
 			outputStream.writeObject(command);
@@ -296,10 +303,10 @@ public class ComputerClient extends JFrame implements Client {
 		Unit u;
 		
 		if(source.equals(userName)){
-			u=currentBoard.getUserUnits().get(index);
+			u=currentBoard.getCompUnits().get(index);
 		}
 		else{
-			u=currentBoard.getCompUnits().get(index);
+			u=currentBoard.getUserUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
 		if(u.getMovesLeft()<=moves.size()-1){
