@@ -192,8 +192,8 @@ public class ComputerClient extends JFrame implements Client{
 		// TODO Auto-generated method stub
 		EndTurnCommand command =new EndTurnCommand("Computer");
 		try {
-			serverOut.writeObject(moveCommand);
-			currentGameState=GameState.ChoosingAttack;
+			outputStream.writeObject(command);
+			//currentGameState=GameState.ChoosingAttack;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

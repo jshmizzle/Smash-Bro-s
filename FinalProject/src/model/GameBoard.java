@@ -196,7 +196,7 @@ public class GameBoard {
 
 	/************************************************************************************/
 
-	public Unit inspectPosition(Point p) {
+	public char inspectPosition(Point p) {
 		return gameBoard[(int) p.getX()][(int) p.getY()];
 	}
 
@@ -515,30 +515,38 @@ public class GameBoard {
 				}
 			}
 		}
+		userLost = checkIfUserLost();
+		compLost = checkIfCompLost();
 		
-		for(Unit unit : userUnits){
-			if(unit.getHealth()>0){
-				break;
-			}
-		}
-		for(Unit unit : compUnits){
-			if(unit.getHealth()>0){
-				
-			}
-		}
 		
-		if (userUnits.isEmpty()) {
-			userLost = true;
+		if (userLost) {
 			compWon = true;
 			return true;
 		}
-		if (compUnits.isEmpty()) {
-			compLost = true;
+		if (compLost) {
 			userWon = true;
 			return true;
 		}
 		
 		return false;
+	}
+
+	private boolean checkIfCompLost() {
+		for(Unit unit : compUnits){
+			if(unit.getHealth()>0){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean checkIfUserLost() {
+		for(Unit unit : userUnits){
+			if(unit.getHealth()>0){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean userLost() {
