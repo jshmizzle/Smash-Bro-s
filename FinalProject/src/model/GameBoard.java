@@ -194,7 +194,7 @@ public class GameBoard {
 		if (y >= boardHeight || y < 0)
 			return false;
 
-		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' ')
+		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' ' || gameBoard[(int) point.getX()][(int) point.getY()] == '@')
 			return true;
 
 		return false;
