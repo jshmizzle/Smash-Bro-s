@@ -211,12 +211,17 @@ public class ComputerClient extends JFrame implements Client {
 			boolean yes=true;
 			int rand1=0;
 			int rand2=0;
+			int z=0;
 			while (yes){
 				rand1 = random.nextInt(19);
 				rand2 = random.nextInt(19);
 				if (currentBoard.checkAvailable(new Point(rand1,rand2))){
 					yes=false;
 				}
+				if(z==10){
+					return;
+				}
+				z++;
 			}
 			path = currentBoard.findShortestPath(u.getLocation(), new Point(rand1,rand2));
 			System.out.println("path :" +path.size());
@@ -234,9 +239,9 @@ public class ComputerClient extends JFrame implements Client {
 			for(int h=0; h<moves.size(); h++){
 				System.out.println("before " +moves.get(h).toString());
 			}
-			for (int j = 1; j < u.getDistance() ; j++) {
-				moves.add(path.get(j));
-			}
+//			for (int j = 1; j < u.getDistance() ; j++) {
+//				moves.add(path.get(j));
+//			}
 			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
 			try{
 				outputStream.writeObject(moveCommand);
@@ -331,7 +336,7 @@ public class ComputerClient extends JFrame implements Client {
 			u=currentBoard.getUserUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
-		u.setLocation(moves.get(index));
+//		u.setLocation(moves.get(index));
 		this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
 		
 		//loop through each point on the path and tell the gameBoard the unit moved to each

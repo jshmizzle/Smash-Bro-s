@@ -160,14 +160,14 @@ public class MainGamePanel extends JPanel {
 					
 					//check if this unit is dead
 					if(currentBoard[row][col]=='P'){
-						if(gameBoard.getCompUnits().get(0).isAlive()){
+						if(gameBoard.getUserUnits().get(0).isAlive()){
 						g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 						}else{
 							g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 						}
 					}
 					else{//then this is the friendly princess
-						if(gameBoard.getUserUnits().get(0).isAlive()){
+						if(gameBoard.getCompUnits().get(0).isAlive()){
 							g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 							}else{
 								g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);

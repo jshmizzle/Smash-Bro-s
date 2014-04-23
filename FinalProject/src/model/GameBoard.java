@@ -140,17 +140,19 @@ public class GameBoard {
 		gameBoard[boardHeight / 2][boardWidth-1] = '@';
 		gameBoard[boardHeight/2][boardWidth /2] = '@';
 
+		gameBoard[0][boardWidth / 2] = 'p';
+		
 		int i = 0;
 		for (Unit u : compUnits) {
 			if (u.getCharRepresentation() == 'P'
 					|| u.getCharRepresentation() == 'p'){
-				u.setLocation(new Point(0,boardHeight / 2));
+				u.setLocation(new Point(0,boardWidth / 2));
 			}
 			
 			else {
 				gameBoard[1][boardHeight / 2 - 2 + i] = u
 						.getCharRepresentation();
-				Point p = new Point(1, boardHeight / 2 - 2 + i);
+				Point p = new Point(1, boardWidth / 2 - 2 + i);
 				u.setLocation(p);
 				i++;
 			}
@@ -159,10 +161,9 @@ public class GameBoard {
 
 		int j = 0;
 
-		gameBoard[boardHeight - 1][boardHeight / 2] = 'p';
+		gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
 		for (Unit c : userUnits) {
-			if (c.getCharRepresentation() == 'P'
-					|| c.getCharRepresentation() == 'p') {
+			if (c.getCharRepresentation() == 'P'|| c.getCharRepresentation() == 'p') {
 				c.setLocation(new Point(0,boardHeight / 2));
 			}
 
@@ -349,13 +350,13 @@ public class GameBoard {
 			return false;
 		else if (charRep <= 'z' && charRep >= 'a') {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'A' || gameBoard[x][y] <= 'Z')
+			if (gameBoard[x][y] >= 'A' && gameBoard[x][y] <= 'Z')
 				return true;
 			else
 				return false;
 		} else {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'a' || gameBoard[x][y] <= 'z')
+			if (gameBoard[x][y] >= 'a' && gameBoard[x][y] <= 'z')
 				return true;
 			else
 				return false;
