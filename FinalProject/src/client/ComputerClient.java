@@ -174,10 +174,6 @@ public class ComputerClient extends JFrame implements Client {
 			if (userName.equals("Computer"))
 				currentBoard.resetCompMoves();
 			executeProtocol();
-			if (!userName.equals("Computer"))
-				currentBoard.resetUserMoves();
-			else
-				; // stuff to fill in for multiplayer
 		}
 	}
 
@@ -185,7 +181,7 @@ public class ComputerClient extends JFrame implements Client {
 		// TODO Auto-generated method stub
 		
 		moveTurn();
-		attackTurn();
+		//attackTurn();
 		sendEndTurnCommand();
 	}
 
@@ -296,7 +292,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	@Override
 	public void unitMoved(String source, int index, ArrayList<Point> moves) {
-		moving=true;
+	
 		System.out.println("Unit moved");
 		int actualTotalMoveLength;
 		
@@ -350,7 +346,6 @@ public class ComputerClient extends JFrame implements Client {
 			}
 		}
 		System.out.println(u.getLocation() + "test");
-		moving=false;
 
 	}
 
