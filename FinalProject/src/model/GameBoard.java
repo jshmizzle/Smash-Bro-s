@@ -350,13 +350,13 @@ public class GameBoard {
 			return false;
 		else if (charRep <= 'z' && charRep >= 'a') {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'A' || gameBoard[x][y] <= 'Z')
+			if (gameBoard[x][y] >= 'A' && gameBoard[x][y] <= 'Z')
 				return true;
 			else
 				return false;
 		} else {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'a' || gameBoard[x][y] <= 'z')
+			if (gameBoard[x][y] >= 'a' && gameBoard[x][y] <= 'z')
 				return true;
 			else
 				return false;
