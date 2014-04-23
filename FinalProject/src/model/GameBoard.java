@@ -458,8 +458,11 @@ public class GameBoard {
 
 		int x = p.x;
 		int y = p.y;
+		int prevX=u.getLocation().x;
+		int prevY=u.getLocation().y;
 
 		if (checkAvailable(p)) {
+			gameBoard[prevX][prevY]=' ';
 			gameBoard[x][y] = u.getCharRepresentation();
 			u.setLocation(p);
 			return true;

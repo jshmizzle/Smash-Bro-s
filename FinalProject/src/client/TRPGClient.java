@@ -290,6 +290,9 @@ public class TRPGClient extends JFrame implements Client{
 			}
 			else{
 				System.out.println("awkward position");
+				//just let the stupid AI jump wherever it wants to...
+				currentBoard.setUnitToThisSpot(u, moves.get(i+1));
+				gamePanel.update(currentBoard);
 			}
 		}
 		gamePanel.update(currentBoard);
