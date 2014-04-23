@@ -43,7 +43,7 @@ public class TRPGClient extends JFrame implements Client{
 	private MainGamePanel gamePanel;
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
-	private boolean myTurn = false;
+	private boolean myTurn = true;
 	private ArrayList<Item> itemList;
 
 	public static void main(String[] args) {
@@ -180,17 +180,24 @@ public class TRPGClient extends JFrame implements Client{
 	public void endTurn(String client) {
 		if(client.equals(userName)){
 			myTurn = false;
+			gamePanel.myTurn();
 		}
 		else{
 			myTurn = true;
+			gamePanel.myTurn();
 			//TODO: gonna need to change this for multiplayer
-			if(userName.equals("Computer"))
+			if(userName.equals("Computer")){
 				currentBoard.resetCompMoves();
+			}
 			if(!userName.equals("Computer"))
 				currentBoard.resetUserMoves();
 			else
 				;  //stuff to fill in for multiplayer
 		}
+	}
+	
+	public boolean myTurn(){
+		return myTurn;
 	}
 
 	public void pickUpItem(String client, Point p) {
@@ -229,7 +236,6 @@ public class TRPGClient extends JFrame implements Client{
 		int actualTotalMoveLength;
 		
 		Unit u;
-		
 		if(source.equals(userName)){
 			u=currentBoard.getUserUnits().get(unitIndex);
 		}

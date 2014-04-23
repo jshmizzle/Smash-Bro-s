@@ -21,7 +21,7 @@ public class EndTurnCommand extends Command<Client>{
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.endTurn(source);
+		executeOn.endTurn(getSource());
 	}
 	
 

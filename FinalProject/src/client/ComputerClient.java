@@ -56,7 +56,9 @@ public class ComputerClient extends JFrame implements Client {
 
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
+
 		initializeGameBoard();
+
 		ComputerServerHandler handler = new ComputerServerHandler(this,
 				inputStream);
 		Thread t = new Thread(handler);
@@ -116,14 +118,12 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	
-	  private void initializeFrame() { // mainMenuPanel = new
-	  MainMenuPanel(username, outputStream); // start with MainGamePanel for
-	  testing menus will be added later the // game comes first
+	  /*private void initializeFrame() { 
 	  initializeGameBoard();
 	  
-	  gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
-	  currentPanel = gamePanel; this.add(currentPanel).setVisible(true);
-	  this.pack(); this.setVisible(true); }
+	  //gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
+	  //currentPanel = gamePanel; this.add(currentPanel).setVisible(true);
+	  this.pack(); this.setVisible(true); }*/
 	 
 
 	private void update(Command<?> command) {
@@ -183,6 +183,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void executeProtocol() {
 		// TODO Auto-generated method stub
+		
 		moveTurn();
 		attackTurn();
 		sendEndTurnCommand();
@@ -192,22 +193,32 @@ public class ComputerClient extends JFrame implements Client {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getCompUnits();
 		Point princess = null;
-		for (int j = 0; j < currentBoard.getGameBoard().length; j++) {
+		/*for (int j = 0; j < currentBoard.getGameBoard().length; j++) {
 			for (int k = 0; k < currentBoard.getGameBoard()[0].length; k++) {
-				if (currentBoard.getGameBoard()[j][k] == 'P') {
+				if (currentBoard.getGameBoard()[j][k] == 'p') {
 					princess = new Point(j, k);
+					System.out.println(princess); 
+					break;
 				}
 			}
-		}
+		}*/
+		
 		for (int i = 0; i < compUnits.size(); i++) {
 			ArrayList<Point> path = new ArrayList<>();
 			ArrayList<Point> moves = new ArrayList<>();
 			Unit u = compUnits.get(i);
-			path = currentBoard.findShortestPath(u.getLocation(), princess);
-			for (int j = 0; j < u.getDistance() + 1; j++) {
+			path = currentBoard.findShortestPath(u.getLocation(), new Point(19,11));
+			
+			for (int j = 1; j < u.getDistance()+1 ; j++) {
 				moves.add(path.get(j));
+				
 			}
 			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
+			try{
+				outputStream.writeObject(moveCommand);
+			}catch(IOException e){
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -226,6 +237,11 @@ public class ComputerClient extends JFrame implements Client {
 					for(int l=0; l<user.size(); l++ ){
 						if(temp == user.get(l).getLocation()){
 							UnitAttackCommand attCommand= new UnitAttackCommand (userName,i, l );
+							try{
+								outputStream.writeObject(attCommand);
+							}catch(IOException e){
+								e.printStackTrace();
+							}
 						}
 					}
 				}
@@ -236,6 +252,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void sendEndTurnCommand() {
 		// TODO Auto-generated method stub
+		System.out.println("send end turn");
 		EndTurnCommand command = new EndTurnCommand(userName);
 		try {
 			outputStream.writeObject(command);
@@ -286,10 +303,10 @@ public class ComputerClient extends JFrame implements Client {
 		Unit u;
 		
 		if(source.equals(userName)){
-			u=currentBoard.getUserUnits().get(index);
+			u=currentBoard.getCompUnits().get(index);
 		}
 		else{
-			u=currentBoard.getCompUnits().get(index);
+			u=currentBoard.getUserUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
 		if(u.getMovesLeft()<=moves.size()-1){
@@ -314,31 +331,25 @@ public class ComputerClient extends JFrame implements Client {
 			//if the move is upwards
 			if(x>dx && y==dy){
 				currentBoard.moveUp(userName, u);
-				gamePanel.update(currentBoard);
 				System.out.println("move up");
 			}
 			//if the move is downwards
 			else if(x<dx && y==dy){
 				currentBoard.moveDown(userName, u);
-				gamePanel.update(currentBoard);
 				System.out.println("move down");
 			}
 			//if the move is to the right
 			else if(x==dx && y<dy){
 				currentBoard.moveRight(userName, u);
-				gamePanel.update(currentBoard);
 				System.out.println("move right");
 			}
 			//if the move is left
 			else if(x==dx && y>dy){
 				currentBoard.moveLeft(userName, u);
-				gamePanel.update(currentBoard);
 				System.out.println("move left");
 			}
 		}
 		System.out.println(u.getLocation() + "test");
-		gamePanel.update(currentBoard);
-		gamePanel.updateCurrentUnitAfterMove(u);
 		moving=false;
 
 	}

@@ -20,6 +20,7 @@ import model.GameBoard;
 import model.Unit;
 import client.TRPGClient;
 
+import command.EndTurnCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
@@ -207,6 +208,7 @@ public class MainGamePanel extends JPanel {
 		
 	private boolean showStats=false;
 	private int unitIndex=1;
+	private boolean myTurn=true;
 
 
 	private class KeyManager implements KeyListener{
@@ -215,151 +217,189 @@ public class MainGamePanel extends JPanel {
 		@Override
 		public void keyPressed(KeyEvent arg0) {
 			int key=arg0.getKeyCode();
-			
-			if(currentGameState==GameState.ChoosingMove){
-				if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
-					cursorLocation.translate(1, 0);
-					repaint();
-				}
-				else if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
-					cursorLocation.translate(0,1);
-					repaint();
-				}
-				else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
-					cursorLocation.translate(0, -1);
-					repaint();
-				}
-				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
-					cursorLocation.translate(-1, 0);
-					repaint();
-				}
-				else if(key==KeyEvent.VK_BACK_SPACE){
-					currentGameState=GameState.CyclingThroughUnits;
-					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
-					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
-					if(statsPanel!=null){
-						MainGamePanel.this.add(statsPanel);
+			if(myTurn){
+				if(currentGameState==GameState.ChoosingMove){
+					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+						cursorLocation.translate(1, 0);
+						repaint();
 					}
-					repaint();
-				}
-				else if(key==KeyEvent.VK_ENTER){
-					//The player wants this unit to move to this location so we have to go and
-					//check if that is a valid destination.
-					if(gameBoard.checkAvailable(cursorLocation)){
-						Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
-						ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
-						if(path!=null){
-							UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
-							try {
-								serverOut.writeObject(moveCommand);
-								//the progression should be to know have the user select an attack 
-								//but for now for testing purposes we will jump straight
-								//to choosing another unit's move
-//								currentGameState=GameState.ChoosingAttack;
-
-								gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
-
-								currentGameState=GameState.CyclingThroughUnits;
-								previousPath=null;
-							} catch (IOException e) {
-								e.printStackTrace();
+					else if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
+						cursorLocation.translate(0,1);
+						repaint();
+					}
+					else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
+						cursorLocation.translate(0, -1);
+						repaint();
+					}
+					else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+						cursorLocation.translate(-1, 0);
+						repaint();
+					}
+					else if(key==KeyEvent.VK_BACK_SPACE){
+						currentGameState=GameState.CyclingThroughUnits;
+						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+						if(statsPanel!=null){
+							MainGamePanel.this.add(statsPanel);
+						}
+						repaint();
+					}
+					else if(key==KeyEvent.VK_ENTER){
+						//The player wants this unit to move to this location so we have to go and
+						//check if that is a valid destination.
+						if(gameBoard.checkAvailable(cursorLocation)){
+							Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
+							ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
+							if(path!=null){
+								UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
+								try {
+									serverOut.writeObject(moveCommand);
+									//the progression should be to know have the user select an attack 
+									//but for now for testing purposes we will jump straight
+									//to choosing another unit's move
+	//								currentGameState=GameState.ChoosingAttack;
+	
+									gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+	
+									currentGameState=GameState.CyclingThroughUnits;
+									previousPath=null;
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
 							}
 						}
 					}
+					else if(key==KeyEvent.VK_E){
+						EndTurnCommand endTurn=new EndTurnCommand(source);
+						try{
+							serverOut.writeObject(endTurn);
+							currentGameState=GameState.CyclingThroughUnits;
+						}catch(IOException e){
+							e.printStackTrace();
+						}
+					}
 				}
-			}
-			//if the player is trying to just choose his current unit then the cursor will 
-			//just jump to the location of the unit next or previously in line.
-			else if(currentGameState==GameState.CyclingThroughUnits){
-				
-				if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
-					if(unitIndex<gameBoard.getUserUnits().size()-1){
-						unitIndex++;
-					}
-					else if(unitIndex==gameBoard.getUserUnits().size()-1){
-						unitIndex=1;
-					}
-
-//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-					currentUnit=localUserUnitList.get(unitIndex);
+				//if the player is trying to just choose his current unit then the cursor will 
+				//just jump to the location of the unit next or previously in line.
+				else if(currentGameState==GameState.CyclingThroughUnits){
 					
-					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
-					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
-					repaint();
-				}
-				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
-					if(unitIndex>1){
-						unitIndex--;
-					}
-					else if (unitIndex==1){
-						unitIndex=gameBoard.getUserUnits().size()-1;
-					}
-//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-					currentUnit=localUserUnitList.get(unitIndex);
-					
-					Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
-					cursorLocation.setLocation(unitPoint.y, unitPoint.x);
-					repaint();
-				}
-				//if the user presses enter while cycling through units
-				else if(key==KeyEvent.VK_ENTER){
-//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-					currentUnit=localUserUnitList.get(unitIndex);
-
-					currentGameState=GameState.ChoosingMove;
-					if(MainGamePanel.this.statsPanel!=null){
-						MainGamePanel.this.remove(statsPanel);
-					}
-					repaint();
-				}
-				//if the user presses 's' the stats panel will be brought up for the current unit
-				else if(key==KeyEvent.VK_S){
-					if(showStats==true){
-						showStats=false;
-						MainGamePanel.this.remove(statsPanel);
+					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+						if(unitIndex<gameBoard.getUserUnits().size()-1){
+							unitIndex++;
+						}
+						else if(unitIndex==gameBoard.getUserUnits().size()-1){
+							unitIndex=1;
+						}
+	
+	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+						currentUnit=localUserUnitList.get(unitIndex);
+						
+						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
-					else{
-						showStats=true;
+					else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+						if(unitIndex>1){
+							unitIndex--;
+						}
+						else if (unitIndex==1){
+							unitIndex=gameBoard.getUserUnits().size()-1;
+						}
+	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+						currentUnit=localUserUnitList.get(unitIndex);
+						
+						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
+					//if the user presses enter while cycling through units
+					else if(key==KeyEvent.VK_ENTER){
+	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+						currentUnit=localUserUnitList.get(unitIndex);
+	
+						currentGameState=GameState.ChoosingMove;
+						if(MainGamePanel.this.statsPanel!=null){
+							MainGamePanel.this.remove(statsPanel);
+						}
+						repaint();
+					}
+					//if the user presses 's' the stats panel will be brought up for the current unit
+					else if(key==KeyEvent.VK_S){
+						if(showStats==true){
+							showStats=false;
+							MainGamePanel.this.remove(statsPanel);
+							repaint();
+						}
+						else{
+							showStats=true;
+							repaint();
+						}
+					}
+					else if(key==KeyEvent.VK_E){
+						EndTurnCommand endTurn=new EndTurnCommand(source);
+						try{
+							serverOut.writeObject(endTurn);
+							currentGameState=GameState.CyclingThroughUnits;
+						}catch(IOException e){
+							e.printStackTrace();
+						}
+					}
 				}
-			}
-			//now after the player has had his unit move, he freely moves the cursor to 
-			//attempt to make an attack selection
-			else if(currentGameState==GameState.ChoosingAttack){
-				if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
-					cursorLocation.translate(1, 0);
-					repaint();
+				//now after the player has had his unit move, he freely moves the cursor to 
+				//attempt to make an attack selection
+				else if(currentGameState==GameState.ChoosingAttack){
+					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+						cursorLocation.translate(1, 0);
+						repaint();
+					}
+					else if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
+						cursorLocation.translate(0,1);
+						repaint();
+					}
+					else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
+						cursorLocation.translate(0, -1);
+						repaint();
+					}
+					else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+						cursorLocation.translate(-1, 0);
+						repaint();
+					}
+					else if(key==KeyEvent.VK_ENTER){
+						if(gameBoard.checkIfEnemy(currentUnit, cursorLocation)){
+							int enemyIndex=-99;
+							ArrayList<Unit> temp=gameBoard.getCompUnits();
+							for(int i=0; i<temp.size(); i++){
+								if(temp.get(i).getLocation()==new Point(cursorLocation.y, cursorLocation.x)){
+									enemyIndex=i;
+								}
+							}
+							//only actually send the command if the unit is within range and its
+							//line of fire is not obstructed
+							if (gameBoard.checkOpenLineOfFire(currentUnit,new Point(cursorLocation.y, cursorLocation.x))) {
+								UnitAttackCommand moveCommand = new UnitAttackCommand(source, unitIndex, enemyIndex);
+								try {
+									serverOut.writeObject(moveCommand);
+	
+									gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+	
+									currentGameState = GameState.CyclingThroughUnits;
+									previousPath = null;
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+					else if(key==KeyEvent.VK_E){
+						EndTurnCommand endTurn=new EndTurnCommand(source);
+						try{
+							serverOut.writeObject(endTurn);
+							currentGameState=GameState.CyclingThroughUnits;
+						}catch(IOException e){
+							e.printStackTrace();
+						}
+					}
 				}
-				else if(key==KeyEvent.VK_DOWN && cursorLocation.y<19){
-					cursorLocation.translate(0,1);
-					repaint();
-				}
-				else if(key==KeyEvent.VK_UP && cursorLocation.y>0){
-					cursorLocation.translate(0, -1);
-					repaint();
-				}
-				else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
-					cursorLocation.translate(-1, 0);
-					repaint();
-				}
-//				else if(key==KeyEvent.VK_ENTER){
-//					if(gameBoard.checkIfEnemy(currentUnit, cursorLocation)){
-////						int enemyIndex=0;
-////						UnitAttackCommand moveCommand =new UnitAttackCommand(source, unitIndex, enemyIndex);
-//						try {
-////							serverOut.writeObject(moveCommand);
-//	
-//							gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
-//	
-//							currentGameState=GameState.CyclingThroughUnits;
-//							previousPath=null;
-//						} catch (IOException e) {
-//							e.printStackTrace();
-//						}
-//					}
-//				}
 			}
 		}
 
@@ -383,4 +423,10 @@ public class MainGamePanel extends JPanel {
 		this.localUserUnitList.set(unitIndex, u);
 	}
 	
+	public void myTurn(){
+		if(myTurn==false)
+			myTurn=true;
+		else 
+			myTurn=false;
+	}
 }

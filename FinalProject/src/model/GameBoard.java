@@ -31,8 +31,7 @@ public class GameBoard {
 	 * scenario 3 is (dunno yet)
 	 */
 
-	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits,
-			int map, int scenario) {
+	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits,int map, int scenario) {
 
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
@@ -672,8 +671,7 @@ public class GameBoard {
 
 		tiles[p.x][p.y].points.add(new Point(p.x, p.y));
 		if (p.x + 1 >= 0 && p.y >= 0 && p.x + 1 < gameBoard.length
-				&& p.y < gameBoard[0].length
-				&& checkAvailable(new Point(p.x + 1, p.y))) {
+				&& p.y < gameBoard[0].length && checkAvailable(new Point(p.x+1, p.y))) {
 			if (tiles[p.x + 1][p.y].status.equals("unmarked"))
 				tiles[p.x + 1][p.y].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x + 1][p.y].distance) {
@@ -687,8 +685,7 @@ public class GameBoard {
 			}
 		}
 		if (p.x - 1 >= 0 && p.y >= 0 && p.x - 1 < gameBoard.length
-				&& p.y < gameBoard[0].length
-				&& checkAvailable(new Point(p.x - 1, p.y))) {
+				&& p.y < gameBoard[0].length && checkAvailable(new Point(p.x-1, p.y))) {
 			if (tiles[p.x - 1][p.y].status.equals("unmarked"))
 				tiles[p.x - 1][p.y].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x - 1][p.y].distance) {
@@ -702,8 +699,7 @@ public class GameBoard {
 			}
 		}
 		if (p.x >= 0 && p.y + 1 >= 0 && p.x < gameBoard.length
-				&& p.y + 1 < gameBoard[0].length
-				&& checkAvailable(new Point(p.x, p.y + 1))) {
+				&& p.y + 1 < gameBoard[0].length && checkAvailable(new Point(p.x, p.y+1))) {
 			if (tiles[p.x][p.y + 1].status.equals("unmarked"))
 				tiles[p.x][p.y + 1].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y + 1].distance) {
@@ -718,8 +714,7 @@ public class GameBoard {
 			}
 		}
 		if (p.x >= 0 && p.y - 1 >= 0 && p.x < gameBoard.length
-				&& p.y - 1 < gameBoard[0].length
-				&& checkAvailable(new Point(p.x, p.y - 1))) {
+				&& p.y - 1 < gameBoard[0].length && checkAvailable(new Point(p.x, p.y-1))) {
 			if (tiles[p.x][p.y - 1].status.equals("unmarked"))
 				tiles[p.x][p.y - 1].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y - 1].distance) {
