@@ -117,7 +117,7 @@ public class TRPGClient extends JFrame implements Client{
 		//mainMenuPanel = new MainMenuPanel(username, outputStream);
 		//start with MainGamePanel for testing menus will be added later the game comes first
 		initializeGameBoard();
-		gamePanel=new MainGamePanel(userName, currentBoard, outputStream);
+		gamePanel=new MainGamePanel(userName, currentBoard, this, outputStream);
 		currentPanel=gamePanel;
 		this.add(currentPanel).setVisible(true);
 		this.pack();
@@ -139,7 +139,7 @@ public class TRPGClient extends JFrame implements Client{
 			currentBoard.useThisItem(client, currentBoard.getUserUnits().get(index), item);
 		}
 		else
-			;  // do nothing
+			; // do nothing
 	}
 
 
@@ -199,17 +199,22 @@ public class TRPGClient extends JFrame implements Client{
 	 * This method is called by the UnitMoved Command and it will be used to make sure that the
 	 * unit only moves up to as many times as it is able before its moves are up.
 	 */
-	public void unitMoved(String source, Unit u, ArrayList<Point> moves) {
-		// TODO We'll have this up and running when Lorenzo is finished with shortestPath
+	public void unitMoved(String source, int unitIndex, ArrayList<Point> moves) {
+		//indicate that the movement has begun
+		moving=true;
 		System.out.println("Unit moved");
 		int actualTotalMoveLength;
+		Unit u=currentBoard.getUserUnits().get(unitIndex);
 		
 		//first, determine how many moves from the chosen list can actually be taken.
-		if(u.getMovesLeft()<=moves.size()){
+		if(u.getMovesLeft()<moves.size()){
 			actualTotalMoveLength=u.getMovesLeft();
 		}
+		else if(u.getMovesLeft()==moves.size()){
+			actualTotalMoveLength=u.getMovesLeft()+1;
+		}
 		else{ 
-			actualTotalMoveLength=moves.size();
+			actualTotalMoveLength=moves.size()-1;
 		}
 		
 		System.out.println(actualTotalMoveLength);
@@ -221,50 +226,45 @@ public class TRPGClient extends JFrame implements Client{
 			int dx=moves.get(i+1).x;
 			int dy=moves.get(i+1).y;
 			
-			System.out.println("moving: " + u.getLocation());
-			System.out.println("target " + moves.get(i+1));
-			System.out.println(dx + " , " + dy);
 			if(x==dx && y==dy){
 				System.out.println("same");
 			}
 			//if the move is upwards
 			if(x>dx && y==dy){
-				moveUnitUp(userName, u, moves.get(i+1));
+				currentBoard.moveUp(userName, u);
 				gamePanel.update(currentBoard);
 				System.out.println("move up");
 			}
 			//if the move is downwards
 			else if(x<dx && y==dy){
-				moveUnitDown(userName, u, moves.get(i+1));
+				currentBoard.moveDown(userName, u);
 				gamePanel.update(currentBoard);
 				System.out.println("move down");
 			}
 			//if the move is to the right
 			else if(x==dx && y<dy){
-				moveUnitRight(userName, u, moves.get(i+1));
+				currentBoard.moveRight(userName, u);
 				gamePanel.update(currentBoard);
 				System.out.println("move right");
 			}
 			//if the move is left
 			else if(x==dx && y>dy){
-				moveUnitLeft(userName, u, moves.get(i+1));
+				currentBoard.moveLeft(userName, u);
 				gamePanel.update(currentBoard);
 				System.out.println("move left");
 			}
 		}
+		System.out.println(u.getLocation() + "test");
+		gamePanel.update(currentBoard);
+		gamePanel.updateCurrentUnitAfterMove(u);
+		moving=false;
+	}
+	private boolean moving=true;
+	
+	public boolean isMoving(){
+		return moving;
 	}
 
-	@Override
-	public void moveUnitDown(String source, int index, Point p) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void unitMoved(String source, int index, ArrayList<Point> moves) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void pickUpItem(String source, int index, Item item) {

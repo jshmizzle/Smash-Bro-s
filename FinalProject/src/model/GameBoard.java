@@ -207,7 +207,7 @@ public class GameBoard {
 		int row = (int) uSpot.getX();
 		int column = (int) uSpot.getY();
 		Point nextSpot = new Point(row - 1, column);
-
+		
 		if (checkAvailable(nextSpot)) {
 			u.setLocation(nextSpot);
 			gameBoard[row][column] = ' ';

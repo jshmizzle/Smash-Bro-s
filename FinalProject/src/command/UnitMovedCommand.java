@@ -10,17 +10,18 @@ public class UnitMovedCommand extends Command<Client>{
 
 	private String source;
 	private ArrayList<Point> moves;
-	private int index;
+	private int unitIndex;
 	
-	public UnitMovedCommand(String source, int index, ArrayList<Point> moves) {
+	public UnitMovedCommand(String source, int unitIndex, ArrayList<Point> moves) {
 		super(source);
 		this.moves=moves;
-		this.index=index;
+		this.unitIndex=unitIndex;
 	}
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.unitMoved(source, index, moves);
+		System.out.println("command sent");
+		executeOn.unitMoved(source, unitIndex, moves);
 	}
 
 }
