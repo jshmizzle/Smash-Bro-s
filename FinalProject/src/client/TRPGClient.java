@@ -37,7 +37,7 @@ public class TRPGClient extends JFrame implements Client{
 	private MainGamePanel gamePanel;
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
-	private boolean myTurn = false;
+	private boolean myTurn = true;
 	private ArrayList<Item> itemList;
 
 	public static void main(String[] args) {
@@ -186,6 +186,10 @@ public class TRPGClient extends JFrame implements Client{
 				;  //stuff to fill in for multiplayer
 		}
 	}
+	
+	public boolean myTurn(){
+		return myTurn;
+	}
 
 	public void pickUpItem(String client, Item item) {
 		if(client.equals(userName)){
@@ -206,7 +210,6 @@ public class TRPGClient extends JFrame implements Client{
 		int actualTotalMoveLength;
 		
 		Unit u;
-		
 		if(source.equals(userName)){
 			u=currentBoard.getUserUnits().get(unitIndex);
 		}
