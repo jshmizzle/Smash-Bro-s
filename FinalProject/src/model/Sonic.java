@@ -13,7 +13,7 @@ public class Sonic extends Unit {
 	private char [][] game;
 	
 	public Sonic(char c) {	
-		super("Sonic", 100, 20, 3, 1, new Point(0, 0), c);
+		super("Sonic", 100, 20, 99, 1, new Point(0, 0), c);
 	}
 	
 	public void easyMove(GameBoard board){
