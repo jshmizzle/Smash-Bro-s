@@ -12,7 +12,7 @@ import server.TRPGServer;
 public class UnitDiedCommand extends Command<Client>{
 	
 	private String source;
-	private Unit u;;
+	private int index;
 	
 	
 	/**
@@ -22,14 +22,14 @@ public class UnitDiedCommand extends Command<Client>{
 	 * @param source
 	 * @param itemChanges
 	 */
-	public UnitDiedCommand(String source,Unit u) {
+	public UnitDiedCommand(String source,int index) {
 		super(source);
-		this.u=u;
+		this.index=index;
 	}
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.unitDied(source,u);
+		executeOn.unitDied(source,index);
 	}
 	
 

@@ -16,7 +16,7 @@ public class UnitMovedDownCommand extends Command<Client>{
 	}
 
 	private String source;
-	private Unit u;
+	private int index;
 	private Point p;
 	
 	/**
@@ -27,15 +27,15 @@ public class UnitMovedDownCommand extends Command<Client>{
 	 * @param point
 	 */
 	
-	public UnitMovedDownCommand(String source, Unit u, Point p) {
+	public UnitMovedDownCommand(String source, int index, Point p) {
 		super(source);
-		this.u=u;
+		this.index=index;
 		this.p=p;
 	}
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.moveUnitDown(source, u, p);
+		executeOn.moveUnitDown(source, index, p);
 	}
 
 }

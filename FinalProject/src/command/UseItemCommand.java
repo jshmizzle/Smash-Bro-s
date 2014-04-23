@@ -13,7 +13,7 @@ public class UseItemCommand extends Command<Client>{
 	
 	private String source;
 	private Item item;
-	private Unit u;;
+	private int index;
 	
 	
 	/**
@@ -23,15 +23,15 @@ public class UseItemCommand extends Command<Client>{
 	 * @param source
 	 * @param itemChanges
 	 */
-	public UseItemCommand(String source,Unit u,Item item) {
+	public UseItemCommand(String source,int index,Item item) {
 		super(source);
 		this.item=item;
-		this.u=u;
+		this.index=index;
 	}
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.useItem(source,u, item);
+		executeOn.useItem(source,index, item);
 	}
 	
 

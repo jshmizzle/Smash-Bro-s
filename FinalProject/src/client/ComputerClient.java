@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -20,9 +21,12 @@ import model.Princess;
 import model.Sonic;
 import model.Unit;
 import GUI.CharacterSelectPanel;
+import GUI.GameState;
 import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import command.Command;
+import command.EndTurnCommand;
+import command.UnitMovedCommand;
 
 public class ComputerClient extends JFrame implements Client{
 
@@ -51,7 +55,7 @@ public class ComputerClient extends JFrame implements Client{
 
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
-		initializeFrame();
+		//initializeFrame();
 		ComputerServerHandler handler = new ComputerServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
@@ -109,7 +113,7 @@ public class ComputerClient extends JFrame implements Client{
 		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0);
 	}
 
-	private void initializeFrame() {
+	/*private void initializeFrame() {
 		// mainMenuPanel = new MainMenuPanel(username, outputStream);
 		// start with MainGamePanel for testing menus will be added later the
 		// game comes first
@@ -120,7 +124,7 @@ public class ComputerClient extends JFrame implements Client{
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
-	}
+	}*/
 
 	private void update(Command<?> command) {
 		this.gamePanel.update(currentBoard);
@@ -132,25 +136,9 @@ public class ComputerClient extends JFrame implements Client{
 		playingAlready = true;
 	}
 
-	public void useItem(String client, Unit u, Item item) {
+	/*public void useItem(String client, Unit u, Item item) {
 		currentBoard.useThisItem(client, u, item);
-	}
-
-	public void moveUnitLeft(String client, Unit u, Point p) {
-		currentBoard.moveLeft(client, u);
-	}
-
-	public void moveUnitRight(String client, Unit u, Point p) {
-		currentBoard.moveRight(client, u);
-	}
-
-	public void moveUnitDown(String client, Unit u, Point p) {
-		currentBoard.moveDown(client, u);
-	}
-
-	public void moveUnitUp(String client, Unit u, Point p) {
-		currentBoard.moveUp(client, u);
-	}
+	}*/
 
 	public void welcomeToLobby(String client) {
 		// open lobby for whoever connected
@@ -159,35 +147,56 @@ public class ComputerClient extends JFrame implements Client{
 		} else {
 			// load lobby (probably needs work)
 			askUserForInfo();// now the client has been logged into the server
-			initializeFrame();
+			//initializeFrame();
 			ComputerServerHandler handler = new ComputerServerHandler(this, inputStream);
 			Thread t = new Thread(handler);
 			t.start();
 		}
 	}
 
-	public void unitDied(String client, Unit u) {
-		if(client.equals(userName))
-			currentBoard.userUnitDied(u);
+	public void attackUnit(String client, int fromIndex, int toIndex) {
+		if(!client.equals("Computer")){
+			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),currentBoard.getCompUnits().get(toIndex) );
+		}
 		else
-			currentBoard.compUnitDied(u);
-	}
-
-	public void attackUnit(String client, Unit from, Unit to) {
-		currentBoard.attackUnit(from,to);
+			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),currentBoard.getUserUnits().get(toIndex));
 	}
 
 	public void endTurn(String client) {
-		if (client.equals(userName)) {
+		if(client.equals(userName)){
 			myTurn = false;
-		} else
+		}
+		else{
 			myTurn = true;
+			//TODO: gonna need to change this for multiplayer
+			if(userName.equals("Computer"))
+				currentBoard.resetCompMoves();
+				executeProtocol();
+			if(!userName.equals("Computer"))
+				currentBoard.resetUserMoves();
+			else
+				;  //stuff to fill in for multiplayer
+		}
 	}
 
-	@Override
-	public void pickUpItem(String client, Unit u, Item item) {
+
+
+	private void executeProtocol() {
 		// TODO Auto-generated method stub
 		
+		
+		sendEndTurnCommand();
+	}
+
+	private void sendEndTurnCommand() {
+		// TODO Auto-generated method stub
+		EndTurnCommand command =new EndTurnCommand("Computer");
+		try {
+			serverOut.writeObject(moveCommand);
+			currentGameState=GameState.ChoosingAttack;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void unitMoved(String source, ArrayList<Point> moves) {
@@ -195,13 +204,27 @@ public class ComputerClient extends JFrame implements Client{
 		
 	}
 
+	
+	public void newGame(){
+		
+	}
+
 	@Override
-	public void unitMoved(String source, Unit u, ArrayList<Point> moves) {
+	public void useItem(String source, int index, Item item) {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	public void newGame(){
+
+
+	@Override
+	public void unitMoved(String source, int index, ArrayList<Point> moves) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pickUpItem(String source, int index, Item item) {
+		// TODO Auto-generated method stub
 		
 	}
 }

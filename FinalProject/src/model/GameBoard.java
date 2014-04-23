@@ -196,7 +196,7 @@ public class GameBoard {
 
 	/************************************************************************************/
 
-	public char inspectPosition(Point p) {
+	public Unit inspectPosition(Point p) {
 		return gameBoard[(int) p.getX()][(int) p.getY()];
 	}
 
@@ -464,18 +464,15 @@ public class GameBoard {
 		return compUnits;
 	}
 
-	public void userUnitDied(Unit u) {
+	public void unitDied(Unit u) {
 		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
-		userUnits.remove(u);
-	}
-
-	public void compUnitDied(Unit u) {
-		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
-		compUnits.remove(u);
 	}
 
 	public void attackUnit(Unit from, Unit to) {
 		from.attack(to);
+		if(to.getHealth()==0){
+			unitDied(to);
+		}
 	}
 
 	public void resetCompMoves() {
@@ -501,16 +498,7 @@ public class GameBoard {
 	 */
 
 	public boolean gameOver() {
-		if (userUnits.isEmpty()) {
-			userLost = true;
-			compWon = true;
-			return true;
-		}
-		if (compUnits.isEmpty()) {
-			compLost = true;
-			userWon = true;
-			return true;
-		}
+		
 		if (currentScenario == 1) {
 			for (Unit u : userUnits) {
 				if (u.getName().equals("Princess") && u.getHealth() == 0) {
@@ -527,6 +515,29 @@ public class GameBoard {
 				}
 			}
 		}
+		
+		for(Unit unit : userUnits){
+			if(unit.getHealth()>0){
+				break;
+			}
+		}
+		for(Unit unit : compUnits){
+			if(unit.getHealth()>0){
+				
+			}
+		}
+		
+		if (userUnits.isEmpty()) {
+			userLost = true;
+			compWon = true;
+			return true;
+		}
+		if (compUnits.isEmpty()) {
+			compLost = true;
+			userWon = true;
+			return true;
+		}
+		
 		return false;
 	}
 
