@@ -20,6 +20,7 @@ import model.GameBoard;
 import model.Unit;
 import client.TRPGClient;
 
+import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
 public class MainGamePanel extends JPanel {
@@ -251,11 +252,8 @@ public class MainGamePanel extends JPanel {
 								//to choosing another unit's move
 //								currentGameState=GameState.ChoosingAttack;
 
-								
-								System.out.println(currentUnit.getLocation());
 								gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
-								System.out.println(currentUnit==gameBoard.getUserUnits().get(unitIndex));
-								System.out.println(gameBoard.getUserUnits().get(unitIndex).getLocation());
+
 								currentGameState=GameState.CyclingThroughUnits;
 								previousPath=null;
 							} catch (IOException e) {
@@ -341,6 +339,22 @@ public class MainGamePanel extends JPanel {
 					cursorLocation.translate(-1, 0);
 					repaint();
 				}
+//				else if(key==KeyEvent.VK_ENTER){
+//					if(gameBoard.checkIfEnemy(currentUnit, cursorLocation)){
+////						int enemyIndex=0;
+////						UnitAttackCommand moveCommand =new UnitAttackCommand(source, unitIndex, enemyIndex);
+//						try {
+////							serverOut.writeObject(moveCommand);
+//	
+//							gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+//	
+//							currentGameState=GameState.CyclingThroughUnits;
+//							previousPath=null;
+//						} catch (IOException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				}
 			}
 		}
 

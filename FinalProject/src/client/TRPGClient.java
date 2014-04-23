@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -16,7 +18,11 @@ import model.Item;
 import model.Link;
 import model.Mario;
 import model.MegaMan;
+import model.Potion;
 import model.Princess;
+import model.Rage;
+import model.Shield;
+import model.Sneakers;
 import model.Sonic;
 import model.Unit;
 import GUI.CharacterSelectPanel;
@@ -187,9 +193,26 @@ public class TRPGClient extends JFrame implements Client{
 		}
 	}
 
-	public void pickUpItem(String client, Item item) {
+	public void pickUpItem(String client, Point p) {
 		if(client.equals(userName)){
+			ArrayList<Item> list = new ArrayList<>();
+			Item rage = new Rage();
+			Item potion = new Potion();
+			Item shield = new Shield();
+			Item sneakers = new Sneakers();
+			//can add more
+			list.add(rage);
+			list.add(potion);
+			list.add(shield);
+			list.add(sneakers);
+			
+			Random random = new Random();
+			int num = random.nextInt(list.size());
+			
+			Item item = (list.get(num));
 			itemList.add(item);
+			
+			currentBoard.removeItem(p);
 		}
 		else
 			; // do nothing
@@ -204,14 +227,18 @@ public class TRPGClient extends JFrame implements Client{
 		moving=true;
 		System.out.println("Unit moved");
 		int actualTotalMoveLength;
-		Unit u=currentBoard.getUserUnits().get(unitIndex);
 		
-		//first, determine how many moves from the chosen list can actually be taken.
-		if(u.getMovesLeft()<moves.size()){
-			actualTotalMoveLength=u.getMovesLeft();
+		Unit u;
+		
+		if(source.equals(userName)){
+			u=currentBoard.getUserUnits().get(unitIndex);
 		}
-		else if(u.getMovesLeft()==moves.size()){
-			actualTotalMoveLength=u.getMovesLeft()+1;
+		else{
+			u=currentBoard.getCompUnits().get(unitIndex);
+		}
+		//first, determine how many moves from the chosen list can actually be taken.
+		if(u.getMovesLeft()<=moves.size()-1){
+			actualTotalMoveLength=u.getMovesLeft();
 		}
 		else{ 
 			actualTotalMoveLength=moves.size()-1;
@@ -266,10 +293,5 @@ public class TRPGClient extends JFrame implements Client{
 	}
 
 
-	@Override
-	public void pickUpItem(String source, int index, Item item) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
