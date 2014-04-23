@@ -299,6 +299,20 @@ public class TRPGClient extends JFrame implements Client{
 			}
 		}
 		gamePanel.update(currentBoard);
+		
+		//if the game is over let us know!
+		System.out.println(currentBoard.getCompUnits().get(0).getHealth());
+				if(currentBoard.getCompUnits().get(0).getHealth()<=0){
+					System.out.println("game over");
+					if(currentBoard.getUserUnits().get(0).getHealth()<=0){
+						JOptionPane.showMessageDialog(null, "YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+					}
+					//human won
+					else if(currentBoard.getCompUnits().get(0).getHealth()<=0){
+						JOptionPane.showMessageDialog(null, "You won...woooow. Good for you.");
+					}
+				}
+		
 		moving=false;
 	}
 	private boolean moving=true;

@@ -522,20 +522,17 @@ public class GameBoard {
 	public boolean gameOver() {
 
 		if (currentScenario == 1) {
-			for (Unit u : userUnits) {
-				if (u.getName().equals("Princess") && u.getHealth() == 0) {
+				if (getUserUnits().get(0).getHealth()<=0) {
 					userLost = true;
 					compWon = true;
 					return true;
 				}
-			}
-			for (Unit u : compUnits) {
-				if (u.getName().equals("Princess") && u.getHealth() == 0) {
+			
+				if (getCompUnits().get(0).getHealth()<=0) {
 					compLost = true;
 					userWon = true;
 					return true;
 				}
-			}
 		}
 		userLost = checkIfUserLost();
 		compLost = checkIfCompLost();

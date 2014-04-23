@@ -433,6 +433,11 @@ public class MainGamePanel extends JPanel {
 							}
 						}
 					}
+					else if(key==KeyEvent.VK_BACK_SPACE){
+						currentGameState=GameState.CyclingThroughUnits;
+						cursorLocation=new Point(currentUnit.getLocation().y, currentUnit.getLocation().x);
+						repaint();
+					}
 					else if(key==KeyEvent.VK_E){
 						EndTurnCommand endTurn=new EndTurnCommand(source);
 						try{
