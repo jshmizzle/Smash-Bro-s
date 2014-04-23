@@ -81,7 +81,7 @@ public class ComputerClient extends JFrame implements Client {
 
 			String serverAccepted = "reject";
 			while (serverAccepted.equals("reject")) {
-				userName = "computer";
+				userName = "Computer";
 				outputStream.writeObject(userName);
 				serverAccepted = (String) inputStream.readObject();
 			}
@@ -207,7 +207,7 @@ public class ComputerClient extends JFrame implements Client {
 			for (int j = 0; j < u.getDistance() + 1; j++) {
 				moves.add(path.get(j));
 			}
-			UnitMovedCommand moveCommand = new UnitMovedCommand("Computer", i, moves);
+			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
 		}
 	}
 
@@ -225,7 +225,7 @@ public class ComputerClient extends JFrame implements Client {
 					user=currentBoard.getUserUnits();
 					for(int l=0; l<user.size(); l++ ){
 						if(temp == user.get(l).getLocation()){
-							UnitAttackCommand attCommand= new UnitAttackCommand ("Computer",i, l );
+							UnitAttackCommand attCommand= new UnitAttackCommand (userName,i, l );
 						}
 					}
 				}
@@ -236,7 +236,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void sendEndTurnCommand() {
 		// TODO Auto-generated method stub
-		EndTurnCommand command = new EndTurnCommand("Computer");
+		EndTurnCommand command = new EndTurnCommand(userName);
 		try {
 			outputStream.writeObject(command);
 			// currentGameState=GameState.ChoosingAttack;
@@ -246,8 +246,12 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	public void unitMoved(String source, ArrayList<Point> moves) {
-		// TODO Auto-generated method stub
-
+		
+	}
+	private boolean moving=true;
+	
+	public boolean isMoving(){
+		return moving;
 	}
 
 	public void newGame() {
@@ -259,10 +263,83 @@ public class ComputerClient extends JFrame implements Client {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public void unitAttacked(String source, int attackUnit, int defendUnit){
+		ArrayList <Unit> comp= new ArrayList <>();
+		comp=currentBoard.getCompUnits();
+		ArrayList <Unit> user= new ArrayList <>();
+		user=currentBoard.getUserUnits();
+		if(source.equals(userName)){
+			user.get(defendUnit).takeHit(comp.get(attackUnit).getAttackPower());
+		}
+		else{
+			comp.get(defendUnit).takeHit(user.get(attackUnit).getAttackPower());
+		}
+	}
 
 	@Override
 	public void unitMoved(String source, int index, ArrayList<Point> moves) {
-		// TODO Auto-generated method stub
+		moving=true;
+		System.out.println("Unit moved");
+		int actualTotalMoveLength;
+		
+		Unit u;
+		
+		if(source.equals(userName)){
+			u=currentBoard.getUserUnits().get(index);
+		}
+		else{
+			u=currentBoard.getCompUnits().get(index);
+		}
+		//first, determine how many moves from the chosen list can actually be taken.
+		if(u.getMovesLeft()<=moves.size()-1){
+			actualTotalMoveLength=u.getMovesLeft();
+		}
+		else{ 
+			actualTotalMoveLength=moves.size()-1;
+		}
+		
+		System.out.println(actualTotalMoveLength);
+		//loop through each point on the path and tell the gameBoard the unit moved to each
+		//new point. Only allow the unit to take its specified maxNum of moves
+		for(int i=0; i<actualTotalMoveLength; i++, u.moveTaken()){
+			int x=u.getLocation().x;
+			int y=u.getLocation().y;
+			int dx=moves.get(i+1).x;
+			int dy=moves.get(i+1).y;
+			
+			if(x==dx && y==dy){
+				System.out.println("same");
+			}
+			//if the move is upwards
+			if(x>dx && y==dy){
+				currentBoard.moveUp(userName, u);
+				gamePanel.update(currentBoard);
+				System.out.println("move up");
+			}
+			//if the move is downwards
+			else if(x<dx && y==dy){
+				currentBoard.moveDown(userName, u);
+				gamePanel.update(currentBoard);
+				System.out.println("move down");
+			}
+			//if the move is to the right
+			else if(x==dx && y<dy){
+				currentBoard.moveRight(userName, u);
+				gamePanel.update(currentBoard);
+				System.out.println("move right");
+			}
+			//if the move is left
+			else if(x==dx && y>dy){
+				currentBoard.moveLeft(userName, u);
+				gamePanel.update(currentBoard);
+				System.out.println("move left");
+			}
+		}
+		System.out.println(u.getLocation() + "test");
+		gamePanel.update(currentBoard);
+		gamePanel.updateCurrentUnitAfterMove(u);
+		moving=false;
 
 	}
 
