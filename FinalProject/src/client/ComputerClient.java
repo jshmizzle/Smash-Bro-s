@@ -172,13 +172,8 @@ public class ComputerClient extends JFrame implements Client {
 		} else {
 			myTurn = true;
 			// TODO: gonna need to change this for multiplayer
-			if (userName.equals("Computer"))
-				currentBoard.resetCompMoves();
+			currentBoard.resetCompMoves();
 			executeProtocol();
-			if (!userName.equals("Computer"))
-				currentBoard.resetUserMoves();
-			else
-				; // stuff to fill in for multiplayer
 		}
 	}
 
@@ -190,6 +185,7 @@ public class ComputerClient extends JFrame implements Client {
 		sendEndTurnCommand();
 	}
 
+	int florb=1;
 	private void moveTurn() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getCompUnits();
@@ -201,7 +197,15 @@ public class ComputerClient extends JFrame implements Client {
 			ArrayList<Point> path = new ArrayList<>();
 			ArrayList<Point> moves = new ArrayList<>();
 			Unit u = compUnits.get(i);
-			path = currentBoard.findShortestPath(u.getLocation(), new Point(19,11));
+			
+			if(florb==1){
+				path = currentBoard.findShortestPath(u.getLocation(), new Point(19, 0));
+				florb=2;
+			}
+			else {
+				path = currentBoard.findShortestPath(u.getLocation(), new Point(19, 19));
+				florb=1;
+			}
 			
 			for (int j = 1; j < u.getDistance()+1 ; j++) {
 				moves.add(path.get(j));
@@ -343,7 +347,7 @@ public class ComputerClient extends JFrame implements Client {
 				System.out.println("move left");
 			}
 		}
-		System.out.println(u.getLocation() + "test");
+		System.out.println(u.getLocation() + "testComp");
 		moving=false;
 
 	}
