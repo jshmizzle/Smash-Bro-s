@@ -180,9 +180,11 @@ public class TRPGClient extends JFrame implements Client{
 	public void endTurn(String client) {
 		if(client.equals(userName)){
 			myTurn = false;
+			gamePanel.myTurn();
 		}
 		else{
 			myTurn = true;
+			gamePanel.myTurn();
 			//TODO: gonna need to change this for multiplayer
 			if(userName.equals("Computer")){
 				currentBoard.resetCompMoves();
