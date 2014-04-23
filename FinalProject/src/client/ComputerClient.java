@@ -56,7 +56,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
-		// initializeFrame();
+		initializeGameBoard();
 		ComputerServerHandler handler = new ComputerServerHandler(this,
 				inputStream);
 		Thread t = new Thread(handler);
@@ -115,16 +115,16 @@ public class ComputerClient extends JFrame implements Client {
 		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0);
 	}
 
-	/*
-	 * private void initializeFrame() { // mainMenuPanel = new
-	 * MainMenuPanel(username, outputStream); // start with MainGamePanel for
-	 * testing menus will be added later the // game comes first
-	 * initializeGameBoard();
-	 * 
-	 * gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
-	 * currentPanel = gamePanel; this.add(currentPanel).setVisible(true);
-	 * this.pack(); this.setVisible(true); }
-	 */
+	
+	  private void initializeFrame() { // mainMenuPanel = new
+	  MainMenuPanel(username, outputStream); // start with MainGamePanel for
+	  testing menus will be added later the // game comes first
+	  initializeGameBoard();
+	  
+	  gamePanel = new MainGamePanel("computer",currentBoard, outputStream);
+	  currentPanel = gamePanel; this.add(currentPanel).setVisible(true);
+	  this.pack(); this.setVisible(true); }
+	 
 
 	private void update(Command<?> command) {
 		this.gamePanel.update(currentBoard);
