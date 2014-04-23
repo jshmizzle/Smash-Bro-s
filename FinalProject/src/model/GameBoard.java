@@ -741,7 +741,23 @@ public class GameBoard {
 		tiles[p.x][p.y].distance=0;
 		tiles = findRange(p, tiles);
 		boolean marked = true;
-		while (marked && !tiles[6][6].status.equals("marked")) {
+		
+		//check to see which square to use as a reference
+		int l,k;
+		int row1=19-p.x;
+		int row2=p.x-0;
+		int col1=19-p.x;
+		int col2=p.x-0;
+		if(row1>row2)
+			l=19;
+		else
+			l=0;
+		if(col1>col2)
+			k=19;
+		else
+			k=0;
+	
+		while (marked && !tiles[l][k].status.equals("marked")) {
 			marked = false;
 			for (int i = 0; i < gameBoard.length; i++) {
 				for (int j = 0; j < gameBoard[0].length; j++) {
