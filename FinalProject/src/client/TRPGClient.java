@@ -44,7 +44,7 @@ public class TRPGClient extends JFrame implements Client{
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
 	private boolean myTurn = true;
-	private ArrayList<Item> itemList;
+	private ArrayList<Item> itemList=new ArrayList<Item>();
 
 	public static void main(String[] args) {
 //		try {
@@ -116,7 +116,7 @@ public class TRPGClient extends JFrame implements Client{
 		compUnits.add(p);
 		compUnits.add(l);
 		compUnits.add(m);
-		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0); 
+		currentBoard = new GameBoard(playerUnits, compUnits, 1, 1); 
 	}
 
 	private void initializeFrame() {
@@ -212,12 +212,12 @@ public class TRPGClient extends JFrame implements Client{
 			list.add(sneakers);
 			
 			Random random = new Random();
-			int num = random.nextInt(list.size());
+			int num = random.nextInt(list.size()-1);
 			
 			Item item = (list.get(num));
 			itemList.add(item);
-			
-			currentBoard.removeItem(p);
+			System.out.println("Picked up item: " + item.getName());
+			//currentBoard.removeItem(p);
 		}
 		else
 			; // do nothing
@@ -300,6 +300,20 @@ public class TRPGClient extends JFrame implements Client{
 			}
 		}
 		gamePanel.update(currentBoard);
+		
+		//if the game is over let us know!
+		System.out.println(currentBoard.getCompUnits().get(0).getHealth());
+				/*if(currentBoard.getCompUnits().get(0).getHealth()<=0){
+					System.out.println("game over");
+					if(currentBoard.getUserUnits().get(0).getHealth()<=0){
+						JOptionPane.showMessageDialog(null, "YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+					}
+					//human won
+					else if(currentBoard.getCompUnits().get(0).getHealth()<=0){
+						JOptionPane.showMessageDialog(null, "You won...woooow. Good for you.");
+					}
+				}*/
+		
 		moving=false;
 	}
 	private boolean moving=true;

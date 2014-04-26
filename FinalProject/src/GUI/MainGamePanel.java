@@ -21,6 +21,7 @@ import model.GameBoard;
 import model.Unit;
 import client.TRPGClient;
 import command.EndTurnCommand;
+import command.PickUpItemCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
@@ -162,14 +163,14 @@ public class MainGamePanel extends JPanel {
 					
 					//check if this unit is dead
 					if(currentBoard[row][col]=='P'){
-						if(gameBoard.getCompUnits().get(0).isAlive()){
+						if(gameBoard.getUserUnits().get(0).isAlive()){
 						g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 						}else{
 							g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 						}
 					}
 					else{//then this is the friendly princess
-						if(gameBoard.getUserUnits().get(0).isAlive()){
+						if(gameBoard.getCompUnits().get(0).isAlive()){
 							g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 							}else{
 								g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -290,13 +291,23 @@ public class MainGamePanel extends JPanel {
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
 						if(gameBoard.checkAvailable(cursorLocation)){
+							if(currentBoard[cursorLocation.y][cursorLocation.x] == '@'){
+								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
+								PickUpItemCommand command = new PickUpItemCommand(source,toMove);
+								try {
+									serverOut.writeObject(command);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
 							Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
 							ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 							if(path!=null){
 								UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
 								try {
 									serverOut.writeObject(moveCommand);
-									//the progression should be to know have the user select an attack 
+									//the progression should be to now have the user select an attack 
 									//but for now for testing purposes we will jump straight
 									//to choosing another unit's move
 	
@@ -434,6 +445,11 @@ public class MainGamePanel extends JPanel {
 								}
 							}
 						}
+					}
+					else if(key==KeyEvent.VK_BACK_SPACE){
+						currentGameState=GameState.CyclingThroughUnits;
+						cursorLocation=new Point(currentUnit.getLocation().y, currentUnit.getLocation().x);
+						repaint();
 					}
 					else if(key==KeyEvent.VK_E){
 						EndTurnCommand endTurn=new EndTurnCommand(source);
