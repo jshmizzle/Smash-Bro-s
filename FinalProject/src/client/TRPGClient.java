@@ -45,6 +45,9 @@ public class TRPGClient extends JFrame implements Client{
 	private boolean playingAlready = false;
 	private boolean myTurn = true;
 	private ArrayList<Item> itemList=new ArrayList<Item>();
+	private boolean isHost = true;
+	private ArrayList<Unit> playerUnits;
+	private ArrayList<Unit> compUnits;
 
 	public static void main(String[] args) {
 //		try {
@@ -97,8 +100,8 @@ public class TRPGClient extends JFrame implements Client{
 	//temp method
 	private void initializeGameBoard() {
 		//initialize the units and the GameBoard
-		 ArrayList<Unit> playerUnits = new ArrayList<Unit>();
-		 ArrayList<Unit> compUnits = new ArrayList<Unit>();
+		 playerUnits = new ArrayList<Unit>();
+		 compUnits = new ArrayList<Unit>();
 		 
 	    Sonic S = new Sonic('S');
 	  	Goku G = new Goku('G');
@@ -141,8 +144,8 @@ public class TRPGClient extends JFrame implements Client{
 	}
 
 	public void useItem(String client, int index, Item item) {
-		if(!client.equals("Computer")){
-			currentBoard.useThisItem(client, currentBoard.getUserUnits().get(index), item);
+		if(client.equals(userName)){
+			currentBoard.useThisItem(client, playerUnits.get(index), item);
 		}
 		else
 			; // do nothing
@@ -170,12 +173,23 @@ public class TRPGClient extends JFrame implements Client{
 
 
 	public void attackUnit(String client, int fromIndex, int toIndex) {
-		if(!client.equals("Computer")){
-			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),currentBoard.getCompUnits().get(toIndex) );
-			System.out.println(currentBoard.getCompUnits().get(2).getHealth());
+		if(client.equals(userName)){
+			if(isHost)
+				currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
+			//System.out.println(currentBoard.getCompUnits().get(2).getHealth());
+			else
+				currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
 		}
-		else
-			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),currentBoard.getUserUnits().get(toIndex));
+		else{
+			if(isHost){
+				currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
+			}
+			else
+				currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
+		}
+			
+		
+		
 	}
 
 	public void endTurn(String client) {
