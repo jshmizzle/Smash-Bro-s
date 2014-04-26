@@ -14,12 +14,12 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.GameBoard;
 import model.Unit;
 import client.TRPGClient;
-
 import command.EndTurnCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
@@ -101,6 +101,18 @@ public class MainGamePanel extends JPanel {
 		
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
+		
+		//if the game is over let us know!
+		if(gameBoard.gameOver()){
+			if(gameBoard.compWon()){
+				JOptionPane.showMessageDialog(null, "YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+			}
+			//human won
+			else{
+				JOptionPane.showMessageDialog(null, "You won...woooow. Good for you.");
+			}
+		}
+		
 		
 		//loop through the current gameBoard and draw the images based on the current positions
 		//of the units currently in the game
@@ -344,13 +356,15 @@ public class MainGamePanel extends JPanel {
 					//if the user presses enter while cycling through units
 					else if(key==KeyEvent.VK_ENTER){
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-						currentUnit=localUserUnitList.get(unitIndex);
-	
-						currentGameState=GameState.ChoosingMove;
-						if(MainGamePanel.this.statsPanel!=null){
-							MainGamePanel.this.remove(statsPanel);
+						if(gameBoard.getUserUnits().get(unitIndex).isAlive()){
+							currentUnit=localUserUnitList.get(unitIndex);
+		
+							currentGameState=GameState.ChoosingMove;
+							if(MainGamePanel.this.statsPanel!=null){
+								MainGamePanel.this.remove(statsPanel);
+							}
+							repaint();
 						}
-						repaint();
 					}
 					//if the user presses 's' the stats panel will be brought up for the current unit
 					else if(key==KeyEvent.VK_S){
