@@ -1,9 +1,11 @@
 package client;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -61,6 +63,46 @@ public class TRPGClient extends JFrame implements Client{
 
 	public TRPGClient() {
 		askUserForInfo();// now the client has been logged into the server'
+		initializeFrame();
+		ServerHandler handler = new ServerHandler(this, inputStream);
+		Thread t = new Thread(handler);
+		t.start();
+	}
+	
+	/**
+	 * The purpose of this alternate constructor is to provide a way to automatically
+	 * set up the connection to the server in a way that only has to be set up one time.
+	 * This way we do not need to be bothered to constantly input the host, port, and 
+	 * username. We simply pass all of that information to this constructor to begin 
+	 * with and the rest is taken care of automatically. To be used mostly with 
+	 * TRPGQuickStart.
+	 * 
+	 * @param host The IP address to connect to.
+	 * @param port The port to connect to at the specified port.
+	 * @param username The username which you will be logging into the server with.
+	 * 
+	 * @see  TRPGQuickStart
+	 */
+	public TRPGClient(String host, int port, String username){
+		this.host=host;
+		this.port=port;
+		this.userName=username;
+		
+		try {
+			//create the connection to the server
+			server=new Socket(host, port);
+			inputStream=new ObjectInputStream(server.getInputStream());
+			outputStream=new ObjectOutputStream(server.getOutputStream());
+			
+			//Now tell the server your username
+			outputStream.writeObject(username);
+			inputStream.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			System.out.println("You did a terrible job constructing this client");
+			e.printStackTrace();
+		}
+		
+		//perform the same operations that the original constructor did
 		initializeFrame();
 		ServerHandler handler = new ServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
