@@ -24,13 +24,21 @@ public class GameLobby extends JPanel {
 	JButton button;
 	ObjectOutputStream serverOut;
 	Image map1, princess, grass, deathmatchIcon;
-	Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, scenario3;
+	Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, scenario3, selectedMap, selectedScenario;
 	int currentState=1, mapChoice, scenarioChoice;
 	
 	public GameLobby(ObjectOutputStream serverOut) {
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
 		this.setSize(600, 600);
+		
+		//initialize the button
+		button=new JButton("Continue");
+		button.setEnabled(false);
+		button.setLocation(getWidth()-100, getHeight()-40);
+		button.setSize(90, 30);
+		button.setVisible(true);
+		this.add(button);
 		
 		mapOption1=new Point(getWidth()-130, 60);
 		mapOption2=new Point(getWidth()-130, 200);
@@ -46,14 +54,6 @@ public class GameLobby extends JPanel {
 		
 		//save the connection to the server
 		this.serverOut=serverOut;
-		
-		//initialize the button
-		button=new JButton("Continue");
-		button.setEnabled(false);
-		button.setLocation(getWidth()-100, getHeight()-40);
-		button.setSize(90, 30);
-		button.setVisible(true);
-		this.add(button);
 		
 		//initialize images
 		initializeImages();
@@ -129,11 +129,23 @@ public class GameLobby extends JPanel {
 			g2.drawRect(cursorLocation.x, cursorLocation.y, 120, 120);
 		else 
 			g2.drawRect(cursorLocation.x, cursorLocation.y, 120, 40);
+		
+		//now if the player has already selected the map to play on, draw a red square around
+		//the choice they made so that there is a visual representation of that choice
+		if(currentState>=2){
+			g2.setColor(Color.red);
+			g2.drawRect(selectedMap.x, selectedMap.y, 120, 120);
+		}
+		
+		//do the same thing for the scenario
+		if(currentState==3)
+			g2.drawRect(selectedScenario.x, selectedScenario.y, 120, 40);
+
 	}
 	
 	public void clientJoined(String source){
 		clients.add(source);
-		if(clients.size()>=2){
+		if(clients.size()>=2 && currentState==3){
 			button.setEnabled(true);
 		}
 	}
@@ -195,14 +207,42 @@ public class GameLobby extends JPanel {
 			}
 			
 			else if(key==KeyEvent.VK_ENTER){
-				currentState=2;
-				if(cursorLocation.equals(new Point(getWidth()-130, 40))){
-					mapChoice=1;
+				if(currentState==1){	
+					currentState=2;
+					if(cursorLocation.equals(mapOption1)){
+						mapChoice=1;
+						selectedMap=mapOption1;
+					}
+					else{
+						mapChoice=2;
+						selectedMap=mapOption2;	
+					}
+					
+					cursorLocation=scenario1;
+					repaint();
 				}
-				else
-					mapChoice=2;
-				cursorLocation=scenario1;
-				repaint();
+				else if(currentState==2){
+					currentState=3;
+					if(cursorLocation.equals(scenario1)){
+						scenarioChoice=1;
+						selectedScenario=scenario1;
+					}
+					else if(cursorLocation.equals(scenario2)){
+						scenarioChoice=2;
+						selectedScenario=scenario2;
+					}
+					else{
+						scenarioChoice=3;
+						selectedScenario=scenario3;
+					}
+					//repaint so that you can see the selected scenario get highlighted red
+					repaint();
+					
+					//if there is a sufficient number of users in the lobby, you can allow the
+					//host to continue to the character select panel
+					if(clients.size()>=2)
+						button.setEnabled(true);
+				}
 			}
 			
 		}
