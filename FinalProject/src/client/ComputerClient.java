@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,6 +44,9 @@ public class ComputerClient extends JFrame implements Client {
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
 	private boolean myTurn = false;
+	private ArrayList<Unit> playerUnits;
+	private ArrayList<Unit> compUnits;
+	private boolean isHost = false;
 
 	public static void main(String[] args) {
 		// try {
@@ -95,8 +99,8 @@ public class ComputerClient extends JFrame implements Client {
 	// temp method
 	private void initializeGameBoard() {
 		// initialize the units and the GameBoard
-		ArrayList<Unit> playerUnits = new ArrayList<Unit>();
-		ArrayList<Unit> compUnits = new ArrayList<Unit>();
+		playerUnits = new ArrayList<Unit>();
+		compUnits = new ArrayList<Unit>();
 
 		Sonic S = new Sonic('S');
 		Goku G = new Goku('G');
@@ -157,12 +161,24 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	public void attackUnit(String client, int fromIndex, int toIndex) {
-		if (!client.equals("Computer")) {
-			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),
-					currentBoard.getCompUnits().get(toIndex));
-		} else
-			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),
-					currentBoard.getUserUnits().get(toIndex));
+			if(client.equals(userName)){
+			if (isHost)
+					currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
+				//System.out.println(currentBoard.getCompUnits().get(2).getHealth());
+				else
+					currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
+			}
+			else{
+				if(isHost){
+					currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
+				}
+				else
+					currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
+			}
+				
+			
+			
+		
 	}
 
 	public void endTurn(String client) {
@@ -170,14 +186,12 @@ public class ComputerClient extends JFrame implements Client {
 			myTurn = false;
 		} else {
 			myTurn = true;
-			// TODO: gonna need to change this for multiplayer
 			currentBoard.resetCompMoves();
 			executeProtocol();
 		}
 	}
 
 	private void executeProtocol() {
-		// TODO Auto-generated method stub
 		System.out.println("h");
 		moveTurn();
 		attackTurn();
@@ -276,7 +290,6 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	private void sendEndTurnCommand() {
-		// TODO Auto-generated method stub
 		EndTurnCommand command = new EndTurnCommand(userName);
 		try {
 			outputStream.writeObject(command);
@@ -298,8 +311,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	@Override
 	public void useItem(String source, int index, Item item) {
-		// TODO Auto-generated method stub
-
+		
 	}
 	
 	public void unitAttacked(String source, int attackUnit, int defendUnit){
