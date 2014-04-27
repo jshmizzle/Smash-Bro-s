@@ -71,8 +71,8 @@ public class TRPGClientTemp extends JFrame {
 		int count = 0;
 		ArrayList<Unit> userUnits = new ArrayList<Unit>();
 		ArrayList<Unit> computerUnits = new ArrayList<Unit>();
-		userUnits = gameBoard.getUserUnits();
-		computerUnits = gameBoard.getCompUnits();
+		userUnits = gameBoard.getPlayerOneUnits();
+		computerUnits = gameBoard.getPlayerTwoUnits();
 		char [][] board = gameBoard.getGameBoard();
 		Scanner scan = new Scanner (System.in);
 		String check = "";

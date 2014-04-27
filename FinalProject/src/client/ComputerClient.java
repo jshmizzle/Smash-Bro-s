@@ -161,24 +161,20 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	public void attackUnit(String client, int fromIndex, int toIndex) {
-			if(client.equals(userName)){
+		if(client.equals(userName)){
 			if (isHost)
 					currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
 				//System.out.println(currentBoard.getCompUnits().get(2).getHealth());
-				else
-					currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
+			else
+				currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
+		}
+		else{//not coming from me
+			if(isHost){
+				currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
 			}
-			else{
-				if(isHost){
-					currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
-				}
-				else
-					currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
-			}
-				
-			
-			
-		
+			else
+				currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
+		}
 	}
 
 	public void endTurn(String client) {
@@ -201,7 +197,7 @@ public class ComputerClient extends JFrame implements Client {
 	int florb=1;
 	private void moveTurn() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
-		compUnits = currentBoard.getCompUnits();
+		compUnits = currentBoard.getPlayerTwoUnits();
 		Point princess = null;
 	
 		
@@ -263,7 +259,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void attackTurn() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
-		compUnits = currentBoard.getCompUnits();
+		compUnits = currentBoard.getPlayerTwoUnits();
 		ArrayList<Point> range = new ArrayList<>();
 		for (int i = 0; i < compUnits.size(); i++) {
 			Unit u = compUnits.get(i);
@@ -272,7 +268,7 @@ public class ComputerClient extends JFrame implements Client {
 				Point temp = new Point(range.get(j));
 				if(currentBoard.checkIfEnemy(u, temp)){
 					ArrayList <Unit> user= new ArrayList <>();
-					user=currentBoard.getUserUnits();
+					user=currentBoard.getPlayerOneUnits();
 					for(int l=0; l<user.size(); l++ ){
 						if(temp == user.get(l).getLocation()){
 							UnitAttackCommand attCommand= new UnitAttackCommand (userName,i, l );
@@ -316,9 +312,9 @@ public class ComputerClient extends JFrame implements Client {
 	
 	public void unitAttacked(String source, int attackUnit, int defendUnit){
 		ArrayList <Unit> comp= new ArrayList <>();
-		comp=currentBoard.getCompUnits();
+		comp=currentBoard.getPlayerTwoUnits();
 		ArrayList <Unit> user= new ArrayList <>();
-		user=currentBoard.getUserUnits();
+		user=currentBoard.getPlayerOneUnits();
 		if(source.equals(userName)){
 			user.get(defendUnit).takeHit(comp.get(attackUnit).getAttackPower());
 		}
@@ -338,10 +334,10 @@ public class ComputerClient extends JFrame implements Client {
 		Unit u;
 		
 		if(source.equals(userName)){
-			u=currentBoard.getCompUnits().get(index);
+			u=currentBoard.getPlayerTwoUnits().get(index);
 		}
 		else{
-			u=currentBoard.getUserUnits().get(index);
+			u=currentBoard.getPlayerOneUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
 //		u.setLocation(moves.get(index));

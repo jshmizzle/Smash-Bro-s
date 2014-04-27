@@ -53,7 +53,7 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
-		this.localUserUnitList=gameBoard.getUserUnits();
+		this.localUserUnitList=gameBoard.getPlayerOneUnits();
 		this.currentUnit=localUserUnitList.get(1);
 		this.currentUnit=gameBoard.getUserUnits().get(1);
 		
@@ -61,7 +61,7 @@ public class MainGamePanel extends JPanel {
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
 		
-		Point tempPoint=gameBoard.getUserUnits().get(1).getLocation();
+		Point tempPoint=gameBoard.getPlayerOneUnits().get(1).getLocation();
 		cursorLocation=new Point(tempPoint.y, tempPoint.x);
 				
 		//add the key listener to allow the cursor to send 
@@ -134,7 +134,7 @@ public class MainGamePanel extends JPanel {
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					
 					//check if this unit is dead
-					if(gameBoard.getCompUnits().get(2).isAlive()){
+					if(gameBoard.getPlayerTwoUnits().get(2).isAlive()){
 					g2.drawImage(megaman, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					}else{
 						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -152,7 +152,7 @@ public class MainGamePanel extends JPanel {
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					
 					//check if this unit is dead
-					if(gameBoard.getCompUnits().get(1).isAlive()){
+					if(gameBoard.getPlayerTwoUnits().get(1).isAlive()){
 					g2.drawImage(link, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					}else{
 						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -163,14 +163,14 @@ public class MainGamePanel extends JPanel {
 					
 					//check if this unit is dead
 					if(currentBoard[row][col]=='P'){
-						if(gameBoard.getUserUnits().get(0).isAlive()){
+						if(gameBoard.getPlayerOneUnits().get(0).isAlive()){
 						g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 						}else{
 							g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 						}
 					}
 					else{//then this is the friendly princess
-						if(gameBoard.getCompUnits().get(0).isAlive()){
+						if(gameBoard.getPlayerTwoUnits().get(0).isAlive()){
 							g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 							}else{
 								g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -280,7 +280,7 @@ public class MainGamePanel extends JPanel {
 					}
 					else if(key==KeyEvent.VK_BACK_SPACE){
 						currentGameState=GameState.CyclingThroughUnits;
-						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						if(statsPanel!=null){
 							MainGamePanel.this.add(statsPanel);
@@ -290,7 +290,7 @@ public class MainGamePanel extends JPanel {
 					else if(key==KeyEvent.VK_ENTER){
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
-						if(gameBoard.checkAvailable(cursorLocation)){
+						if(gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
 							if(currentBoard[cursorLocation.y][cursorLocation.x] == '@'){
 								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
 								PickUpItemCommand command = new PickUpItemCommand(source,toMove);
@@ -311,7 +311,7 @@ public class MainGamePanel extends JPanel {
 									//but for now for testing purposes we will jump straight
 									//to choosing another unit's move
 	
-									gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+									gameBoard.getPlayerOneUnits().get(unitIndex).setLocation(currentUnit.getLocation());
 	
 									currentGameState=GameState.ChoosingAttack;
 									previousPath=null;
@@ -336,17 +336,17 @@ public class MainGamePanel extends JPanel {
 				else if(currentGameState==GameState.CyclingThroughUnits){
 					
 					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
-						if(unitIndex<gameBoard.getUserUnits().size()-1){
+						if(unitIndex<gameBoard.getPlayerOneUnits().size()-1){
 							unitIndex++;
 						}
-						else if(unitIndex==gameBoard.getUserUnits().size()-1){
+						else if(unitIndex==gameBoard.getPlayerOneUnits().size()-1){
 							unitIndex=1;
 						}
 	
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						currentUnit=localUserUnitList.get(unitIndex);
 						
-						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
@@ -355,19 +355,19 @@ public class MainGamePanel extends JPanel {
 							unitIndex--;
 						}
 						else if (unitIndex==1){
-							unitIndex=gameBoard.getUserUnits().size()-1;
+							unitIndex=gameBoard.getPlayerOneUnits().size()-1;
 						}
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						currentUnit=localUserUnitList.get(unitIndex);
 						
-						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
 					//if the user presses enter while cycling through units
 					else if(key==KeyEvent.VK_ENTER){
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-						if(gameBoard.getUserUnits().get(unitIndex).isAlive()){
+						if(gameBoard.getPlayerOneUnits().get(unitIndex).isAlive()){
 							currentUnit=localUserUnitList.get(unitIndex);
 		
 							currentGameState=GameState.ChoosingMove;
@@ -422,7 +422,7 @@ public class MainGamePanel extends JPanel {
 						if(gameBoard.checkIfEnemy(currentUnit,new Point(cursorLocation.y, cursorLocation.x))){
 							System.out.println("found enemy");
 							int enemyIndex=-99;
-							ArrayList<Unit> temp=gameBoard.getCompUnits();
+							ArrayList<Unit> temp=gameBoard.getPlayerTwoUnits();
 							for(int i=0; i<temp.size(); i++){
 								if(temp.get(i).getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
 									enemyIndex=i;
@@ -436,7 +436,7 @@ public class MainGamePanel extends JPanel {
 								try {
 									serverOut.writeObject(moveCommand);
 	
-									gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+									gameBoard.getPlayerOneUnits().get(unitIndex).setLocation(currentUnit.getLocation());
 	
 									currentGameState = GameState.CyclingThroughUnits;
 									previousPath = null;
