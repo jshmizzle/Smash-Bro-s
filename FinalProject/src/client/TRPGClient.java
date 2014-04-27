@@ -36,7 +36,7 @@ import command.Command;
 public class TRPGClient extends JFrame implements Client{
 
 	private String host, userName;
-	private int port = 0;
+	private int port = 0, mapChoice, scenarioChoice;
 	private Socket server;
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
@@ -130,6 +130,12 @@ public class TRPGClient extends JFrame implements Client{
 		
 	}
 	
+	public void setMapAndScenario(int map, int scenario) {
+		this.mapChoice=map;
+		this.scenarioChoice=scenario;
+		System.out.println("set the scenario!");
+	}
+
 	public void setUserUnits(String source, ArrayList<Unit> userUnits){
 		if(isHost){	
 			if(userName.equals(source)){
@@ -213,7 +219,7 @@ public class TRPGClient extends JFrame implements Client{
 		
 		
 		gamePanel=new MainGamePanel(userName, currentBoard, this, outputStream);
-		currentPanel=new GameLobby(outputStream);
+		currentPanel=new GameLobby(userName, outputStream);
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
