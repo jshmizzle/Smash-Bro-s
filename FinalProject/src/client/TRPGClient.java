@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -28,8 +26,10 @@ import model.Sneakers;
 import model.Sonic;
 import model.Unit;
 import GUI.CharacterSelectPanel;
+import GUI.GameLobby;
 import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
+
 import command.Command;
 
 public class TRPGClient extends JFrame implements Client{
@@ -44,9 +44,10 @@ public class TRPGClient extends JFrame implements Client{
 	private JPanel currentPanel;
 	private MainGamePanel gamePanel;
 	private GameBoard currentBoard;
-	private boolean playingAlready = false;
+	private boolean playingAlready = false, isHost=false;
 	private boolean myTurn = true;
 	private ArrayList<Item> itemList=new ArrayList<Item>();
+	private ArrayList<Unit> myUnits, opponentUnits;
 
 	public static void main(String[] args) {
 //		try {
@@ -106,6 +107,40 @@ public class TRPGClient extends JFrame implements Client{
 		t.start();
 	}
 
+	public void startSinglePlayerGame(ArrayList<Unit> userSelectedUnits){
+		isHost=true;
+		askUserForInfo();// now the client has been logged into the server'
+		initializeFrame();
+		ServerHandler handler = new ServerHandler(this, inputStream);
+		Thread t = new Thread(handler);
+		t.start();
+	}
+	
+	public void startMultiPlayerGame(){
+		
+	}
+	
+	public void setUserUnits(String source, ArrayList<Unit> userUnits){
+		if(isHost){	
+			if(userName.equals(source)){
+				myUnits=userUnits;
+			}
+			else{
+				opponentUnits=userUnits;
+			}
+		}
+		else{
+			if(userName.equals(source)){
+				opponentUnits=userUnits;
+
+			}
+			else{
+				myUnits=userUnits;
+			}
+		}
+	}
+	
+	
 	private void askUserForInfo() {
 		host = JOptionPane.showInputDialog(null,
 				"What host would you like to connect to?");
@@ -166,7 +201,7 @@ public class TRPGClient extends JFrame implements Client{
 		//start with MainGamePanel for testing menus will be added later the game comes first
 		initializeGameBoard();
 		gamePanel=new MainGamePanel(userName, currentBoard, this, outputStream);
-		currentPanel=gamePanel;
+		currentPanel=new GameLobby(outputStream);
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
@@ -184,7 +219,7 @@ public class TRPGClient extends JFrame implements Client{
 
 	public void useItem(String client, int index, Item item) {
 		if(!client.equals("Computer")){
-			currentBoard.useThisItem(client, currentBoard.getUserUnits().get(index), item);
+			currentBoard.useThisItem(client, currentBoard.getPlayerOneUnits().get(index), item);
 		}
 		else
 			; // do nothing
@@ -213,11 +248,11 @@ public class TRPGClient extends JFrame implements Client{
 
 	public void attackUnit(String client, int fromIndex, int toIndex) {
 		if(!client.equals("Computer")){
-			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),currentBoard.getCompUnits().get(toIndex) );
-			System.out.println(currentBoard.getCompUnits().get(2).getHealth());
+			currentBoard.attackUnit(currentBoard.getPlayerOneUnits().get(fromIndex),currentBoard.getPlayerTwoUnits().get(toIndex) );
+			System.out.println(currentBoard.getPlayerTwoUnits().get(2).getHealth());
 		}
 		else
-			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),currentBoard.getUserUnits().get(toIndex));
+			currentBoard.attackUnit(currentBoard.getPlayerTwoUnits().get(fromIndex),currentBoard.getPlayerOneUnits().get(toIndex));
 	}
 
 	public void endTurn(String client) {
@@ -283,10 +318,10 @@ public class TRPGClient extends JFrame implements Client{
 		
 		Unit u;
 		if(source.equals(userName)){
-			u=currentBoard.getUserUnits().get(unitIndex);
+			u=currentBoard.getPlayerOneUnits().get(unitIndex);
 		}
 		else{
-			u=currentBoard.getCompUnits().get(unitIndex);
+			u=currentBoard.getPlayerTwoUnits().get(unitIndex);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
 		if(u.getMovesLeft()<=moves.size()-1){
@@ -343,7 +378,7 @@ public class TRPGClient extends JFrame implements Client{
 		gamePanel.update(currentBoard);
 		
 		//if the game is over let us know!
-		System.out.println(currentBoard.getCompUnits().get(0).getHealth());
+		System.out.println(currentBoard.getPlayerTwoUnits().get(0).getHealth());
 				/*if(currentBoard.getCompUnits().get(0).getHealth()<=0){
 					System.out.println("game over");
 					if(currentBoard.getUserUnits().get(0).getHealth()<=0){
