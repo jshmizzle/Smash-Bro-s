@@ -154,14 +154,14 @@ public class TRPGClient extends JFrame implements Client{
 		 playerUnits = new ArrayList<Unit>();
 		 compUnits = new ArrayList<Unit>();
 		 
-	    Sonic S = new Sonic('S');
-	  	Goku G = new Goku('G');
-	  	Mario W = new Mario('W');
-	 	Link l = new Link('l');
-		Mario w = new Mario('w');
-		MegaMan m = new MegaMan('m');
-		Princess P = new Princess('P');
-		Princess p = new Princess('p');
+	    Sonic S = new Sonic(' ');
+	  	Goku G = new Goku(' ');
+	  	Mario W = new Mario(' ');
+	 	Link l = new Link(' ');
+		Mario w = new Mario(' ');
+		MegaMan m = new MegaMan(' ');
+		Princess P = new Princess(' ');
+		Princess p = new Princess(' ');
 			
 		playerUnits.add(P);
 		playerUnits.add(W);
@@ -260,17 +260,14 @@ public class TRPGClient extends JFrame implements Client{
 				myTurn = true;
 				gamePanel.myTurn();
 				currentBoard.resetUserMoves();
-<<<<<<< HEAD
 			currentBoard.resetCompMoves();
 			currentPanel.repaint();
-=======
 			}
 			else{
 				myTurn = true;
 				gamePanel.myTurn();
 				currentBoard.resetCompMoves();
 			}	
->>>>>>> 1363f7c08ff1943fec4dd401c18bb9b60e4e56c2
 		}
 	}
 	

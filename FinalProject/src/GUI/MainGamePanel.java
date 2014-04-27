@@ -55,7 +55,7 @@ public class MainGamePanel extends JPanel {
 		this.gameBoard=startingBoard;
 		this.localUserUnitList=gameBoard.getUserUnits();
 		this.currentUnit=localUserUnitList.get(1);
-//		this.currentUnit=gameBoard.getUserUnits().get(1);
+		this.currentUnit=gameBoard.getUserUnits().get(1);
 		
 		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
