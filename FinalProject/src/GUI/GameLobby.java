@@ -38,6 +38,14 @@ public class GameLobby extends JPanel {
 		scenario2=new Point(getWidth()-130, 410);
 		scenario3=new Point(getWidth()-130, 460);
 		
+		button=new JButton("Continue");
+		button.setEnabled(false);
+		button.setLocation(getWidth()-100, getHeight()-40);
+		button.setSize(90, 30);
+		button.setVisible(true);
+		this.add(button);
+		
+		
 		
 		clients.add("Hello World");
 		clients.add("Jimmy");
@@ -48,12 +56,8 @@ public class GameLobby extends JPanel {
 		this.serverOut=serverOut;
 		
 		//initialize the button
-		button=new JButton("Continue");
-		button.setEnabled(false);
-		button.setLocation(getWidth()-100, getHeight()-40);
-		button.setSize(90, 30);
-		button.setVisible(true);
-		this.add(button);
+		//button=new JButton("Continue");
+		
 		
 		//initialize images
 		initializeImages();
