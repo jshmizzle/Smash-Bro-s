@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -62,6 +63,14 @@ public class TRPGClient extends JFrame implements Client{
 	}
 
 	public TRPGClient() {
+		JList list = new JList(new String[] {"Single Player", "Host a Game", "Join a Game"});
+		JOptionPane.showMessageDialog(
+		  null, list, "What you wanna do, yo?", JOptionPane.PLAIN_MESSAGE);
+		
+		
+		
+		
+		
 		askUserForInfo();// now the client has been logged into the server'
 		initializeFrame();
 		ServerHandler handler = new ServerHandler(this, inputStream);
@@ -168,6 +177,8 @@ public class TRPGClient extends JFrame implements Client{
 		//mainMenuPanel = new MainMenuPanel(username, outputStream);
 		//start with MainGamePanel for testing menus will be added later the game comes first
 		initializeGameBoard();
+		
+		
 		gamePanel=new MainGamePanel(userName, currentBoard, this, outputStream);
 		currentPanel=gamePanel;
 		this.add(currentPanel).setVisible(true);
@@ -229,23 +240,32 @@ public class TRPGClient extends JFrame implements Client{
 			else
 				currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
 		}
-			
-		
-		
 	}
 
 	public void endTurn(String client) {
 		if(client.equals(userName)){
-			myTurn = false;
-			gamePanel.myTurn();
-			currentBoard.resetCompMoves();
+			if(isHost){
+				myTurn = false;
+				gamePanel.myTurn();
+				currentBoard.resetCompMoves();
+			}
+			else{
+				myTurn = false;
+				gamePanel.myTurn();
+				currentBoard.resetUserMoves();
+			}
 		}
 		else{
-			myTurn = true;
-			gamePanel.myTurn();
-			if(!userName.equals("Computer"))
+			if(isHost){
+				myTurn = true;
+				gamePanel.myTurn();
 				currentBoard.resetUserMoves();
-			currentBoard.resetCompMoves();
+			}
+			else{
+				myTurn = true;
+				gamePanel.myTurn();
+				currentBoard.resetCompMoves();
+			}	
 		}
 	}
 	
