@@ -10,8 +10,8 @@ public class GameBoard {
 	private char[][] gameBoard;
 	private int boardWidth = 20;
 	private int boardHeight = 20;
-	private ArrayList<Unit> userUnits;
-	private ArrayList<Unit> compUnits;
+	private ArrayList<Unit> playerOneUnits;
+	private ArrayList<Unit> playerTwoUnits;
 	private char[][] terrain;
 	private int currentMap;
 	private int currentScenario;
@@ -35,8 +35,8 @@ public class GameBoard {
 
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
-		this.userUnits = userUnits;
-		this.compUnits = compUnits;
+		this.playerOneUnits = userUnits;
+		this.playerTwoUnits = compUnits;
 		currentMap = map;
 		currentScenario = scenario;
 		playerList = new ArrayList<>();
@@ -143,7 +143,7 @@ public class GameBoard {
 		gameBoard[0][boardWidth / 2] = 'p';
 		
 		int i = 0;
-		for (Unit u : compUnits) {
+		for (Unit u : playerTwoUnits) {
 			if (u.getCharRepresentation() == 'P'
 					|| u.getCharRepresentation() == 'p'){
 				u.setLocation(new Point(0,boardWidth / 2));
@@ -162,7 +162,7 @@ public class GameBoard {
 		int j = 0;
 
 		gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
-		for (Unit c : userUnits) {
+		for (Unit c : playerOneUnits) {
 			if (c.getCharRepresentation() == 'P'|| c.getCharRepresentation() == 'p') {
 				c.setLocation(new Point(0,boardHeight / 2));
 			}
@@ -180,10 +180,14 @@ public class GameBoard {
 
 	/************************************************************************************/
 
-	public ArrayList<Unit> getUserUnits() {
-		return userUnits;
+	public ArrayList<Unit> getPlayerOneUnits() {
+		return playerOneUnits;
 	}
-
+	
+	public ArrayList<Unit> getPlayerTwoUnits() {
+		return playerTwoUnits;
+	}
+	
 	public boolean checkAvailable(Point point) {
 
 		int x = (int) point.getX();
@@ -485,10 +489,6 @@ public class GameBoard {
 
 	}
 
-	public ArrayList<Unit> getCompUnits() {
-		return compUnits;
-	}
-
 	public void unitDied(Unit u) {
 		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
 	}
@@ -501,13 +501,13 @@ public class GameBoard {
 	}
 
 	public void resetCompMoves() {
-		for (Unit u : compUnits) {
+		for (Unit u : playerTwoUnits) {
 			u.setMovesLeft(u.getDistance());
 		}
 	}
 
 	public void resetUserMoves() {
-		for (Unit u : userUnits) {
+		for (Unit u : playerOneUnits) {
 			u.setMovesLeft(u.getDistance());
 		}
 	}
@@ -524,13 +524,13 @@ public class GameBoard {
 
 	public boolean gameOver() {
 		if (currentScenario == 1) {
-				if (getUserUnits().get(0).getHealth()<=0) {
+				if (getPlayerOneUnits().get(0).getHealth()<=0) {
 					userLost = true;
 					compWon = true;
 					return true;
 				}
 			
-				if (getCompUnits().get(0).getHealth()<=0) {
+				if (getPlayerTwoUnits().get(0).getHealth()<=0) {
 					compLost = true;
 					userWon = true;
 					return true;
@@ -552,7 +552,7 @@ public class GameBoard {
 	}
 
 	private boolean checkIfCompLost() {
-		for (Unit unit : compUnits) {
+		for (Unit unit : playerTwoUnits) {
 			if (unit.getHealth() > 0) {
 				return false;
 			}
@@ -561,7 +561,7 @@ public class GameBoard {
 	}
 
 	private boolean checkIfUserLost() {
-		for (Unit unit : userUnits) {
+		for (Unit unit : playerOneUnits) {
 			if (unit.getHealth() > 0) {
 				return false;
 			}
