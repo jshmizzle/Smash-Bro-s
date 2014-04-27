@@ -270,7 +270,7 @@ public class GameLobby extends JPanel {
 		
 	}
 	
-	public class ButtonListener implements ActionListener{
+	private class ButtonListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
