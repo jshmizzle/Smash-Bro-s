@@ -523,7 +523,6 @@ public class GameBoard {
 	 */
 
 	public boolean gameOver() {
-
 		if (currentScenario == 1) {
 				if (getUserUnits().get(0).getHealth()<=0) {
 					userLost = true;

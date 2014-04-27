@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class TRPGClient extends JFrame implements Client{
 	private boolean isHost = true;
 	private ArrayList<Unit> playerUnits;
 	private ArrayList<Unit> compUnits;
+	private ServerHandler handler;
 
 	public static void main(String[] args) {
 //		try {
@@ -73,7 +75,7 @@ public class TRPGClient extends JFrame implements Client{
 		
 		askUserForInfo();// now the client has been logged into the server'
 		initializeFrame();
-		ServerHandler handler = new ServerHandler(this, inputStream);
+		handler = new ServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
 	}
@@ -113,7 +115,7 @@ public class TRPGClient extends JFrame implements Client{
 		
 		//perform the same operations that the original constructor did
 		initializeFrame();
-		ServerHandler handler = new ServerHandler(this, inputStream);
+		handler = new ServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
 	}
@@ -198,9 +200,19 @@ public class TRPGClient extends JFrame implements Client{
 
 	public void useItem(String client, int index, Item item) {
 		if(client.equals(userName)){
-			currentBoard.useThisItem(client, playerUnits.get(index), item);
+			if(isHost)
+				currentBoard.useThisItem(client, playerUnits.get(index), item);
+			else
+				currentBoard.useThisItem(client, compUnits.get(index), item);
 		}
-		else
+		else{
+			if(isHost){
+				currentBoard.useThisItem(client, compUnits.get(index), item);
+			}
+			else
+				currentBoard.useThisItem(client, playerUnits.get(index), item);
+
+		}
 			; // do nothing
 	}
 
@@ -213,7 +225,7 @@ public class TRPGClient extends JFrame implements Client{
 			// load lobby (probably needs work)
 			askUserForInfo();// now the client has been logged into the server
 			initializeFrame();
-			ServerHandler handler = new ServerHandler(this, inputStream);
+			handler = new ServerHandler(this, inputStream);
 			Thread t = new Thread(handler);
 			t.start();
 		}
@@ -397,6 +409,9 @@ public class TRPGClient extends JFrame implements Client{
 		return moving;
 	}
 
-
-
+	public void collectUnits(ArrayList<Unit> playerTwoList) {
+		if(isHost){
+			compUnits = playerTwoList;
+		}
+	}
 }
