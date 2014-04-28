@@ -461,10 +461,4 @@ public class TRPGClient extends JFrame implements Client{
 	public boolean isMoving(){
 		return moving;
 	}
-
-	public void collectUnits(ArrayList<Unit> playerTwoList) {
-		if(isHost){
-			compUnits = playerTwoList;
-		}
-	}
 }

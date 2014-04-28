@@ -84,7 +84,79 @@ public class GameBoard {
 
 	private void setMapTwo() {
 		// TODO Auto-generated method stub
+		
+		//top left rocks
+		gameBoard[boardHeight/4][boardWidth/4] = '#';
+		gameBoard[boardHeight/4][boardWidth/4+1] = '#';
+		gameBoard[boardHeight/4+1][boardWidth/4] = '#';
+		gameBoard[boardHeight/4+1][boardWidth/4-1] = '#';
+		gameBoard[boardHeight/4+2][boardWidth/4+1] = '#';
+		//bottom left rocks
+		gameBoard[boardHeight-(boardHeight/4)][boardWidth/4] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth/4] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth/4-1] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth/4+1] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth/4+1] = '#';
+		//top right rocks
+		gameBoard[boardHeight/4][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight/4][boardWidth-(boardWidth/4)-1] = '#';
+		gameBoard[boardHeight/4+1][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight/4+1][boardWidth-(boardWidth/4)-1] = '#';
+		gameBoard[boardHeight/4+2][boardWidth-(boardWidth/4)+1] = '#';
+		//bottom right rocks
+		gameBoard[boardHeight-(boardHeight/4)][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth-(boardWidth/4)+1] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth-(boardWidth/4)+1] = '#';
+		//item
+		gameBoard[boardHeight/2][boardWidth /2] = '@';
+		
+		//trees
+		gameBoard[boardHeight/3][boardWidth/2]='!';
+		gameBoard[boardHeight/3+1][boardWidth/2-1]='!';
+		gameBoard[boardHeight/3+2][boardWidth/2-2]='!';
+		gameBoard[boardHeight/3+3][boardWidth/2-3]='!';
+		gameBoard[boardHeight/3+4][boardWidth/2-4]='!';
+		gameBoard[boardHeight/3+5][boardWidth/2-5]='!';
+		gameBoard[boardHeight/3+6][boardWidth/2-6]='!';
+		gameBoard[boardHeight/3+7][boardWidth/2-7]='!';
+		gameBoard[boardHeight/3+8][boardWidth/2-8]='!';
+		gameBoard[boardHeight/3+9][boardWidth/2-9]='!';
+		
+		gameBoard[boardHeight/3+1][boardWidth/2+1]='!';
+		gameBoard[boardHeight/3+2][boardWidth/2+2]='!';
+		gameBoard[boardHeight/3+3][boardWidth/2+3]='!';
+		gameBoard[boardHeight/3+4][boardWidth/2+4]='!';
+		gameBoard[boardHeight/3+5][boardWidth/2+5]='!';
+		gameBoard[boardHeight/3+6][boardWidth/2+6]='!';
+		gameBoard[boardHeight/3+7][boardWidth/2+7]='!';
+		gameBoard[boardHeight/3+8][boardWidth/2+8]='!';
+		gameBoard[boardHeight/3+9][boardWidth/2+9]='!';
+		
+		gameBoard[boardHeight-(boardHeight/3)][boardWidth/2]='!';
+		gameBoard[boardHeight-(boardHeight/3)-1][boardWidth/2-1]='!';
+		gameBoard[boardHeight-(boardHeight/3)-2][boardWidth/2-2]='!';
+		gameBoard[boardHeight-(boardHeight/3)-3][boardWidth/2-3]='!';
+		gameBoard[boardHeight-(boardHeight/3)-4][boardWidth/2-4]='!';
+		gameBoard[boardHeight-(boardHeight/3)-5][boardWidth/2-5]='!';
+		gameBoard[boardHeight-(boardHeight/3)-6][boardWidth/2-6]='!';
+		gameBoard[boardHeight-(boardHeight/3)-7][boardWidth/2-7]='!';
+		gameBoard[boardHeight-(boardHeight/3)-8][boardWidth/2-8]='!';
+		gameBoard[boardHeight-(boardHeight/3)-9][boardWidth/2-9]='!';
+		
+		gameBoard[boardHeight-(boardHeight/3)-1][boardWidth/2+1]='!';
+		gameBoard[boardHeight-(boardHeight/3)-2][boardWidth/2+2]='!';
+		gameBoard[boardHeight-(boardHeight/3)-3][boardWidth/2+3]='!';
+		gameBoard[boardHeight-(boardHeight/3)-4][boardWidth/2+4]='!';
+		gameBoard[boardHeight-(boardHeight/3)-5][boardWidth/2+5]='!';
+		gameBoard[boardHeight-(boardHeight/3)-6][boardWidth/2+6]='!';
+		gameBoard[boardHeight-(boardHeight/3)-7][boardWidth/2+7]='!';
+		gameBoard[boardHeight-(boardHeight/3)-8][boardWidth/2+8]='!';
+		gameBoard[boardHeight-(boardHeight/3)-9][boardWidth/2+9]='!';
 
+		
+		
 	}
 
 	private void setMapOne() {
@@ -129,11 +201,35 @@ public class GameBoard {
 		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
 
 		// trees
-		gameBoard[boardHeight / 4][boardWidth / 4] = '!';
-		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
+		//top left
+		gameBoard[boardHeight / 4-1][boardWidth / 4] = '!';
+		gameBoard[boardHeight / 4][boardWidth / 4-1] = '!';
+		gameBoard[boardHeight / 4][boardWidth / 4+1] = '!';
+		gameBoard[boardHeight / 4+1][boardWidth / 4+1] = '!';
+
+
+
+		//top right
+		gameBoard[boardHeight / 4-1][boardWidth - (boardWidth / 4)] = '!';
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)-1] = '!';
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)+1] = '!';
+		gameBoard[boardHeight / 4+1][boardWidth - (boardWidth / 4)+1] = '!';
+
+		//bottom left
+		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth / 4] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4-1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4+1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth / 4+1] = '!';
+
+		//bottom right
+		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth
 				- (boardWidth / 4)] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
+		                           				- (boardWidth / 4)-1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
+		                           				- (boardWidth / 4)+1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth
+		                           				- (boardWidth / 4)+1] = '!';
 
 		// items
 		gameBoard[boardHeight / 2][0] = '@';
