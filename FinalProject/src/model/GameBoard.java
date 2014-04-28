@@ -202,34 +202,39 @@ public class GameBoard {
 
 		// trees
 		//top left
+		gameBoard[boardHeight / 4][boardWidth / 4] = '!';
 		gameBoard[boardHeight / 4-1][boardWidth / 4] = '!';
 		gameBoard[boardHeight / 4][boardWidth / 4-1] = '!';
 		gameBoard[boardHeight / 4][boardWidth / 4+1] = '!';
-		gameBoard[boardHeight / 4+1][boardWidth / 4+1] = '!';
+		gameBoard[boardHeight / 4+1][boardWidth / 4] = '!';
 
 
 
 		//top right
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)] = '!';
 		gameBoard[boardHeight / 4-1][boardWidth - (boardWidth / 4)] = '!';
 		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)-1] = '!';
 		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)+1] = '!';
-		gameBoard[boardHeight / 4+1][boardWidth - (boardWidth / 4)+1] = '!';
+		gameBoard[boardHeight / 4+1][boardWidth - (boardWidth / 4)] = '!';
 
 		//bottom left
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4] = '!';
 		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth / 4] = '!';
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4-1] = '!';
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4+1] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth / 4+1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth / 4] = '!';
 
 		//bottom right
-		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
 				- (boardWidth / 4)] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth
+		                             				- (boardWidth / 4)] = '!';
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
 		                           				- (boardWidth / 4)-1] = '!';
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
 		                           				- (boardWidth / 4)+1] = '!';
 		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth
-		                           				- (boardWidth / 4)+1] = '!';
+		                           				- (boardWidth / 4)] = '!';
 
 		// items
 		gameBoard[boardHeight / 2][0] = '@';
