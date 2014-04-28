@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -18,16 +20,22 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import command.Command;
+import command.MapAndScenarioSelected;
+
 public class GameLobby extends JPanel {
 
 	ArrayList<String> clients=new ArrayList<String>();
 	JButton button;
 	ObjectOutputStream serverOut;
 	Image map1, princess, grass, deathmatchIcon;
-	Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, scenario3, selectedMap, selectedScenario;
+	Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, scenario3, selectedMapPoint, selectedScenarioPoint;
 	int currentState=1, mapChoice, scenarioChoice;
+	String sourceUserName;
 	
-	public GameLobby(ObjectOutputStream serverOut) {
+	public GameLobby(String source, ObjectOutputStream serverOut) {
+		this.sourceUserName=source;
+		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
 		this.setSize(600, 600);
@@ -38,6 +46,7 @@ public class GameLobby extends JPanel {
 		button.setLocation(getWidth()-100, getHeight()-40);
 		button.setSize(90, 30);
 		button.setVisible(true);
+		button.addActionListener(new ButtonListener());
 		this.add(button);
 		
 		mapOption1=new Point(getWidth()-130, 60);
@@ -134,12 +143,12 @@ public class GameLobby extends JPanel {
 		//the choice they made so that there is a visual representation of that choice
 		if(currentState>=2){
 			g2.setColor(Color.red);
-			g2.drawRect(selectedMap.x, selectedMap.y, 120, 120);
+			g2.drawRect(selectedMapPoint.x, selectedMapPoint.y, 120, 120);
 		}
 		
 		//do the same thing for the scenario
 		if(currentState==3)
-			g2.drawRect(selectedScenario.x, selectedScenario.y, 120, 40);
+			g2.drawRect(selectedScenarioPoint.x, selectedScenarioPoint.y, 120, 40);
 
 	}
 	
@@ -211,11 +220,11 @@ public class GameLobby extends JPanel {
 					currentState=2;
 					if(cursorLocation.equals(mapOption1)){
 						mapChoice=1;
-						selectedMap=mapOption1;
+						selectedMapPoint=mapOption1;
 					}
 					else{
 						mapChoice=2;
-						selectedMap=mapOption2;	
+						selectedMapPoint=mapOption2;	
 					}
 					
 					cursorLocation=scenario1;
@@ -225,15 +234,15 @@ public class GameLobby extends JPanel {
 					currentState=3;
 					if(cursorLocation.equals(scenario1)){
 						scenarioChoice=1;
-						selectedScenario=scenario1;
+						selectedScenarioPoint=scenario1;
 					}
 					else if(cursorLocation.equals(scenario2)){
 						scenarioChoice=2;
-						selectedScenario=scenario2;
+						selectedScenarioPoint=scenario2;
 					}
 					else{
 						scenarioChoice=3;
-						selectedScenario=scenario3;
+						selectedScenarioPoint=scenario3;
 					}
 					//repaint so that you can see the selected scenario get highlighted red
 					repaint();
@@ -256,6 +265,25 @@ public class GameLobby extends JPanel {
 		@Override
 		public void keyTyped(KeyEvent arg0) {
 			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class ButtonListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			//there is only one button on this JPanel, if the event is heard then 
+			//we need to send the command to the server telling the clients what 
+			//map and scenario was selected
+			MapAndScenarioSelected command =new MapAndScenarioSelected(sourceUserName, mapChoice, scenarioChoice);
+			
+			try {
+				serverOut.writeObject(command);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 		}
 		

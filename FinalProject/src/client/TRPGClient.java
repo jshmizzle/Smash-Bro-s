@@ -37,7 +37,7 @@ import command.Command;
 public class TRPGClient extends JFrame implements Client{
 
 	private String host, userName;
-	private int port = 0;
+	private int port = 0, mapChoice, scenarioChoice;
 	private Socket server;
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
@@ -45,6 +45,7 @@ public class TRPGClient extends JFrame implements Client{
 	private CharacterSelectPanel charSelectPanel;
 	private JPanel currentPanel;
 	private MainGamePanel gamePanel;
+	private GameLobby lobbyPanel;
 	private GameBoard currentBoard;
 	private boolean playingAlready = false, isHost=false;
 	private boolean myTurn = true;
@@ -134,24 +135,38 @@ public class TRPGClient extends JFrame implements Client{
 		
 	}
 	
-	public void setUserUnits(String source, ArrayList<Unit> userUnits){
-		if(isHost){	
-			if(userName.equals(source)){
-				myUnits=userUnits;
-			}
-			else{
-				opponentUnits=userUnits;
-			}
-		}
-		else{
-			if(userName.equals(source)){
-				opponentUnits=userUnits;
+	public void setMapAndScenario(int map, int scenario) {
+		this.mapChoice=map;
+		this.scenarioChoice=scenario;
+		//we no longer want to be looking at the lobby panel because we already got all of 
+		//the use out of this panel as we can.
+		this.remove(currentPanel);
+		
+		//change the currentPanel to the character select panel so that we can select our
+		//units for the current game and then notify the other client
+		charSelectPanel=new CharacterSelectPanel(userName, outputStream, isHost);
+		currentPanel=charSelectPanel;
+		currentPanel.grabFocus();
+		this.add(currentPanel);
+		currentPanel.requestFocus(true);
+		this.pack();
+		this.setVisible(true);
+	}
 
-			}
-			else{
+	public void setUserUnits(String source, ArrayList<Unit> userUnits){
+		
+		//it doesn't matter if you are the host or not, if you sent this command, then
+		//you chose these units, and you have to be the one to live with your decisions 
+		//and use them for the game
+		//if(isHost){	
+			if(userName.equals(source)){
 				myUnits=userUnits;
 			}
-		}
+			else{
+				opponentUnits=userUnits;
+			}
+			System.out.println("User units set: " + myUnits);
+		//}
 	}
 	
 	
@@ -213,11 +228,13 @@ public class TRPGClient extends JFrame implements Client{
 	private void initializeFrame() {
 		//mainMenuPanel = new MainMenuPanel(username, outputStream);
 		//start with MainGamePanel for testing menus will be added later the game comes first
-		initializeGameBoard();
 		
+		//this was only useful when we were not letting the players pick their own units
+		//initializeGameBoard();
 		
-		gamePanel=new MainGamePanel(userName, currentBoard, this, outputStream);
-		currentPanel=new GameLobby(outputStream);
+		//gamePanel=new MainGamePanel(userName, currentBoard, this, outputStream);
+		
+		currentPanel=new GameLobby(userName, outputStream);
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
