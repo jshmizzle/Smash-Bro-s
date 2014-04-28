@@ -25,15 +25,16 @@ import command.MapAndScenarioSelected;
 
 public class GameLobby extends JPanel {
 
-	ArrayList<String> clients=new ArrayList<String>();
-	JButton button;
-	ObjectOutputStream serverOut;
-	Image map1, princess, grass, deathmatchIcon;
-	Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, scenario3, selectedMapPoint, selectedScenarioPoint;
-	int currentState=1, mapChoice, scenarioChoice;
-	String sourceUserName;
+	private ArrayList<String> clients=new ArrayList<String>();
+	private JButton button;
+	private ObjectOutputStream serverOut;
+	private Image map1, princess, grass, deathmatchIcon;
+	private Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, scenario3, selectedMapPoint, selectedScenarioPoint;
+	private int currentState=1, mapChoice, scenarioChoice;
+	private String sourceUserName;
+	private boolean isHost;
 	
-	public GameLobby(String source, ObjectOutputStream serverOut) {
+	public GameLobby(String source, ObjectOutputStream serverOut, boolean isHost) {
 		this.sourceUserName=source;
 		
 		//determine the size of the JPanel
@@ -165,95 +166,97 @@ public class GameLobby extends JPanel {
 		public void keyPressed(KeyEvent arg0) {
 			int key=arg0.getKeyCode();
 
-			if(key==KeyEvent.VK_DOWN){
-				//the host begins by selecting the map
-				if(currentState==1){
-					if(cursorLocation.equals(mapOption1)){
-						cursorLocation=mapOption2;
-					}
-					else
-						cursorLocation=mapOption1;
-					repaint();
-				}
-				
-				//The host will now be selecting the scenario instead of the map
-				else if(currentState==2){
-					if(cursorLocation.equals(scenario1)){
-						cursorLocation=scenario2;
-					}
-					else if(cursorLocation.equals(scenario2)){
-						cursorLocation=scenario3;
-					}
-					else
-						cursorLocation=scenario1;
-					repaint();
-				}
-			}
-			
-			else if(key==KeyEvent.VK_UP){
-				//the host begins by selecting the map
-				if(currentState==1){
-					if(cursorLocation.equals(mapOption1)){
-						cursorLocation=mapOption2;
-					}
-					else
-						cursorLocation=mapOption1;
-					repaint();
-				}				
-				
-				//The host will now be selecting the scenario instead of the map
-				else if(currentState==2){
-					if(cursorLocation.equals(scenario1)){
-						cursorLocation=scenario3;
-					}
-					else if(cursorLocation.equals(scenario2)){
-						cursorLocation=scenario1;
-					}
-					else
-						cursorLocation=scenario2;
-					repaint();
-				}
-			}
-			
-			else if(key==KeyEvent.VK_ENTER){
-				if(currentState==1){	
-					currentState=2;
-					if(cursorLocation.equals(mapOption1)){
-						mapChoice=1;
-						selectedMapPoint=mapOption1;
-					}
-					else{
-						mapChoice=2;
-						selectedMapPoint=mapOption2;	
+			//only allow the HOST to actually select the gametype!
+			//if(isHost){
+				if(key==KeyEvent.VK_DOWN){
+					//the host begins by selecting the map
+					if(currentState==1){
+						if(cursorLocation.equals(mapOption1)){
+							cursorLocation=mapOption2;
+						}
+						else
+							cursorLocation=mapOption1;
+						repaint();
 					}
 					
-					cursorLocation=scenario1;
-					repaint();
+					//The host will now be selecting the scenario instead of the map
+					else if(currentState==2){
+						if(cursorLocation.equals(scenario1)){
+							cursorLocation=scenario2;
+						}
+						else if(cursorLocation.equals(scenario2)){
+							cursorLocation=scenario3;
+						}
+						else
+							cursorLocation=scenario1;
+						repaint();
+					}
 				}
-				else if(currentState==2){
-					currentState=3;
-					if(cursorLocation.equals(scenario1)){
-						scenarioChoice=1;
-						selectedScenarioPoint=scenario1;
-					}
-					else if(cursorLocation.equals(scenario2)){
-						scenarioChoice=2;
-						selectedScenarioPoint=scenario2;
-					}
-					else{
-						scenarioChoice=3;
-						selectedScenarioPoint=scenario3;
-					}
-					//repaint so that you can see the selected scenario get highlighted red
-					repaint();
+				
+				else if(key==KeyEvent.VK_UP){
+					//the host begins by selecting the map
+					if(currentState==1){
+						if(cursorLocation.equals(mapOption1)){
+							cursorLocation=mapOption2;
+						}
+						else
+							cursorLocation=mapOption1;
+						repaint();
+					}				
 					
-					//if there is a sufficient number of users in the lobby, you can allow the
-					//host to continue to the character select panel
-					if(clients.size()>=2)
-						button.setEnabled(true);
+					//The host will now be selecting the scenario instead of the map
+					else if(currentState==2){
+						if(cursorLocation.equals(scenario1)){
+							cursorLocation=scenario3;
+						}
+						else if(cursorLocation.equals(scenario2)){
+							cursorLocation=scenario1;
+						}
+						else
+							cursorLocation=scenario2;
+						repaint();
+					}
 				}
-			}
-			
+				
+				else if(key==KeyEvent.VK_ENTER){
+					if(currentState==1){	
+						currentState=2;
+						if(cursorLocation.equals(mapOption1)){
+							mapChoice=1;
+							selectedMapPoint=mapOption1;
+						}
+						else{
+							mapChoice=2;
+							selectedMapPoint=mapOption2;	
+						}
+						
+						cursorLocation=scenario1;
+						repaint();
+					}
+					else if(currentState==2){
+						currentState=3;
+						if(cursorLocation.equals(scenario1)){
+							scenarioChoice=1;
+							selectedScenarioPoint=scenario1;
+						}
+						else if(cursorLocation.equals(scenario2)){
+							scenarioChoice=2;
+							selectedScenarioPoint=scenario2;
+						}
+						else{
+							scenarioChoice=3;
+							selectedScenarioPoint=scenario3;
+						}
+						//repaint so that you can see the selected scenario get highlighted red
+						repaint();
+						
+						//if there is a sufficient number of users in the lobby, you can allow the
+						//host to continue to the character select panel
+						if(clients.size()>=2)
+							button.setEnabled(true);
+					}
+				}
+			//}
 		}
 
 		@Override

@@ -1,6 +1,7 @@
 package GUI;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,10 +16,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import command.StartSinglePlayerGame;
+
 public class MainMenuPanel extends JPanel {
 
-	private JButton deathMatchButton;
-	private JButton killTargetButton;
+	private JButton singlePlayer, joinGame, hostGame;
 	private ObjectOutputStream output;
 	private Image background;
 	private ActionListener buttonListener;
@@ -27,9 +29,13 @@ public class MainMenuPanel extends JPanel {
 	public MainMenuPanel(String name, ObjectOutputStream output) {
 		this.output=output;
 		this.setLayout(null);
-		this.setSize(this.getWidth(), this.getHeight());
+		
+		this.setSize(600, 600);
+		this.setPreferredSize(new Dimension(600, 600));
+		
 		initializeBackground();
-//		initializeButtonChoices();
+		initializeButtonChoices();
+		this.setVisible(true);
 	}
 	
 	private void initializeBackground(){
@@ -43,34 +49,51 @@ public class MainMenuPanel extends JPanel {
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		
+		//make sure the buttons are in the right place
+		singlePlayer.setLocation(this.getWidth()/2-this.getWidth()/8, this.getWidth()/2-40);
+		joinGame.setLocation(this.getWidth()/2-this.getWidth()/8, this.getWidth()/2+10);
+		hostGame.setLocation(this.getWidth()/2-this.getWidth()/8, this.getWidth()/2+60);
+		
+		
 		Graphics2D g2=(Graphics2D) g;
 		g2.drawImage(background, 0, 0, this.getWidth(), this.getHeight(), null);
 		
 		g2.setColor(Color.red);
 		g2.setFont(new Font("Algerian", Font.ITALIC, 48));
 		g2.drawString("Final Project TRPG", 0, 40);
-		initializeButtonChoices();
 	}
 	
 	private void initializeButtonChoices(){
 		//initialize the two buttons and add the button listener to them
-		deathMatchButton=new JButton("Death Match");
-		killTargetButton=new JButton("Target Elimination");
+		singlePlayer=new JButton("Single Player");
+		joinGame=new JButton("Join Multi-Player Game");
+		hostGame=new JButton("Host Multi-Player Game");
+		
 		buttonListener=new GameTypeButtonListener();
-		deathMatchButton.addActionListener(buttonListener);
-		killTargetButton.addActionListener(buttonListener);
+		singlePlayer.addActionListener(buttonListener);
+		joinGame.addActionListener(buttonListener);
+		hostGame.addActionListener(buttonListener);
 		
 		//add them to the panel
-		deathMatchButton.setSize(this.getWidth()/4, 30);
-		killTargetButton.setSize(this.getWidth()/4, 30);
-		deathMatchButton.setLocation(this.getWidth()/2-this.getWidth()/8, this.getWidth()/2-40);
-		killTargetButton.setLocation(this.getWidth()/2-this.getWidth()/8, this.getWidth()/2+10);
-		deathMatchButton.setVisible(true);
-		killTargetButton.setVisible(true);
-		deathMatchButton.setEnabled(true);
-		killTargetButton.setEnabled(true);
-		this.add(deathMatchButton);
-		this.add(killTargetButton);
+		singlePlayer.setSize(this.getWidth()/4, 30);
+		joinGame.setSize(this.getWidth()/4, 30);
+		hostGame.setSize(this.getWidth()/4, 30);
+		
+		singlePlayer.setLocation(this.getWidth()/2-this.getWidth()/8, this.getHeight()/2-40);
+		joinGame.setLocation(this.getWidth()/2-this.getWidth()/8, this.getHeight()/2+10);
+		hostGame.setLocation(this.getWidth()/2-this.getWidth()/8, this.getHeight()/2+60);
+		
+		singlePlayer.setVisible(true);
+		joinGame.setVisible(true);
+		hostGame.setVisible(true);
+		
+		singlePlayer.setEnabled(true);
+		joinGame.setEnabled(true);
+		hostGame.setEnabled(true);
+		
+		this.add(singlePlayer);
+		this.add(joinGame);
+		this.add(hostGame);
 	}
 	
 	private class GameTypeButtonListener implements ActionListener{
@@ -78,20 +101,24 @@ public class MainMenuPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//tell the server that the player has chosen the deathmatch mode
-			if(e.getSource()==deathMatchButton){
+			if(e.getSource()==singlePlayer){
 				try {
-					output.writeObject(new Integer(2));
+					StartSinglePlayerGame command=new StartSinglePlayerGame(name);
+					output.writeObject(command);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
-			else if(e.getSource()==killTargetButton){
+			else if(e.getSource()==joinGame){
 				//tell the server that the player has chosen the target elimination mode
 				try {
 					output.writeObject(new Integer(1));
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+			}
+			else if(e.getSource()==hostGame){
+				
 			}
 		}
 		
