@@ -10,8 +10,8 @@ public class GameBoard {
 	private char[][] gameBoard;
 	private int boardWidth = 20;
 	private int boardHeight = 20;
-	private ArrayList<Unit> userUnits;
-	private ArrayList<Unit> compUnits;
+	private ArrayList<Unit> playerOneUnits;
+	private ArrayList<Unit> playerTwoUnits;
 	private char[][] terrain;
 	private int currentMap;
 	private int currentScenario;
@@ -35,8 +35,8 @@ public class GameBoard {
 
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
-		this.userUnits = userUnits;
-		this.compUnits = compUnits;
+		this.playerOneUnits = userUnits;
+		this.playerTwoUnits = compUnits;
 		currentMap = map;
 		currentScenario = scenario;
 		playerList = new ArrayList<>();
@@ -84,7 +84,79 @@ public class GameBoard {
 
 	private void setMapTwo() {
 		// TODO Auto-generated method stub
+		
+		//top left rocks
+		gameBoard[boardHeight/4][boardWidth/4] = '#';
+		gameBoard[boardHeight/4][boardWidth/4+1] = '#';
+		gameBoard[boardHeight/4+1][boardWidth/4] = '#';
+		gameBoard[boardHeight/4+1][boardWidth/4-1] = '#';
+		gameBoard[boardHeight/4+2][boardWidth/4+1] = '#';
+		//bottom left rocks
+		gameBoard[boardHeight-(boardHeight/4)][boardWidth/4] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth/4] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth/4-1] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth/4+1] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth/4+1] = '#';
+		//top right rocks
+		gameBoard[boardHeight/4][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight/4][boardWidth-(boardWidth/4)-1] = '#';
+		gameBoard[boardHeight/4+1][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight/4+1][boardWidth-(boardWidth/4)-1] = '#';
+		gameBoard[boardHeight/4+2][boardWidth-(boardWidth/4)+1] = '#';
+		//bottom right rocks
+		gameBoard[boardHeight-(boardHeight/4)][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth-(boardWidth/4)+1] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth-(boardWidth/4)] = '#';
+		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth-(boardWidth/4)+1] = '#';
+		//item
+		gameBoard[boardHeight/2][boardWidth /2] = '@';
+		
+		//trees
+		gameBoard[boardHeight/3][boardWidth/2]='!';
+		gameBoard[boardHeight/3+1][boardWidth/2-1]='!';
+		gameBoard[boardHeight/3+2][boardWidth/2-2]='!';
+		gameBoard[boardHeight/3+3][boardWidth/2-3]='!';
+		gameBoard[boardHeight/3+4][boardWidth/2-4]='!';
+		gameBoard[boardHeight/3+5][boardWidth/2-5]='!';
+		gameBoard[boardHeight/3+6][boardWidth/2-6]='!';
+		gameBoard[boardHeight/3+7][boardWidth/2-7]='!';
+		gameBoard[boardHeight/3+8][boardWidth/2-8]='!';
+		gameBoard[boardHeight/3+9][boardWidth/2-9]='!';
+		
+		gameBoard[boardHeight/3+1][boardWidth/2+1]='!';
+		gameBoard[boardHeight/3+2][boardWidth/2+2]='!';
+		gameBoard[boardHeight/3+3][boardWidth/2+3]='!';
+		gameBoard[boardHeight/3+4][boardWidth/2+4]='!';
+		gameBoard[boardHeight/3+5][boardWidth/2+5]='!';
+		gameBoard[boardHeight/3+6][boardWidth/2+6]='!';
+		gameBoard[boardHeight/3+7][boardWidth/2+7]='!';
+		gameBoard[boardHeight/3+8][boardWidth/2+8]='!';
+		gameBoard[boardHeight/3+9][boardWidth/2+9]='!';
+		
+		gameBoard[boardHeight-(boardHeight/3)][boardWidth/2]='!';
+		gameBoard[boardHeight-(boardHeight/3)-1][boardWidth/2-1]='!';
+		gameBoard[boardHeight-(boardHeight/3)-2][boardWidth/2-2]='!';
+		gameBoard[boardHeight-(boardHeight/3)-3][boardWidth/2-3]='!';
+		gameBoard[boardHeight-(boardHeight/3)-4][boardWidth/2-4]='!';
+		gameBoard[boardHeight-(boardHeight/3)-5][boardWidth/2-5]='!';
+		gameBoard[boardHeight-(boardHeight/3)-6][boardWidth/2-6]='!';
+		gameBoard[boardHeight-(boardHeight/3)-7][boardWidth/2-7]='!';
+		gameBoard[boardHeight-(boardHeight/3)-8][boardWidth/2-8]='!';
+		gameBoard[boardHeight-(boardHeight/3)-9][boardWidth/2-9]='!';
+		
+		gameBoard[boardHeight-(boardHeight/3)-1][boardWidth/2+1]='!';
+		gameBoard[boardHeight-(boardHeight/3)-2][boardWidth/2+2]='!';
+		gameBoard[boardHeight-(boardHeight/3)-3][boardWidth/2+3]='!';
+		gameBoard[boardHeight-(boardHeight/3)-4][boardWidth/2+4]='!';
+		gameBoard[boardHeight-(boardHeight/3)-5][boardWidth/2+5]='!';
+		gameBoard[boardHeight-(boardHeight/3)-6][boardWidth/2+6]='!';
+		gameBoard[boardHeight-(boardHeight/3)-7][boardWidth/2+7]='!';
+		gameBoard[boardHeight-(boardHeight/3)-8][boardWidth/2+8]='!';
+		gameBoard[boardHeight-(boardHeight/3)-9][boardWidth/2+9]='!';
 
+		
+		
 	}
 
 	private void setMapOne() {
@@ -129,28 +201,59 @@ public class GameBoard {
 		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
 
 		// trees
+		//top left
 		gameBoard[boardHeight / 4][boardWidth / 4] = '!';
+		gameBoard[boardHeight / 4-1][boardWidth / 4] = '!';
+		gameBoard[boardHeight / 4][boardWidth / 4-1] = '!';
+		gameBoard[boardHeight / 4][boardWidth / 4+1] = '!';
+		gameBoard[boardHeight / 4+1][boardWidth / 4] = '!';
+
+
+
+		//top right
 		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)] = '!';
+		gameBoard[boardHeight / 4-1][boardWidth - (boardWidth / 4)] = '!';
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)-1] = '!';
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)+1] = '!';
+		gameBoard[boardHeight / 4+1][boardWidth - (boardWidth / 4)] = '!';
+
+		//bottom left
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth / 4] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4-1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4+1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth / 4] = '!';
+
+		//bottom right
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
 				- (boardWidth / 4)] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth
+		                             				- (boardWidth / 4)] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
+		                           				- (boardWidth / 4)-1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
+		                           				- (boardWidth / 4)+1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth
+		                           				- (boardWidth / 4)] = '!';
 
 		// items
 		gameBoard[boardHeight / 2][0] = '@';
 		gameBoard[boardHeight / 2][boardWidth-1] = '@';
 		gameBoard[boardHeight/2][boardWidth /2] = '@';
 
+		gameBoard[0][boardWidth / 2] = 'p';
+		
 		int i = 0;
-		for (Unit u : compUnits) {
+		for (Unit u : playerTwoUnits) {
 			if (u.getCharRepresentation() == 'P'
 					|| u.getCharRepresentation() == 'p'){
-				u.setLocation(new Point(0,boardHeight / 2));
+				u.setLocation(new Point(0,boardWidth / 2));
 			}
 			
 			else {
 				gameBoard[1][boardHeight / 2 - 2 + i] = u
 						.getCharRepresentation();
-				Point p = new Point(1, boardHeight / 2 - 2 + i);
+				Point p = new Point(1, boardWidth / 2 - 2 + i);
 				u.setLocation(p);
 				i++;
 			}
@@ -159,10 +262,9 @@ public class GameBoard {
 
 		int j = 0;
 
-		gameBoard[boardHeight - 1][boardHeight / 2] = 'p';
-		for (Unit c : userUnits) {
-			if (c.getCharRepresentation() == 'P'
-					|| c.getCharRepresentation() == 'p') {
+		gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
+		for (Unit c : playerOneUnits) {
+			if (c.getCharRepresentation() == 'P'|| c.getCharRepresentation() == 'p') {
 				c.setLocation(new Point(0,boardHeight / 2));
 			}
 
@@ -179,10 +281,14 @@ public class GameBoard {
 
 	/************************************************************************************/
 
-	public ArrayList<Unit> getUserUnits() {
-		return userUnits;
+	public ArrayList<Unit> getPlayerOneUnits() {
+		return playerOneUnits;
 	}
-
+	
+	public ArrayList<Unit> getPlayerTwoUnits() {
+		return playerTwoUnits;
+	}
+	
 	public boolean checkAvailable(Point point) {
 
 		int x = (int) point.getX();
@@ -345,17 +451,18 @@ public class GameBoard {
 		int y = (int) p.getY();
 		char charRep = currentUnit.getCharRepresentation();
 
-		if (gameBoard[x][y] == ' ' || gameBoard[x][y] == '#')
+		if (gameBoard[x][y] == ' ' || gameBoard[x][y] == '#' || gameBoard[x][y] == '@'
+				|| gameBoard[x][y] == '!')
 			return false;
 		else if (charRep <= 'z' && charRep >= 'a') {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'A' || gameBoard[x][y] <= 'Z')
+			if (gameBoard[x][y] >= 'A' && gameBoard[x][y] <= 'Z')
 				return true;
 			else
 				return false;
 		} else {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'a' || gameBoard[x][y] <= 'z')
+			if (gameBoard[x][y] >= 'a' && gameBoard[x][y] <= 'z')
 				return true;
 			else
 				return false;
@@ -441,7 +548,8 @@ public class GameBoard {
 	}
 
 	public void removeItem(Point p) {
-		gameBoard[(int) p.getY()][(int) p.getX()] = ' ';
+		if(gameBoard[(int) p.getY()][(int) p.getX()] == '@')
+			gameBoard[(int) p.getY()][(int) p.getX()] = ' ';
 	}
 
 	/************************************************************************************/
@@ -482,10 +590,6 @@ public class GameBoard {
 
 	}
 
-	public ArrayList<Unit> getCompUnits() {
-		return compUnits;
-	}
-
 	public void unitDied(Unit u) {
 		gameBoard[(int) u.getLocation().getY()][(int) u.getLocation().getX()] = ' ';
 	}
@@ -498,13 +602,13 @@ public class GameBoard {
 	}
 
 	public void resetCompMoves() {
-		for (Unit u : compUnits) {
+		for (Unit u : playerTwoUnits) {
 			u.setMovesLeft(u.getDistance());
 		}
 	}
 
 	public void resetUserMoves() {
-		for (Unit u : userUnits) {
+		for (Unit u : playerOneUnits) {
 			u.setMovesLeft(u.getDistance());
 		}
 	}
@@ -520,22 +624,18 @@ public class GameBoard {
 	 */
 
 	public boolean gameOver() {
-
 		if (currentScenario == 1) {
-			for (Unit u : userUnits) {
-				if (u.getName().equals("Princess") && u.getHealth() == 0) {
+				if (getPlayerOneUnits().get(0).getHealth()<=0) {
 					userLost = true;
 					compWon = true;
 					return true;
 				}
-			}
-			for (Unit u : compUnits) {
-				if (u.getName().equals("Princess") && u.getHealth() == 0) {
+			
+				if (getPlayerTwoUnits().get(0).getHealth()<=0) {
 					compLost = true;
 					userWon = true;
 					return true;
 				}
-			}
 		}
 		userLost = checkIfUserLost();
 		compLost = checkIfCompLost();
@@ -553,7 +653,7 @@ public class GameBoard {
 	}
 
 	private boolean checkIfCompLost() {
-		for (Unit unit : compUnits) {
+		for (Unit unit : playerTwoUnits) {
 			if (unit.getHealth() > 0) {
 				return false;
 			}
@@ -562,7 +662,7 @@ public class GameBoard {
 	}
 
 	private boolean checkIfUserLost() {
-		for (Unit unit : userUnits) {
+		for (Unit unit : playerOneUnits) {
 			if (unit.getHealth() > 0) {
 				return false;
 			}

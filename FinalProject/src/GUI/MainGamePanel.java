@@ -21,6 +21,7 @@ import model.GameBoard;
 import model.Unit;
 import client.TRPGClient;
 import command.EndTurnCommand;
+import command.PickUpItemCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
@@ -50,7 +51,7 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
-		this.localUserUnitList=gameBoard.getUserUnits();
+		this.localUserUnitList=gameBoard.getPlayerOneUnits();
 		this.currentUnit=localUserUnitList.get(1);
 //		this.currentUnit=gameBoard.getUserUnits().get(1);
 		
@@ -58,7 +59,7 @@ public class MainGamePanel extends JPanel {
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
 		
-		Point tempPoint=gameBoard.getUserUnits().get(1).getLocation();
+		Point tempPoint=gameBoard.getPlayerOneUnits().get(1).getLocation();
 		cursorLocation=new Point(tempPoint.y, tempPoint.x);
 				
 		//add the key listener to allow the cursor to send 
@@ -111,6 +112,17 @@ public class MainGamePanel extends JPanel {
 			}
 		}
 		
+			//NOTE::: I THINK THAT WHAT WE SHOULD ACTUALLY BE DOING WITH THIS PAINTING IS A LITTLE
+		//MORE COMPLEX. WE SHOULD NOT GO THROUGH AND SIMPLY LOOK FOR THE CHARACTERS B/C WE 
+		//ARE GOING TO HAVE TROUBLE NOW THAT WE ARE ACTUALLY USING TWO PLAYERS AND THEREFOR
+		//DUPLICATE UNITS. WE SHOULD EITHER JUST DRAW THE TERRAIN AND GRASS AND THEN LOOP 
+		//THROUGH THE PLAYER ONE UNITS AND PLAYERTWO UNITS AND THEN DRAW THEM BASED ON THEIR
+		//LOCATIONS SO THAT WE DO NOT ACCIDENTALLY DRAW LIVING UNITS AS DEAD SIMPLY BECAUSE
+		//ANOTHER ONE OF THE UNITS IS A DUPLICATE AND SO IT HAS THE SAME CHARACTER AND IT IS DEAD.
+			//WE SHOULD ALSO ACTUALLY CREATE A SYSTEM FOR SETTING WHICH UNITS ARE 
+		//UPPER CASE AND WHICH ARE NOT IMMEDIATELY WITHIN THE CHARACTERSELECTPANEL SO THAT WE
+		//NEVER INCORRECTLY ASSIGN THE CASE.
+		
 		
 		//loop through the current gameBoard and draw the images based on the current positions
 		//of the units currently in the game
@@ -131,7 +143,7 @@ public class MainGamePanel extends JPanel {
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					
 					//check if this unit is dead
-					if(gameBoard.getCompUnits().get(2).isAlive()){
+					if(gameBoard.getPlayerTwoUnits().get(2).isAlive()){
 					g2.drawImage(megaman, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					}else{
 						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -149,7 +161,7 @@ public class MainGamePanel extends JPanel {
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					
 					//check if this unit is dead
-					if(gameBoard.getCompUnits().get(1).isAlive()){
+					if(gameBoard.getPlayerTwoUnits().get(1).isAlive()){
 					g2.drawImage(link, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					}else{
 						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -160,14 +172,14 @@ public class MainGamePanel extends JPanel {
 					
 					//check if this unit is dead
 					if(currentBoard[row][col]=='P'){
-						if(gameBoard.getCompUnits().get(0).isAlive()){
+						if(gameBoard.getPlayerOneUnits().get(0).isAlive()){
 						g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 						}else{
 							g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 						}
 					}
 					else{//then this is the friendly princess
-						if(gameBoard.getUserUnits().get(0).isAlive()){
+						if(gameBoard.getPlayerTwoUnits().get(0).isAlive()){
 							g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 							}else{
 								g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -277,7 +289,7 @@ public class MainGamePanel extends JPanel {
 					}
 					else if(key==KeyEvent.VK_BACK_SPACE){
 						currentGameState=GameState.CyclingThroughUnits;
-						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						if(statsPanel!=null){
 							MainGamePanel.this.add(statsPanel);
@@ -287,18 +299,28 @@ public class MainGamePanel extends JPanel {
 					else if(key==KeyEvent.VK_ENTER){
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
-						if(gameBoard.checkAvailable(cursorLocation)){
+						if(gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
+							if(currentBoard[cursorLocation.y][cursorLocation.x] == '@'){
+								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
+								PickUpItemCommand command = new PickUpItemCommand(source,toMove);
+								try {
+									serverOut.writeObject(command);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
 							Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
 							ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 							if(path!=null){
 								UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
 								try {
 									serverOut.writeObject(moveCommand);
-									//the progression should be to know have the user select an attack 
+									//the progression should be to now have the user select an attack 
 									//but for now for testing purposes we will jump straight
 									//to choosing another unit's move
 	
-									gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+									gameBoard.getPlayerOneUnits().get(unitIndex).setLocation(currentUnit.getLocation());
 	
 									currentGameState=GameState.ChoosingAttack;
 									previousPath=null;
@@ -323,17 +345,17 @@ public class MainGamePanel extends JPanel {
 				else if(currentGameState==GameState.CyclingThroughUnits){
 					
 					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
-						if(unitIndex<gameBoard.getUserUnits().size()-1){
+						if(unitIndex<gameBoard.getPlayerOneUnits().size()-1){
 							unitIndex++;
 						}
-						else if(unitIndex==gameBoard.getUserUnits().size()-1){
+						else if(unitIndex==gameBoard.getPlayerOneUnits().size()-1){
 							unitIndex=1;
 						}
 	
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						currentUnit=localUserUnitList.get(unitIndex);
 						
-						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
@@ -342,19 +364,19 @@ public class MainGamePanel extends JPanel {
 							unitIndex--;
 						}
 						else if (unitIndex==1){
-							unitIndex=gameBoard.getUserUnits().size()-1;
+							unitIndex=gameBoard.getPlayerOneUnits().size()-1;
 						}
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						currentUnit=localUserUnitList.get(unitIndex);
 						
-						Point unitPoint=gameBoard.getUserUnits().get(unitIndex).getLocation();
+						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
 					//if the user presses enter while cycling through units
 					else if(key==KeyEvent.VK_ENTER){
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-						if(gameBoard.getUserUnits().get(unitIndex).isAlive()){
+						if(gameBoard.getPlayerOneUnits().get(unitIndex).isAlive()){
 							currentUnit=localUserUnitList.get(unitIndex);
 		
 							currentGameState=GameState.ChoosingMove;
@@ -409,7 +431,7 @@ public class MainGamePanel extends JPanel {
 						if(gameBoard.checkIfEnemy(currentUnit,new Point(cursorLocation.y, cursorLocation.x))){
 							System.out.println("found enemy");
 							int enemyIndex=-99;
-							ArrayList<Unit> temp=gameBoard.getCompUnits();
+							ArrayList<Unit> temp=gameBoard.getPlayerTwoUnits();
 							for(int i=0; i<temp.size(); i++){
 								if(temp.get(i).getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
 									enemyIndex=i;
@@ -423,7 +445,7 @@ public class MainGamePanel extends JPanel {
 								try {
 									serverOut.writeObject(moveCommand);
 	
-									gameBoard.getUserUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+									gameBoard.getPlayerOneUnits().get(unitIndex).setLocation(currentUnit.getLocation());
 	
 									currentGameState = GameState.CyclingThroughUnits;
 									previousPath = null;
@@ -432,6 +454,11 @@ public class MainGamePanel extends JPanel {
 								}
 							}
 						}
+					}
+					else if(key==KeyEvent.VK_BACK_SPACE){
+						currentGameState=GameState.CyclingThroughUnits;
+						cursorLocation=new Point(currentUnit.getLocation().y, currentUnit.getLocation().x);
+						repaint();
 					}
 					else if(key==KeyEvent.VK_E){
 						EndTurnCommand endTurn=new EndTurnCommand(source);

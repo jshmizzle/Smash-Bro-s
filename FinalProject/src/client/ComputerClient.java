@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,6 +44,9 @@ public class ComputerClient extends JFrame implements Client {
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
 	private boolean myTurn = false;
+	private ArrayList<Unit> playerUnits;
+	private ArrayList<Unit> compUnits;
+	private boolean isHost = false;
 
 	public static void main(String[] args) {
 		// try {
@@ -95,8 +99,8 @@ public class ComputerClient extends JFrame implements Client {
 	// temp method
 	private void initializeGameBoard() {
 		// initialize the units and the GameBoard
-		ArrayList<Unit> playerUnits = new ArrayList<Unit>();
-		ArrayList<Unit> compUnits = new ArrayList<Unit>();
+		playerUnits = new ArrayList<Unit>();
+		compUnits = new ArrayList<Unit>();
 
 		Sonic S = new Sonic('S');
 		Goku G = new Goku('G');
@@ -114,7 +118,7 @@ public class ComputerClient extends JFrame implements Client {
 		compUnits.add(p);
 		compUnits.add(l);
 		compUnits.add(m);
-		currentBoard = new GameBoard(playerUnits, compUnits, 1, 0);
+		currentBoard = new GameBoard(playerUnits, compUnits, 1, 1);
 	}
 
 	
@@ -157,12 +161,20 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	public void attackUnit(String client, int fromIndex, int toIndex) {
-		if (!client.equals("Computer")) {
-			currentBoard.attackUnit(currentBoard.getUserUnits().get(fromIndex),
-					currentBoard.getCompUnits().get(toIndex));
-		} else
-			currentBoard.attackUnit(currentBoard.getCompUnits().get(fromIndex),
-					currentBoard.getUserUnits().get(toIndex));
+		if(client.equals(userName)){
+			if (isHost)
+					currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
+				//System.out.println(currentBoard.getCompUnits().get(2).getHealth());
+			else
+				currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
+		}
+		else{//not coming from me
+			if(isHost){
+				currentBoard.attackUnit(compUnits.get(fromIndex),playerUnits.get(toIndex));
+			}
+			else
+				currentBoard.attackUnit(playerUnits.get(fromIndex),compUnits.get(toIndex));
+		}
 	}
 
 	public void endTurn(String client) {
@@ -170,14 +182,12 @@ public class ComputerClient extends JFrame implements Client {
 			myTurn = false;
 		} else {
 			myTurn = true;
-			// TODO: gonna need to change this for multiplayer
 			currentBoard.resetCompMoves();
 			executeProtocol();
 		}
 	}
 
 	private void executeProtocol() {
-		// TODO Auto-generated method stub
 		System.out.println("h");
 		moveTurn();
 		attackTurn();
@@ -187,7 +197,7 @@ public class ComputerClient extends JFrame implements Client {
 	int florb=1;
 	private void moveTurn() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
-		compUnits = currentBoard.getCompUnits();
+		compUnits = currentBoard.getPlayerTwoUnits();
 		Point princess = null;
 		/*for (int j = 0; j < currentBoard.getGameBoard().length; j++) {
 			for (int k = 0; k < currentBoard.getGameBoard()[0].length; k++) {
@@ -211,12 +221,17 @@ public class ComputerClient extends JFrame implements Client {
 			boolean yes=true;
 			int rand1=0;
 			int rand2=0;
+			int z=0;
 			while (yes){
 				rand1 = random.nextInt(19);
 				rand2 = random.nextInt(19);
 				if (currentBoard.checkAvailable(new Point(rand1,rand2))){
 					yes=false;
 				}
+				if(z==10){
+					return;
+				}
+				z++;
 			}
 			path = currentBoard.findShortestPath(u.getLocation(), new Point(rand1,rand2));
 			System.out.println("path :" +path.size());
@@ -234,9 +249,9 @@ public class ComputerClient extends JFrame implements Client {
 			for(int h=0; h<moves.size(); h++){
 				System.out.println("before " +moves.get(h).toString());
 			}
-			for (int j = 1; j < u.getDistance() ; j++) {
-				moves.add(path.get(j));
-			}
+//			for (int j = 1; j < u.getDistance() ; j++) {
+//				moves.add(path.get(j));
+//			}
 			UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
 			try{
 				outputStream.writeObject(moveCommand);
@@ -248,7 +263,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void attackTurn() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
-		compUnits = currentBoard.getCompUnits();
+		compUnits = currentBoard.getPlayerTwoUnits();
 		ArrayList<Point> range = new ArrayList<>();
 		for (int i = 0; i < compUnits.size(); i++) {
 			Unit u = compUnits.get(i);
@@ -257,7 +272,7 @@ public class ComputerClient extends JFrame implements Client {
 				Point temp = new Point(range.get(j));
 				if(currentBoard.checkIfEnemy(u, temp)){
 					ArrayList <Unit> user= new ArrayList <>();
-					user=currentBoard.getUserUnits();
+					user=currentBoard.getPlayerOneUnits();
 					for(int l=0; l<user.size(); l++ ){
 						if(temp == user.get(l).getLocation()){
 							UnitAttackCommand attCommand= new UnitAttackCommand (userName,i, l );
@@ -275,7 +290,6 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	private void sendEndTurnCommand() {
-		// TODO Auto-generated method stub
 		EndTurnCommand command = new EndTurnCommand(userName);
 		try {
 			outputStream.writeObject(command);
@@ -297,15 +311,14 @@ public class ComputerClient extends JFrame implements Client {
 
 	@Override
 	public void useItem(String source, int index, Item item) {
-		// TODO Auto-generated method stub
-
+		
 	}
 	
 	public void unitAttacked(String source, int attackUnit, int defendUnit){
 		ArrayList <Unit> comp= new ArrayList <>();
-		comp=currentBoard.getCompUnits();
+		comp=currentBoard.getPlayerTwoUnits();
 		ArrayList <Unit> user= new ArrayList <>();
-		user=currentBoard.getUserUnits();
+		user=currentBoard.getPlayerOneUnits();
 		if(source.equals(userName)){
 			user.get(defendUnit).takeHit(comp.get(attackUnit).getAttackPower());
 		}
@@ -325,14 +338,19 @@ public class ComputerClient extends JFrame implements Client {
 		Unit u;
 		
 		if(source.equals(userName)){
-			u=currentBoard.getCompUnits().get(index);
+			u=currentBoard.getPlayerTwoUnits().get(index);
 		}
 		else{
-			u=currentBoard.getUserUnits().get(index);
+			u=currentBoard.getPlayerOneUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
+<<<<<<< HEAD
 		//u.setLocation(moves.get(index));
 		//this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
+=======
+//		u.setLocation(moves.get(index));
+		this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
+>>>>>>> fbb31ca28fb2bf09a7d46e61a776a698f396b258
 		
 		//loop through each point on the path and tell the gameBoard the unit moved to each
 		//new point. Only allow the unit to take its specified maxNum of moves
