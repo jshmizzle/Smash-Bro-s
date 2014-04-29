@@ -331,8 +331,8 @@ public class ComputerClient extends JFrame implements Client {
 			u=currentBoard.getUserUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
-		u.setLocation(moves.get(index));
-		this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
+		//u.setLocation(moves.get(index));
+		//this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
 		
 		//loop through each point on the path and tell the gameBoard the unit moved to each
 		//new point. Only allow the unit to take its specified maxNum of moves
@@ -347,11 +347,13 @@ public class ComputerClient extends JFrame implements Client {
 			}
 			//if the move is upwards
 			if(x>dx && y==dy){
+				
 				currentBoard.moveUp(userName, u);
 				System.out.println(u.getName()+"move up");
 			}
 			//if the move is downwards
 			else if(x<dx && y==dy){
+				
 				currentBoard.moveDown(userName, u);
 				System.out.println(u.getName()+"move down");
 			}
