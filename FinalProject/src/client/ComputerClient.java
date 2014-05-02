@@ -241,12 +241,12 @@ public class ComputerClient extends JFrame implements Client {
 			}
 		}*/
 		
-		for (int i = 1; i < compUnits.size(); i++) {
+		for (int i = 0; i < compUnits.size(); i++) {
 			ArrayList<Point> path = new ArrayList<>();
 			ArrayList<Point> moves = new ArrayList<>();
 			Unit u = compUnits.get(i);
-			if(!u.isAlive()){
-				return;
+			if(!u.isAlive() || u.getName().equals("Princess")){
+				continue;
 			}
 			System.out.println(u.getName()+" "+u.getMovesLeft());
 			Random random=new Random();
@@ -255,6 +255,25 @@ public class ComputerClient extends JFrame implements Client {
 			int rand2=0;
 			int z=0;
 			while (yes){
+				
+				
+				
+				if(u.getName().equals("Sonic")){
+					//if there's a unit within 6 spaces, run away
+					
+				}
+				if(u.getName().equals("MegaMan")){
+					//go towards enemies, attack
+				}
+				if(u.getName().equals("Link")){
+					//go towards enemies, attack
+				}
+				if(u.getName().equals("Mario")){
+					//go towards enemies, attack
+				}
+				
+				
+				
 				rand1 = random.nextInt(19);
 				rand2 = random.nextInt(19);
 				if (currentBoard.checkAvailable(new Point(rand1,rand2))){
