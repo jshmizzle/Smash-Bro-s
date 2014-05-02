@@ -17,9 +17,11 @@ import model.GameBoard;
 import model.Goku;
 import model.Item;
 import model.Link;
+import model.Map;
 import model.Mario;
 import model.MegaMan;
 import model.Princess;
+import model.Scenario;
 import model.Sonic;
 import model.Unit;
 import GUI.CharacterSelectPanel;
@@ -49,8 +51,8 @@ public class ComputerClient extends JFrame implements Client {
 	private ArrayList<Unit> playerUnits;
 	private ArrayList<Unit> compUnits;
 	private boolean isHost = false;
-	private int gameType=0;
-	private int map=0;
+	private Scenario gameType=null;
+	private Map map=null;
 
 	public static void main(String[] args) {
 		// try {
@@ -64,8 +66,6 @@ public class ComputerClient extends JFrame implements Client {
 
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
-
-		initializeGameBoard();
 
 		ComputerServerHandler handler = new ComputerServerHandler(this,
 				inputStream);
@@ -101,18 +101,15 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	// temp method
-	private void initializeGameBoard() {
+	private void chooseRandomCompUnits() {
 		// initialize the units and the GameBoard
-		while(map==0 && gameType==0){
-			//wait for game type and map to be initialized
-		}
 		compUnits = new ArrayList<Unit>();
 
 		ArrayList<Unit> choices=new ArrayList<>(Arrays.asList(new Link('l'), new Goku('g'), new Mario('w'), new MegaMan('m'), new Sonic('s')));
 		ArrayList<Unit> temp=new ArrayList<>();
 		
 		Random rand=new Random();
-		if(gameType==1){
+		if(gameType==Scenario.Princess){
 			Princess p=new Princess('p');
 			temp.add(p);
 		}
@@ -121,15 +118,16 @@ public class ComputerClient extends JFrame implements Client {
 			temp.add(choices.get(rand.nextInt(5)));
 		}
 		
-		SetUserUnits c=new  SetUserUnits(userName, temp);
-		
-		while(playerUnits==null){
-			//wait for player units to be sent;
+		Command command=new SetUserUnits(userName, temp);
+		//send the command that sets the user units for computer and the user
+		try {
+			outputStream.writeObject(command);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
 	}
 	
-	public void setMapAndScenario(int map, int scenario){
+	public void setMapAndScenario(String source, Map map, Scenario scenario){
 		this.map=map;
 		gameType=scenario;
 	}
@@ -137,9 +135,11 @@ public class ComputerClient extends JFrame implements Client {
 	public void setUserUnits(String source, ArrayList<Unit> userUnits){
 		if(userName.equals(source)){
 			compUnits=userUnits;
+			currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
 		}
 		else{
 			playerUnits=userUnits;
+			chooseRandomCompUnits();
 		}
 	}
 	
@@ -151,12 +151,12 @@ public class ComputerClient extends JFrame implements Client {
 	  this.pack(); this.setVisible(true); }*/
 	 
 
-	private void update(Command<?> command) {
+	private void update() {
 		this.gamePanel.update(currentBoard);
 	}
 
 	public void createGameBoard(ArrayList<Unit> userUnits,
-			ArrayList<Unit> compUnits, int map, int scenario) {
+			ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 		currentBoard = new GameBoard(userUnits, compUnits, map, scenario);
 		playingAlready = true;
 	}
@@ -204,19 +204,30 @@ public class ComputerClient extends JFrame implements Client {
 		} else {
 			myTurn = true;
 			currentBoard.resetCompMoves();
-			executeProtocol();
+			executeTurn();
 		}
 	}
 
-	private void executeProtocol() {
-		System.out.println("h");
-		moveTurn();
-		attackTurn();
+	private void executeTurn() {
+		if(gameType==Scenario.Princess)
+			princessTurn();
+		else
+			meleTurn();
 		sendEndTurnCommand();
 	}
+	
+	public void princessTurn(){
+		moveTurnPrincess();
+		attackTurnPrincess();
+	}
+	
+	public void meleTurn(){
+		moveTurnMele();
+		attackTurnMele();
+	}
 
-	int florb=1;
-	private void moveTurn() {
+	
+	private void moveTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getPlayerTwoUnits();
 		Point princess = null;
@@ -282,7 +293,11 @@ public class ComputerClient extends JFrame implements Client {
 			}
 	}
 
-	private void attackTurn() {
+	private void moveTurnMele(){
+		//add attack stuff
+	}
+	
+	private void attackTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getPlayerTwoUnits();
 		ArrayList<Point> range = new ArrayList<>();
@@ -308,6 +323,10 @@ public class ComputerClient extends JFrame implements Client {
 			}
 		}
 
+	}
+	
+	private void attackTurnMele(){
+		
 	}
 
 	private void sendEndTurnCommand() {
@@ -419,5 +438,12 @@ public class ComputerClient extends JFrame implements Client {
 	public void pickUpItem(String source, Point p) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void beginGame() {
+		//THIS METHOD DOES NOT NEED TO BE USED IN THIS CLASS. IT MUST BE IN HERE SO THAT 
+		//IF A COMMAND IS SENT TO BEGIN GAME, THE PLAYER CLIENT CAN FIND OUT BUT THIS CLASS'S 
+		//SERVER HANDLER DOES NOT HAVE TO RUN INTO A RUNTIME CASTING EXCEPTION
 	}
 }

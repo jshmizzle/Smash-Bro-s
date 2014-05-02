@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import model.Item;
+import model.Map;
+import model.Scenario;
 import model.Unit;
 
 public interface Client {
@@ -24,5 +26,7 @@ public interface Client {
 
 	public void setUserUnits(String source, ArrayList<Unit> userUnits);
 	
-	public void setMapAndScenario(String source, int map, int scenario);
+	public void setMapAndScenario(String source, Map map, Scenario scenario);
+	
+	public void beginGame();
 }

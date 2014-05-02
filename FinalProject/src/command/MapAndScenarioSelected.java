@@ -1,12 +1,16 @@
 package command;
 
 import client.Client;
+import model.Map;
+import model.Scenario;
+import client.TRPGClient;
 
 public class MapAndScenarioSelected extends Command<Client> {
 
-	private int map, scenario;
+	private Map map;
+	private Scenario scenario;
 	
-	public MapAndScenarioSelected(String source, int mapChoice, int scenarioChoice) {
+	public MapAndScenarioSelected(String source, Map mapChoice, Scenario scenarioChoice) {
 		super(source);
 		this.map=mapChoice;
 		this.scenario=scenarioChoice;
