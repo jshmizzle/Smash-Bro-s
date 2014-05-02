@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -27,6 +28,7 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import command.Command;
 import command.EndTurnCommand;
+import command.SetUserUnits;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
@@ -47,6 +49,8 @@ public class ComputerClient extends JFrame implements Client {
 	private ArrayList<Unit> playerUnits;
 	private ArrayList<Unit> compUnits;
 	private boolean isHost = false;
+	private int gameType=0;
+	private int map=0;
 
 	public static void main(String[] args) {
 		// try {
@@ -99,28 +103,45 @@ public class ComputerClient extends JFrame implements Client {
 	// temp method
 	private void initializeGameBoard() {
 		// initialize the units and the GameBoard
-		playerUnits = new ArrayList<Unit>();
+		while(map==0 && gameType==0){
+			//wait for game type and map to be initialized
+		}
 		compUnits = new ArrayList<Unit>();
 
-		Sonic S = new Sonic('S');
-		Goku G = new Goku('G');
-		Mario W = new Mario('W');
-		Link l = new Link('l');
-		Mario w = new Mario('w');
-		MegaMan m = new MegaMan('m');
-		Princess P = new Princess('P');
-		Princess p = new Princess('p');
-
-		playerUnits.add(P);
-		playerUnits.add(W);
-		playerUnits.add(S);
-		playerUnits.add(G);
-		compUnits.add(p);
-		compUnits.add(l);
-		compUnits.add(m);
-		currentBoard = new GameBoard(playerUnits, compUnits, 1, 1);
+		ArrayList<Unit> choices=new ArrayList<>(Arrays.asList(new Link('l'), new Goku('g'), new Mario('w'), new MegaMan('m'), new Sonic('s')));
+		ArrayList<Unit> temp=new ArrayList<>();
+		
+		Random rand=new Random();
+		if(gameType==1){
+			Princess p=new Princess('p');
+			temp.add(p);
+		}
+		
+		for(int i=0; i<5; i++){
+			temp.add(choices.get(rand.nextInt(5)));
+		}
+		
+		SetUserUnits c=new  SetUserUnits(userName, temp);
+		
+		while(playerUnits==null){
+			//wait for player units to be sent;
+		}
+		currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
+	}
+	
+	public void setMapAndScenario(int map, int scenario){
+		this.map=map;
+		gameType=scenario;
 	}
 
+	public void setUserUnits(String source, ArrayList<Unit> userUnits){
+		if(userName.equals(source)){
+			compUnits=userUnits;
+		}
+		else{
+			playerUnits=userUnits;
+		}
+	}
 	
 	  /*private void initializeFrame() { 
 	  initializeGameBoard();
@@ -344,13 +365,13 @@ public class ComputerClient extends JFrame implements Client {
 			u=currentBoard.getPlayerOneUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
-<<<<<<< HEAD
+
 		//u.setLocation(moves.get(index));
 		//this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
-=======
+
 //		u.setLocation(moves.get(index));
 		this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
->>>>>>> fbb31ca28fb2bf09a7d46e61a776a698f396b258
+
 		
 		//loop through each point on the path and tell the gameBoard the unit moved to each
 		//new point. Only allow the unit to take its specified maxNum of moves
