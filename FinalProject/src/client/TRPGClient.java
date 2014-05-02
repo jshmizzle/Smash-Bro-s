@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,9 @@ public class TRPGClient extends JFrame implements Client{
 	private boolean playingAlready = false, isHost=false, singlePlayer=false;
 	private boolean myTurn = true;
 	private ArrayList<Item> itemList=new ArrayList<Item>();
+	private ArrayList<Unit> playerUnits;
+	private ArrayList<Unit> compUnits;
+	private ServerHandler handler;
 	private ArrayList<Unit> myUnits, opponentUnits;
 
 
@@ -62,6 +66,7 @@ public class TRPGClient extends JFrame implements Client{
 	public TRPGClient() {		
 		
 		askUserForInfo();// now the client has been logged into the server'
+
 		ServerHandler handler = new ServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
@@ -113,7 +118,7 @@ public class TRPGClient extends JFrame implements Client{
 		
 		//perform the same operations that the original constructor did
 		initializeFrame();
-		ServerHandler handler = new ServerHandler(this, inputStream);
+		handler = new ServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
 	}
@@ -291,14 +296,22 @@ public class TRPGClient extends JFrame implements Client{
 	}
 
 	public void useItem(String client, int index, Item item) {
-		if(!client.equals("Computer")){
-			currentBoard.useThisItem(client, currentBoard.getPlayerOneUnits().get(index), item);
-		}
+	
 		if(client.equals(userName)){
-			currentBoard.useThisItem(client, myUnits.get(index), item);
+			if(isHost)
+				currentBoard.useThisItem(client, playerUnits.get(index), item);
+			else
+				currentBoard.useThisItem(client, compUnits.get(index), item);
 		}
-		else 
-			;// do nothing
+		else{
+			if(isHost){
+				currentBoard.useThisItem(client, compUnits.get(index), item);
+			}
+			else
+				currentBoard.useThisItem(client, playerUnits.get(index), item);
+
+		}
+
 	}
 
 
@@ -518,7 +531,4 @@ public class TRPGClient extends JFrame implements Client{
 	public boolean isMoving(){
 		return moving;
 	}
-
-
-
 }
