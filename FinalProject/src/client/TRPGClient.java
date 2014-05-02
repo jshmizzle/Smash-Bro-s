@@ -31,7 +31,6 @@ import GUI.CharacterSelectPanel;
 import GUI.GameLobby;
 import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
-
 import command.Command;
 import command.LobbyInfoCommand;
 
@@ -128,6 +127,9 @@ public class TRPGClient extends JFrame implements Client{
 		isHost=true;
 		singlePlayer=true;
 		
+		//construct the computer client to play against
+		ComputerClient computer=new ComputerClient();
+		
 		//now we need to switch over from the mainMenuPanel directly to the character select
 		this.remove(currentPanel);
 		currentPanel=new CharacterSelectPanel(userName, outputStream, isHost);
@@ -142,7 +144,7 @@ public class TRPGClient extends JFrame implements Client{
 		
 	}
 	
-	public void setMapAndScenario(int map, int scenario) {
+	public void setMapAndScenario(String source, int map, int scenario) {
 		this.mapChoice=map;
 		this.scenarioChoice=scenario;
 		//we no longer want to be looking at the lobby panel because we already got all of 
@@ -179,8 +181,6 @@ public class TRPGClient extends JFrame implements Client{
 				//the units we need to start a single player game.
 				this.remove(currentPanel);
 				
-				//construct the computer client to play against
-				ComputerClient computer=new ComputerClient();
 				
 				//randomly choose the enemies units so that we can actually construct the game
 				opponentUnits=new ArrayList<>();

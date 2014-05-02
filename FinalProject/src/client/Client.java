@@ -22,4 +22,7 @@ public interface Client {
 
 	public void attackUnit(String source, int fromIndex, int toIndex);
 
+	public void setUserUnits(String source, ArrayList<Unit> userUnits);
+	
+	public void setMapAndScenario(String source, int map, int scenario);
 }
