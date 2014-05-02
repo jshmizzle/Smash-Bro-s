@@ -67,8 +67,6 @@ public class ComputerClient extends JFrame implements Client {
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
 
-		initializeGameBoard();
-
 		ComputerServerHandler handler = new ComputerServerHandler(this,
 				inputStream);
 		Thread t = new Thread(handler);
@@ -105,9 +103,6 @@ public class ComputerClient extends JFrame implements Client {
 	// temp method
 	private void initializeGameBoard() {
 		// initialize the units and the GameBoard
-		while(map==null && gameType==null){
-			//wait for game type and map to be initialized
-		}
 		compUnits = new ArrayList<Unit>();
 
 		ArrayList<Unit> choices=new ArrayList<>(Arrays.asList(new Link('l'), new Goku('g'), new Mario('w'), new MegaMan('m'), new Sonic('s')));
@@ -124,10 +119,6 @@ public class ComputerClient extends JFrame implements Client {
 		}
 		
 		SetUserUnits c=new  SetUserUnits(userName, temp);
-		
-		while(playerUnits==null){
-			//wait for player units to be sent;
-		}
 		currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
 	}
 	
@@ -142,6 +133,7 @@ public class ComputerClient extends JFrame implements Client {
 		}
 		else{
 			playerUnits=userUnits;
+			initializeGameBoard();
 		}
 	}
 	
@@ -211,7 +203,7 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	private void executeTurn() {
-		if(gameType==1)
+		if(gameType==Scenario.Princess)
 			princessTurn();
 		else
 			meleTurn();
