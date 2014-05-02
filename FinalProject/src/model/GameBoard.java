@@ -187,9 +187,13 @@ public class GameBoard implements Serializable {
 
 	private void setMapOne() {
 
-		//princess rocks
+		//bottom princess rocks
 		gameBoard[boardHeight-1][boardWidth/2-1] = '#';
 		gameBoard[boardHeight-1][boardWidth/2+1] = '#';
+		
+		//top princess rocks
+		gameBoard[0][boardWidth/2-1]='#';
+		gameBoard[0][boardWidth/2+1] = '#';
 		
 		// rocks
 		gameBoard[boardHeight / 2 - 5][boardWidth / 2 - 2] = '#';
