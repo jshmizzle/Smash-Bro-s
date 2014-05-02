@@ -151,7 +151,7 @@ public class ComputerClient extends JFrame implements Client {
 	  this.pack(); this.setVisible(true); }*/
 	 
 
-	private void update(Command<?> command) {
+	private void update() {
 		this.gamePanel.update(currentBoard);
 	}
 
@@ -204,19 +204,30 @@ public class ComputerClient extends JFrame implements Client {
 		} else {
 			myTurn = true;
 			currentBoard.resetCompMoves();
-			executeProtocol();
+			executeTurn();
 		}
 	}
 
-	private void executeProtocol() {
-		System.out.println("h");
-		moveTurn();
-		attackTurn();
+	private void executeTurn() {
+		if(gameType==1)
+			princessTurn();
+		else
+			meleTurn();
 		sendEndTurnCommand();
 	}
+	
+	public void princessTurn(){
+		moveTurnPrincess();
+		attackTurnPrincess();
+	}
+	
+	public void meleTurn(){
+		moveTurnMele();
+		attackTurnMele();
+	}
 
-	int florb=1;
-	private void moveTurn() {
+	
+	private void moveTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getPlayerTwoUnits();
 		Point princess = null;
@@ -282,7 +293,11 @@ public class ComputerClient extends JFrame implements Client {
 			}
 	}
 
-	private void attackTurn() {
+	private void moveTurnMele(){
+		//add attack stuff
+	}
+	
+	private void attackTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getPlayerTwoUnits();
 		ArrayList<Point> range = new ArrayList<>();
@@ -308,6 +323,10 @@ public class ComputerClient extends JFrame implements Client {
 			}
 		}
 
+	}
+	
+	private void attackTurnMele(){
+		
 	}
 
 	private void sendEndTurnCommand() {
