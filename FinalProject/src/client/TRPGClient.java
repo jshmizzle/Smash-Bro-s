@@ -189,7 +189,7 @@ public class TRPGClient extends JFrame implements Client {
 	}
 
 	public void startMultiPlayerGame() {
-
+		
 	}
 
 	public void setMapAndScenario(Map map, Scenario scenario) {
