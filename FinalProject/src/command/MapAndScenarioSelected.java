@@ -1,8 +1,8 @@
 package command;
 
-import client.TRPGClient;
+import client.Client;
 
-public class MapAndScenarioSelected extends Command<TRPGClient> {
+public class MapAndScenarioSelected extends Command<Client> {
 
 	private int map, scenario;
 	
@@ -13,8 +13,8 @@ public class MapAndScenarioSelected extends Command<TRPGClient> {
 	}
 
 	@Override
-	public void execute(TRPGClient executeOn) {
-		executeOn.setMapAndScenario(map, scenario);
+	public void execute(Client executeOn) {
+		executeOn.setMapAndScenario(getSource(), map, scenario);
 	}
 
 }

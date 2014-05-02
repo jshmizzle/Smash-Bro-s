@@ -128,9 +128,10 @@ public class TRPGClient extends JFrame implements Client{
 		isHost=true;
 		singlePlayer=true;
 		
+		System.out.println("start single player");
 		//construct the computer client to play against
 		ComputerClient computer=new ComputerClient();
-		
+		System.out.println("past");
 		//now we need to switch over from the mainMenuPanel directly to the character select
 		this.remove(currentPanel);
 		currentPanel=new CharacterSelectPanel(userName, outputStream, isHost);
@@ -181,9 +182,6 @@ public class TRPGClient extends JFrame implements Client{
 				//we no longer want to be looking at the unit select panel because we already got
 				//the units we need to start a single player game.
 				this.remove(currentPanel);
-				
-				//randomly choose the enemies units so that we can actually construct the game
-				//randomlyChooseEnemyUnits();
 				
 				//we will need to check for the scenario later on but for now I know we need
 				//to add the princess to the list so I just do it no matter what for single player
