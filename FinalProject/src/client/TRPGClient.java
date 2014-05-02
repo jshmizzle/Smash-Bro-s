@@ -65,6 +65,8 @@ public class TRPGClient extends JFrame implements Client{
 		ServerHandler handler = new ServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
+		this.setTitle("TRPG Final Project");
+
 		
 		//I don't think we need this method
 //		initializeFrame();
@@ -93,6 +95,7 @@ public class TRPGClient extends JFrame implements Client{
 		this.host=host;
 		this.port=port;
 		this.userName=username;
+		this.setTitle("TRPG Final Project");
 		
 		try {
 			//create the connection to the server
