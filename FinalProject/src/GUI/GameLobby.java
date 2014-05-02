@@ -20,6 +20,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import model.Map;
+import model.Scenario;
 import command.Command;
 import command.MapAndScenarioSelected;
 
@@ -30,7 +32,9 @@ public class GameLobby extends JPanel {
 	private ObjectOutputStream serverOut;
 	private Image map1, princess, grass, deathmatchIcon;
 	private Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, scenario3, selectedMapPoint, selectedScenarioPoint;
-	private int currentState=1, mapChoice, scenarioChoice;
+	private int currentState=1;
+	private Map mapChoice;
+	private Scenario scenarioChoice;
 	private String sourceUserName;
 	private boolean isHost;
 	
@@ -222,11 +226,11 @@ public class GameLobby extends JPanel {
 					if(currentState==1){	
 						currentState=2;
 						if(cursorLocation.equals(mapOption1)){
-							mapChoice=1;
+							mapChoice=Map.First;
 							selectedMapPoint=mapOption1;
 						}
 						else{
-							mapChoice=2;
+							mapChoice=Map.Second;
 							selectedMapPoint=mapOption2;	
 						}
 						
@@ -236,16 +240,12 @@ public class GameLobby extends JPanel {
 					else if(currentState==2){
 						currentState=3;
 						if(cursorLocation.equals(scenario1)){
-							scenarioChoice=1;
+							scenarioChoice=Scenario.Princess;
 							selectedScenarioPoint=scenario1;
 						}
-						else if(cursorLocation.equals(scenario2)){
-							scenarioChoice=2;
+						if(cursorLocation.equals(scenario2)){
+							scenarioChoice=Scenario.Death;
 							selectedScenarioPoint=scenario2;
-						}
-						else{
-							scenarioChoice=3;
-							selectedScenarioPoint=scenario3;
 						}
 						//repaint so that you can see the selected scenario get highlighted red
 						repaint();
