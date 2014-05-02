@@ -16,9 +16,11 @@ import model.GameBoard;
 import model.Goku;
 import model.Item;
 import model.Link;
+import model.Map;
 import model.Mario;
 import model.MegaMan;
 import model.Princess;
+import model.Scenario;
 import model.Sonic;
 import model.Unit;
 import GUI.CharacterSelectPanel;
@@ -118,7 +120,7 @@ public class ComputerClient extends JFrame implements Client {
 		compUnits.add(p);
 		compUnits.add(l);
 		compUnits.add(m);
-		currentBoard = new GameBoard(playerUnits, compUnits, 1, 1);
+		currentBoard = new GameBoard(playerUnits, compUnits, Map.First, Scenario.Princess);
 	}
 
 	
@@ -135,7 +137,7 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	public void createGameBoard(ArrayList<Unit> userUnits,
-			ArrayList<Unit> compUnits, int map, int scenario) {
+			ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 		currentBoard = new GameBoard(userUnits, compUnits, map, scenario);
 		playingAlready = true;
 	}

@@ -6,12 +6,15 @@ import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+
 import model.GameBoard;
 import model.Goku;
 import model.Link;
+import model.Map;
 import model.Mario;
 import model.MegaMan;
 import model.Princess;
+import model.Scenario;
 import model.Sonic;
 import model.Unit;
 import GUI.MainGamePanel;
@@ -55,7 +58,7 @@ public class TRPGClientTemp extends JFrame {
 		compUnits.add(p);
 		compUnits.add(l);
 		compUnits.add(m);
-		gameBoard = new GameBoard(playerUnits, compUnits, 1, 0); 
+		gameBoard = new GameBoard(playerUnits, compUnits, Map.First, Scenario.Princess); 
 	}
 
 
