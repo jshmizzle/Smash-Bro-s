@@ -51,8 +51,8 @@ public class ComputerClient extends JFrame implements Client {
 	private ArrayList<Unit> playerUnits;
 	private ArrayList<Unit> compUnits;
 	private boolean isHost = false;
-	private int gameType=0;
-	private int map=0;
+	private Scenario gameType=null;
+	private Map map=null;
 
 	public static void main(String[] args) {
 		// try {
@@ -105,7 +105,7 @@ public class ComputerClient extends JFrame implements Client {
 	// temp method
 	private void initializeGameBoard() {
 		// initialize the units and the GameBoard
-		while(map==0 && gameType==0){
+		while(map==null && gameType==null){
 			//wait for game type and map to be initialized
 		}
 		compUnits = new ArrayList<Unit>();
@@ -114,7 +114,7 @@ public class ComputerClient extends JFrame implements Client {
 		ArrayList<Unit> temp=new ArrayList<>();
 		
 		Random rand=new Random();
-		if(gameType==1){
+		if(gameType==Scenario.Princess){
 			Princess p=new Princess('p');
 			temp.add(p);
 		}
@@ -131,7 +131,7 @@ public class ComputerClient extends JFrame implements Client {
 		currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
 	}
 	
-	public void setMapAndScenario(int map, int scenario){
+	public void setMapAndScenario(Map map, Scenario scenario){
 		this.map=map;
 		gameType=scenario;
 	}

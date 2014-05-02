@@ -42,7 +42,9 @@ import command.LobbyInfoCommand;
 public class TRPGClient extends JFrame implements Client {
 
 	private String host, userName;
-	private int port = 0, mapChoice, scenarioChoice;
+	private int port = 0;
+	private Map mapChoice; 
+	private Scenario scenarioChoice;
 	private Socket server;
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
@@ -190,7 +192,7 @@ public class TRPGClient extends JFrame implements Client {
 
 	}
 
-	public void setMapAndScenario(int map, int scenario) {
+	public void setMapAndScenario(Map map, Scenario scenario) {
 		this.mapChoice = map;
 		this.scenarioChoice = scenario;
 		// we no longer want to be looking at the lobby panel because we already
