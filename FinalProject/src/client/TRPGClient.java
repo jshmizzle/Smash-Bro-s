@@ -55,7 +55,8 @@ public class TRPGClient extends JFrame implements Client {
 	private ArrayList<Unit> playerUnits;
 	private ArrayList<Unit> compUnits;
 	private ServerHandler handler;
-	private ArrayList<Unit> myUnits, opponentUnits;
+	private ArrayList<Unit> myUnits;
+	private ArrayList<Unit> opponentUnits=new ArrayList<>();
 
 	public static void main(String[] args) {
 		// try {
@@ -74,6 +75,12 @@ public class TRPGClient extends JFrame implements Client {
 		ServerHandler handler = new ServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
+
+		this.setTitle("TRPG Final Project");
+
+		
+		//I don't think we need this method
+//		initializeFrame();
 
 		// I don't think we need this method
 		// initializeFrame();
@@ -101,11 +108,13 @@ public class TRPGClient extends JFrame implements Client {
 	 * 
 	 * @see TRPGQuickStart
 	 */
-	public TRPGClient(String host, int port, String username) {
-		this.host = host;
-		this.port = port;
-		this.userName = username;
 
+	public TRPGClient(String host, int port, String username){
+		this.host=host;
+		this.port=port;
+		this.userName=username;
+		this.setTitle("TRPG Final Project");
+		
 		try {
 			// create the connection to the server
 			server = new Socket(host, port);
@@ -159,13 +168,15 @@ public class TRPGClient extends JFrame implements Client {
 		}
 	}
 
-	public void startSinglePlayerGame() {
-		// obviously the player will host the single player game
-		isHost = true;
-		singlePlayer = true;
-
-		// now we need to switch over from the mainMenuPanel directly to the
-		// character select
+	public void startSinglePlayerGame(){
+		//obviously the player will host the single player game
+		isHost=true;
+		singlePlayer=true;
+		
+		//construct the computer client to play against
+		ComputerClient computer=new ComputerClient();
+		
+		//now we need to switch over from the mainMenuPanel directly to the character select
 		this.remove(currentPanel);
 		currentPanel = new CharacterSelectPanel(userName, outputStream, isHost);
 		currentPanel.grabFocus();
@@ -198,56 +209,44 @@ public class TRPGClient extends JFrame implements Client {
 		this.setVisible(true);
 	}
 
-	public void setUserUnits(String source, ArrayList<Unit> userUnits) {
-
-		// it doesn't matter if you are the host or not, if you sent this
-		// command, then
-		// you chose these units, and you have to be the one to live with your
-		// decisions
-		// and use them for the game
-		// if(isHost){
-		if (userName.equals(source)) {
-			myUnits = userUnits;
-		} else {
-			opponentUnits = userUnits;
-		}
-		System.out.println("User units set: \nMy Units: " + myUnits);
-		System.out.println("Opponent's Units: " + opponentUnits);
-
-		if (singlePlayer) {
-			// we no longer want to be looking at the unit select panel because
-			// we already got
-			// the units we need to start a single player game.
-			this.remove(currentPanel);
-
-			// construct the computer client to play against
-			ComputerClient computer = new ComputerClient();
-
-			// randomly choose the enemies units so that we can actually
-			// construct the game
-			opponentUnits = new ArrayList<>();
-			randomlyChooseEnemyUnits();
-
-			// we will need to check for the scenario later on but for now I
-			// know we need
-			// to add the princess to the list so I just do it no matter what
-			// for single player
-			opponentUnits.add(0, new Princess('p'));
-			myUnits.add(0, new Princess('P'));
-
-			// change the currentPanel to the character select panel so that we
-			// can select our
-			// units for the current game and then notify the other client
-			currentBoard = new GameBoard(myUnits, opponentUnits, Map.First, Scenario.Princess);
-			currentPanel = new MainGamePanel(userName, currentBoard, this,
-					outputStream);
-			currentPanel.grabFocus();
-			this.add(currentPanel);
-			currentPanel.requestFocus(true);
-			this.pack();
-			this.setVisible(true);
-		}
-		// }
+	public void setUserUnits(String source, ArrayList<Unit> userUnits){
+		
+		//it doesn't matter if you are the host or not, if you sent this command, then
+		//you chose these units, and you have to be the one to live with your decisions 
+		//and use them for the game
+		//if(isHost){	
+			if(userName.equals(source)){
+				myUnits=userUnits;
+			}
+			else{
+				opponentUnits=userUnits;
+			}
+			System.out.println("User units set: \nMy Units: " + myUnits);
+			System.out.println("Opponent's Units: " + opponentUnits);
+			
+			if(singlePlayer){
+				//we no longer want to be looking at the unit select panel because we already got
+				//the units we need to start a single player game.
+				this.remove(currentPanel);
+				
+				//randomly choose the enemies units so that we can actually construct the game
+				//randomlyChooseEnemyUnits();
+				
+				//we will need to check for the scenario later on but for now I know we need
+				//to add the princess to the list so I just do it no matter what for single player
+				myUnits.add(0, new Princess('P'));
+				
+				//change the currentPanel to the character select panel so that we can select our
+				//units for the current game and then notify the other client
+				currentBoard =new GameBoard(myUnits, opponentUnits, Map.First, Scenario.Princess);
+				currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream);
+				currentPanel.grabFocus();
+				this.add(currentPanel);
+				currentPanel.requestFocus(true);
+				this.pack();
+				this.setVisible(true);
+			}
+		//}
 	}
 
 	private void randomlyChooseEnemyUnits() {
