@@ -251,40 +251,114 @@ public class ComputerClient extends JFrame implements Client {
 			System.out.println(u.getName()+" "+u.getMovesLeft());
 			Random random=new Random();
 			boolean yes=true;
-			int rand1=0;
-			int rand2=0;
+			int xPoint=0;
+			int yPoint=0;
 			int z=0;
 			while (yes){
 				
 				
 				
 				if(u.getName().equals("Sonic")){
-					//if there's a unit within 6 spaces, run away
+					//run away!!
 					
+					if(currentBoard.inQuadrantOne(u)){
+						xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
+						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+						if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+							yes=false;
+						}
+					}
+					if(currentBoard.inQuadrantTwo(u)){
+						xPoint = random.nextInt(currentBoard.getBoardWidth()/2);
+						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+						if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+							yes=false;
+						}
+					}
+					if(currentBoard.inQuadrantThree(u)){
+						xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
+						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+						if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+							yes=false;
+						}
+					}
+					if(currentBoard.inQuadrantFour(u)){
+						xPoint = random.nextInt(currentBoard.getBoardWidth()/2);
+						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+						if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+							yes=false;
+						}
+					}
 				}
 				if(u.getName().equals("MegaMan")){
 					//go towards enemies, attack
+					
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+							Point currentPoint = new Point(x,y);
+							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+								continue;
+							}
+							if(currentBoard.checkIfEnemy(u,currentPoint)){
+								//move towards fist enemy seen
+								
+								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}
+							}
+						}
+					}
 				}
 				if(u.getName().equals("Link")){
 					//go towards enemies, attack
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+							Point currentPoint = new Point(x,y);
+							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+								continue;
+							}
+							if(currentBoard.checkIfEnemy(u,currentPoint)){
+								//move towards fist enemy seen
+								
+								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}
+							}
+						}
+					}
 				}
 				if(u.getName().equals("Mario")){
 					//go towards enemies, attack
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+							Point currentPoint = new Point(x,y);
+							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+								continue;
+							}
+							if(currentBoard.checkIfEnemy(u,currentPoint)){
+								//move towards fist enemy seen
+								
+								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}
+							}
+						}
+					}
 				}
 				
 				
 				
-				rand1 = random.nextInt(19);
-				rand2 = random.nextInt(19);
-				if (currentBoard.checkAvailable(new Point(rand1,rand2))){
+				/*xPoint = random.nextInt(19);
+				yPoint = random.nextInt(19);
+				if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
 					yes=false;
 				}
 				if(z==10){
 					return;
 				}
-				z++;
+				z++;*/
 			}
-			path = currentBoard.findShortestPath(u.getLocation(), new Point(rand1,rand2));
+			path = currentBoard.findShortestPath(u.getLocation(), new Point(xPoint,yPoint));
 			System.out.println("path :" +path.size());
 			int use=0;
 			if(path.size()> u.getDistance()+1){

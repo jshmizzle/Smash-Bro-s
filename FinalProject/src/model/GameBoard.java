@@ -1065,4 +1065,41 @@ public class GameBoard implements Serializable {
 		}
 		return tiles;
 	}
+
+	public boolean inQuadrantOne(Unit u) {
+		int yPos = (int) u.getLocation().getY();
+		int xPos = (int) u.getLocation().getX();
+		
+		if(yPos<boardHeight/2 && xPos <boardWidth/2)
+			return true;
+		
+		return false;
+	}
+
+	public boolean inQuadrantTwo(Unit u) {
+		int yPos = (int) u.getLocation().getY();
+		int xPos = (int) u.getLocation().getX();
+		
+		if(xPos>=boardWidth/2 && yPos <=boardHeight/2)
+			return true;
+		return false;
+	}
+
+	public boolean inQuadrantThree(Unit u) {
+		int yPos = (int) u.getLocation().getY();
+		int xPos = (int) u.getLocation().getX();
+		
+		if(yPos>=boardHeight/2 && xPos <=boardWidth/2)
+			return true;
+		return false;
+	}
+
+	public boolean inQuadrantFour(Unit u) {
+		int yPos = (int) u.getLocation().getY();
+		int xPos = (int) u.getLocation().getX();
+		
+		if(xPos>boardWidth/2 && yPos >boardHeight/2)
+			return true;
+		return false;
+	}
 }
