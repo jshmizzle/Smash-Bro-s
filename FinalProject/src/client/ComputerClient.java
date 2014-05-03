@@ -261,6 +261,7 @@ public class ComputerClient extends JFrame implements Client {
 				if(u.getName().equals("Sonic")){
 					//run away!!
 					
+					//move from Q1 to Q2 or Q4
 					if(currentBoard.inQuadrantOne(u)){
 						xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
 						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
@@ -268,6 +269,7 @@ public class ComputerClient extends JFrame implements Client {
 							yes=false;
 						}
 					}
+					//move from Q2 to Q1 or Q3
 					if(currentBoard.inQuadrantTwo(u)){
 						xPoint = random.nextInt(currentBoard.getBoardWidth()/2);
 						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
@@ -275,6 +277,7 @@ public class ComputerClient extends JFrame implements Client {
 							yes=false;
 						}
 					}
+					//move from Q3 to Q2 or Q4
 					if(currentBoard.inQuadrantThree(u)){
 						xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
 						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
@@ -282,6 +285,7 @@ public class ComputerClient extends JFrame implements Client {
 							yes=false;
 						}
 					}
+					//move from Q4 to Q1 or Q3
 					if(currentBoard.inQuadrantFour(u)){
 						xPoint = random.nextInt(currentBoard.getBoardWidth()/2);
 						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
@@ -300,7 +304,7 @@ public class ComputerClient extends JFrame implements Client {
 								continue;
 							}
 							if(currentBoard.checkIfEnemy(u,currentPoint)){
-								//move towards fist enemy seen
+								//move towards fist enemy seen until enemy is within attackRange
 								
 								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
 									//attack if possible
@@ -318,7 +322,7 @@ public class ComputerClient extends JFrame implements Client {
 								continue;
 							}
 							if(currentBoard.checkIfEnemy(u,currentPoint)){
-								//move towards fist enemy seen
+								//move towards fist enemy seen until enemy is within attackRange
 								
 								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
 									//attack if possible
@@ -336,7 +340,7 @@ public class ComputerClient extends JFrame implements Client {
 								continue;
 							}
 							if(currentBoard.checkIfEnemy(u,currentPoint)){
-								//move towards fist enemy seen
+								//move towards fist enemy seen until enemy is within attackRange
 								
 								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
 									//attack if possible
