@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -16,9 +17,11 @@ import model.GameBoard;
 import model.Goku;
 import model.Item;
 import model.Link;
+import model.Map;
 import model.Mario;
 import model.MegaMan;
 import model.Princess;
+import model.Scenario;
 import model.Sonic;
 import model.Unit;
 import GUI.CharacterSelectPanel;
@@ -27,6 +30,7 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import command.Command;
 import command.EndTurnCommand;
+import command.SetUserUnits;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
@@ -47,6 +51,8 @@ public class ComputerClient extends JFrame implements Client {
 	private ArrayList<Unit> playerUnits;
 	private ArrayList<Unit> compUnits;
 	private boolean isHost = false;
+	private Scenario gameType=null;
+	private Map map=null;
 
 	public static void main(String[] args) {
 		// try {
@@ -99,28 +105,45 @@ public class ComputerClient extends JFrame implements Client {
 	// temp method
 	private void initializeGameBoard() {
 		// initialize the units and the GameBoard
-		playerUnits = new ArrayList<Unit>();
+		while(map==null && gameType==null){
+			//wait for game type and map to be initialized
+		}
 		compUnits = new ArrayList<Unit>();
 
-		Sonic S = new Sonic('S');
-		Goku G = new Goku('G');
-		Mario W = new Mario('W');
-		Link l = new Link('l');
-		Mario w = new Mario('w');
-		MegaMan m = new MegaMan('m');
-		Princess P = new Princess('P');
-		Princess p = new Princess('p');
-
-		playerUnits.add(P);
-		playerUnits.add(W);
-		playerUnits.add(S);
-		playerUnits.add(G);
-		compUnits.add(p);
-		compUnits.add(l);
-		compUnits.add(m);
-		currentBoard = new GameBoard(playerUnits, compUnits, 1, 1);
+		ArrayList<Unit> choices=new ArrayList<>(Arrays.asList(new Link('l'), new Goku('g'), new Mario('w'), new MegaMan('m'), new Sonic('s')));
+		ArrayList<Unit> temp=new ArrayList<>();
+		
+		Random rand=new Random();
+		if(gameType==Scenario.Princess){
+			Princess p=new Princess('p');
+			temp.add(p);
+		}
+		
+		for(int i=0; i<5; i++){
+			temp.add(choices.get(rand.nextInt(5)));
+		}
+		
+		SetUserUnits c=new  SetUserUnits(userName, temp);
+		
+		while(playerUnits==null){
+			//wait for player units to be sent;
+		}
+		currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
+	}
+	
+	public void setMapAndScenario(Map map, Scenario scenario){
+		this.map=map;
+		gameType=scenario;
 	}
 
+	public void setUserUnits(String source, ArrayList<Unit> userUnits){
+		if(userName.equals(source)){
+			compUnits=userUnits;
+		}
+		else{
+			playerUnits=userUnits;
+		}
+	}
 	
 	  /*private void initializeFrame() { 
 	  initializeGameBoard();
@@ -135,7 +158,7 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	public void createGameBoard(ArrayList<Unit> userUnits,
-			ArrayList<Unit> compUnits, int map, int scenario) {
+			ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 		currentBoard = new GameBoard(userUnits, compUnits, map, scenario);
 		playingAlready = true;
 	}
@@ -340,8 +363,13 @@ public class ComputerClient extends JFrame implements Client {
 			u=currentBoard.getPlayerOneUnits().get(index);
 		}
 		//first, determine how many moves from the chosen list can actually be taken.
+
+		//u.setLocation(moves.get(index));
+		//this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
+
 //		u.setLocation(moves.get(index));
 		this.currentBoard.getGameBoard()[u.getLocation().x][u.getLocation().y] =u.getCharRepresentation();
+
 		
 		//loop through each point on the path and tell the gameBoard the unit moved to each
 		//new point. Only allow the unit to take its specified maxNum of moves
@@ -356,11 +384,13 @@ public class ComputerClient extends JFrame implements Client {
 			}
 			//if the move is upwards
 			if(x>dx && y==dy){
+				
 				currentBoard.moveUp(userName, u);
 				System.out.println(u.getName()+"move up");
 			}
 			//if the move is downwards
 			else if(x<dx && y==dy){
+				
 				currentBoard.moveDown(userName, u);
 				System.out.println(u.getName()+"move down");
 			}

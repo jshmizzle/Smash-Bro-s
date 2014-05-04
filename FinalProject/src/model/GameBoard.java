@@ -1,9 +1,10 @@
 package model;
 
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GameBoard {
+public class GameBoard implements Serializable {
 
 	/************************************************************************************/
 
@@ -13,8 +14,11 @@ public class GameBoard {
 	private ArrayList<Unit> playerOneUnits;
 	private ArrayList<Unit> playerTwoUnits;
 	private char[][] terrain;
-	private int currentMap;
-	private int currentScenario;
+	/*
+	 * private int currentMap; private int currentScenario;
+	 */
+	private Map currentMap;
+	private Scenario currentScenario;
 	private ArrayList<String> playerList;
 	private boolean userLost = false;
 	private boolean compLost = false;
@@ -31,7 +35,8 @@ public class GameBoard {
 	 * scenario 3 is (dunno yet)
 	 */
 
-	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits,int map, int scenario) {
+	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits,
+			Map map, Scenario scenario) {
 
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
@@ -41,7 +46,7 @@ public class GameBoard {
 		currentScenario = scenario;
 		playerList = new ArrayList<>();
 
-		 //playerList.add(player1);
+		// playerList.add(player1);
 		// playerList.add(player2);
 
 		for (int i = 0; i < gameBoard.length; i++)
@@ -52,111 +57,124 @@ public class GameBoard {
 		gameBoard[0][boardHeight / 2] = 'P';
 
 		int i = 0;
-		
-		  for (Unit u : compUnits) { if (u.getCharRepresentation() == 'P' ||
-		  u.getCharRepresentation() == 'p') {
-		  
-		  } else { gameBoard[1][boardHeight / 2 - 2 + i] = u
-		  .getCharRepresentation(); Point p = new Point(1, boardHeight / 2 - 2
-		  + i); u.setLocation(p); i++; } }
-		  
-		  int j = 0;
-		  
-		  gameBoard[boardHeight - 1][boardHeight / 2] = 'p'; for (Unit c :
-		  userUnits) { if (c.getCharRepresentation() == 'P' ||
-		  c.getCharRepresentation() == 'p') {
-		  
-		  }
-		  
-		  else { gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
-		  .getCharRepresentation(); Point p = new Point(boardHeight - 2,
-		  boardWidth / 2 - 2 + j); c.setLocation(p); j++; } }
-		 
 
-		if (currentMap == 1) {
+		for (Unit u : compUnits) {
+			if (u.getCharRepresentation() == 'P'
+					|| u.getCharRepresentation() == 'p') {
+
+			} else {
+				gameBoard[1][boardHeight / 2 - 2 + i] = u
+						.getCharRepresentation();
+				Point p = new Point(1, boardHeight / 2 - 2 + i);
+				u.setLocation(p);
+				i++;
+			}
+		}
+
+		int j = 0;
+
+		gameBoard[boardHeight - 1][boardHeight / 2] = 'p';
+		for (Unit c : userUnits) {
+			if (c.getCharRepresentation() == 'P'
+					|| c.getCharRepresentation() == 'p') {
+
+			}
+
+			else {
+				gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
+						.getCharRepresentation();
+				Point p = new Point(boardHeight - 2, boardWidth / 2 - 2 + j);
+				c.setLocation(p);
+				j++;
+			}
+		}
+
+		if (currentMap == Map.First) {
 			setMapOne();
 		}
-		if (currentMap == 2) {
+		if (currentMap == Map.Second) {
 			setMapTwo();
 		}
 
 	}
 
 	private void setMapTwo() {
-		// TODO Auto-generated method stub
-		
-		//top left rocks
-		gameBoard[boardHeight/4][boardWidth/4] = '#';
-		gameBoard[boardHeight/4][boardWidth/4+1] = '#';
-		gameBoard[boardHeight/4+1][boardWidth/4] = '#';
-		gameBoard[boardHeight/4+1][boardWidth/4-1] = '#';
-		gameBoard[boardHeight/4+2][boardWidth/4+1] = '#';
-		//bottom left rocks
-		gameBoard[boardHeight-(boardHeight/4)][boardWidth/4] = '#';
-		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth/4] = '#';
-		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth/4-1] = '#';
-		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth/4+1] = '#';
-		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth/4+1] = '#';
-		//top right rocks
-		gameBoard[boardHeight/4][boardWidth-(boardWidth/4)] = '#';
-		gameBoard[boardHeight/4][boardWidth-(boardWidth/4)-1] = '#';
-		gameBoard[boardHeight/4+1][boardWidth-(boardWidth/4)] = '#';
-		gameBoard[boardHeight/4+1][boardWidth-(boardWidth/4)-1] = '#';
-		gameBoard[boardHeight/4+2][boardWidth-(boardWidth/4)+1] = '#';
-		//bottom right rocks
-		gameBoard[boardHeight-(boardHeight/4)][boardWidth-(boardWidth/4)] = '#';
-		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth-(boardWidth/4)+1] = '#';
-		gameBoard[boardHeight-(boardHeight/4)+1][boardWidth-(boardWidth/4)] = '#';
-		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth-(boardWidth/4)] = '#';
-		gameBoard[boardHeight-(boardHeight/4)+2][boardWidth-(boardWidth/4)+1] = '#';
-		//item
-		gameBoard[boardHeight/2][boardWidth /2] = '@';
-		
-		//trees
-		gameBoard[boardHeight/3][boardWidth/2]='!';
-		gameBoard[boardHeight/3+1][boardWidth/2-1]='!';
-		gameBoard[boardHeight/3+2][boardWidth/2-2]='!';
-		gameBoard[boardHeight/3+3][boardWidth/2-3]='!';
-		gameBoard[boardHeight/3+4][boardWidth/2-4]='!';
-		gameBoard[boardHeight/3+5][boardWidth/2-5]='!';
-		gameBoard[boardHeight/3+6][boardWidth/2-6]='!';
-		gameBoard[boardHeight/3+7][boardWidth/2-7]='!';
-		gameBoard[boardHeight/3+8][boardWidth/2-8]='!';
-		gameBoard[boardHeight/3+9][boardWidth/2-9]='!';
-		
-		gameBoard[boardHeight/3+1][boardWidth/2+1]='!';
-		gameBoard[boardHeight/3+2][boardWidth/2+2]='!';
-		gameBoard[boardHeight/3+3][boardWidth/2+3]='!';
-		gameBoard[boardHeight/3+4][boardWidth/2+4]='!';
-		gameBoard[boardHeight/3+5][boardWidth/2+5]='!';
-		gameBoard[boardHeight/3+6][boardWidth/2+6]='!';
-		gameBoard[boardHeight/3+7][boardWidth/2+7]='!';
-		gameBoard[boardHeight/3+8][boardWidth/2+8]='!';
-		gameBoard[boardHeight/3+9][boardWidth/2+9]='!';
-		
-		gameBoard[boardHeight-(boardHeight/3)][boardWidth/2]='!';
-		gameBoard[boardHeight-(boardHeight/3)-1][boardWidth/2-1]='!';
-		gameBoard[boardHeight-(boardHeight/3)-2][boardWidth/2-2]='!';
-		gameBoard[boardHeight-(boardHeight/3)-3][boardWidth/2-3]='!';
-		gameBoard[boardHeight-(boardHeight/3)-4][boardWidth/2-4]='!';
-		gameBoard[boardHeight-(boardHeight/3)-5][boardWidth/2-5]='!';
-		gameBoard[boardHeight-(boardHeight/3)-6][boardWidth/2-6]='!';
-		gameBoard[boardHeight-(boardHeight/3)-7][boardWidth/2-7]='!';
-		gameBoard[boardHeight-(boardHeight/3)-8][boardWidth/2-8]='!';
-		gameBoard[boardHeight-(boardHeight/3)-9][boardWidth/2-9]='!';
-		
-		gameBoard[boardHeight-(boardHeight/3)-1][boardWidth/2+1]='!';
-		gameBoard[boardHeight-(boardHeight/3)-2][boardWidth/2+2]='!';
-		gameBoard[boardHeight-(boardHeight/3)-3][boardWidth/2+3]='!';
-		gameBoard[boardHeight-(boardHeight/3)-4][boardWidth/2+4]='!';
-		gameBoard[boardHeight-(boardHeight/3)-5][boardWidth/2+5]='!';
-		gameBoard[boardHeight-(boardHeight/3)-6][boardWidth/2+6]='!';
-		gameBoard[boardHeight-(boardHeight/3)-7][boardWidth/2+7]='!';
-		gameBoard[boardHeight-(boardHeight/3)-8][boardWidth/2+8]='!';
-		gameBoard[boardHeight-(boardHeight/3)-9][boardWidth/2+9]='!';
 
-		
-		
+		// top left rocks
+		gameBoard[boardHeight / 4][boardWidth / 4] = '#';
+		gameBoard[boardHeight / 4][boardWidth / 4 + 1] = '#';
+		gameBoard[boardHeight / 4 + 1][boardWidth / 4] = '#';
+		gameBoard[boardHeight / 4 + 1][boardWidth / 4 - 1] = '#';
+		gameBoard[boardHeight / 4 + 2][boardWidth / 4 + 1] = '#';
+		// bottom left rocks
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4] = '#';
+		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth / 4] = '#';
+		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth / 4 - 1] = '#';
+		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth / 4 + 1] = '#';
+		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth / 4 + 1] = '#';
+		// top right rocks
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)] = '#';
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4) - 1] = '#';
+		gameBoard[boardHeight / 4 + 1][boardWidth - (boardWidth / 4)] = '#';
+		gameBoard[boardHeight / 4 + 1][boardWidth - (boardWidth / 4) - 1] = '#';
+		gameBoard[boardHeight / 4 + 2][boardWidth - (boardWidth / 4) + 1] = '#';
+		// bottom right rocks
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
+				- (boardWidth / 4)] = '#';
+		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth
+				- (boardWidth / 4) + 1] = '#';
+		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth
+				- (boardWidth / 4)] = '#';
+		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth
+				- (boardWidth / 4)] = '#';
+		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth
+				- (boardWidth / 4) + 1] = '#';
+		// item
+		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
+
+		// trees
+		gameBoard[boardHeight / 3][boardWidth / 2] = '!';
+		gameBoard[boardHeight / 3 + 1][boardWidth / 2 - 1] = '!';
+		gameBoard[boardHeight / 3 + 2][boardWidth / 2 - 2] = '!';
+		gameBoard[boardHeight / 3 + 3][boardWidth / 2 - 3] = '!';
+		gameBoard[boardHeight / 3 + 4][boardWidth / 2 - 4] = '!';
+		gameBoard[boardHeight / 3 + 5][boardWidth / 2 - 5] = '!';
+		gameBoard[boardHeight / 3 + 6][boardWidth / 2 - 6] = '!';
+		gameBoard[boardHeight / 3 + 7][boardWidth / 2 - 7] = '!';
+		gameBoard[boardHeight / 3 + 8][boardWidth / 2 - 8] = '!';
+		gameBoard[boardHeight / 3 + 9][boardWidth / 2 - 9] = '!';
+
+		gameBoard[boardHeight / 3 + 1][boardWidth / 2 + 1] = '!';
+		gameBoard[boardHeight / 3 + 2][boardWidth / 2 + 2] = '!';
+		gameBoard[boardHeight / 3 + 3][boardWidth / 2 + 3] = '!';
+		gameBoard[boardHeight / 3 + 4][boardWidth / 2 + 4] = '!';
+		gameBoard[boardHeight / 3 + 5][boardWidth / 2 + 5] = '!';
+		gameBoard[boardHeight / 3 + 6][boardWidth / 2 + 6] = '!';
+		gameBoard[boardHeight / 3 + 7][boardWidth / 2 + 7] = '!';
+		gameBoard[boardHeight / 3 + 8][boardWidth / 2 + 8] = '!';
+		gameBoard[boardHeight / 3 + 9][boardWidth / 2 + 9] = '!';
+
+		gameBoard[boardHeight - (boardHeight / 3)][boardWidth / 2] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 1][boardWidth / 2 - 1] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 - 2] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 3][boardWidth / 2 - 3] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 4][boardWidth / 2 - 4] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 5][boardWidth / 2 - 5] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 6][boardWidth / 2 - 6] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 7][boardWidth / 2 - 7] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 8][boardWidth / 2 - 8] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 9][boardWidth / 2 - 9] = '!';
+
+		gameBoard[boardHeight - (boardHeight / 3) - 1][boardWidth / 2 + 1] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 + 2] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 3][boardWidth / 2 + 3] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 4][boardWidth / 2 + 4] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 5][boardWidth / 2 + 5] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 6][boardWidth / 2 + 6] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 7][boardWidth / 2 + 7] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 8][boardWidth / 2 + 8] = '!';
+		gameBoard[boardHeight - (boardHeight / 3) - 9][boardWidth / 2 + 9] = '!';
+
 	}
 
 	private void setMapOne() {
@@ -201,55 +219,53 @@ public class GameBoard {
 		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
 
 		// trees
-		//top left
+		// top left
 		gameBoard[boardHeight / 4][boardWidth / 4] = '!';
-		gameBoard[boardHeight / 4-1][boardWidth / 4] = '!';
-		gameBoard[boardHeight / 4][boardWidth / 4-1] = '!';
-		gameBoard[boardHeight / 4][boardWidth / 4+1] = '!';
-		gameBoard[boardHeight / 4+1][boardWidth / 4] = '!';
+		gameBoard[boardHeight / 4 - 1][boardWidth / 4] = '!';
+		gameBoard[boardHeight / 4][boardWidth / 4 - 1] = '!';
+		gameBoard[boardHeight / 4][boardWidth / 4 + 1] = '!';
+		gameBoard[boardHeight / 4 + 1][boardWidth / 4] = '!';
 
-
-
-		//top right
+		// top right
 		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)] = '!';
-		gameBoard[boardHeight / 4-1][boardWidth - (boardWidth / 4)] = '!';
-		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)-1] = '!';
-		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)+1] = '!';
-		gameBoard[boardHeight / 4+1][boardWidth - (boardWidth / 4)] = '!';
+		gameBoard[boardHeight / 4 - 1][boardWidth - (boardWidth / 4)] = '!';
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4) - 1] = '!';
+		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4) + 1] = '!';
+		gameBoard[boardHeight / 4 + 1][boardWidth - (boardWidth / 4)] = '!';
 
-		//bottom left
+		// bottom left
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth / 4] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4-1] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4+1] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth / 4] = '!';
+		gameBoard[boardHeight - (boardHeight / 4) - 1][boardWidth / 4] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4 - 1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4 + 1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth / 4] = '!';
 
-		//bottom right
+		// bottom right
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
 				- (boardWidth / 4)] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)-1][boardWidth
-		                             				- (boardWidth / 4)] = '!';
+		gameBoard[boardHeight - (boardHeight / 4) - 1][boardWidth
+				- (boardWidth / 4)] = '!';
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
-		                           				- (boardWidth / 4)-1] = '!';
+				- (boardWidth / 4) - 1] = '!';
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
-		                           				- (boardWidth / 4)+1] = '!';
-		gameBoard[boardHeight - (boardHeight / 4)+1][boardWidth
-		                           				- (boardWidth / 4)] = '!';
+				- (boardWidth / 4) + 1] = '!';
+		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth
+				- (boardWidth / 4)] = '!';
 
 		// items
 		gameBoard[boardHeight / 2][0] = '@';
-		gameBoard[boardHeight / 2][boardWidth-1] = '@';
-		gameBoard[boardHeight/2][boardWidth /2] = '@';
+		gameBoard[boardHeight / 2][boardWidth - 1] = '@';
+		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
 
 		gameBoard[0][boardWidth / 2] = 'p';
-		
+
 		int i = 0;
 		for (Unit u : playerTwoUnits) {
 			if (u.getCharRepresentation() == 'P'
-					|| u.getCharRepresentation() == 'p'){
-				u.setLocation(new Point(0,boardWidth / 2));
+					|| u.getCharRepresentation() == 'p') {
+				u.setLocation(new Point(0, boardWidth / 2));
 			}
-			
+
 			else {
 				gameBoard[1][boardHeight / 2 - 2 + i] = u
 						.getCharRepresentation();
@@ -264,8 +280,9 @@ public class GameBoard {
 
 		gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
 		for (Unit c : playerOneUnits) {
-			if (c.getCharRepresentation() == 'P'|| c.getCharRepresentation() == 'p') {
-				c.setLocation(new Point(0,boardHeight / 2));
+			if (c.getCharRepresentation() == 'P'
+					|| c.getCharRepresentation() == 'p') {
+				c.setLocation(new Point(0, boardHeight / 2));
 			}
 
 			else {
@@ -284,11 +301,11 @@ public class GameBoard {
 	public ArrayList<Unit> getPlayerOneUnits() {
 		return playerOneUnits;
 	}
-	
+
 	public ArrayList<Unit> getPlayerTwoUnits() {
 		return playerTwoUnits;
 	}
-	
+
 	public boolean checkAvailable(Point point) {
 
 		int x = (int) point.getX();
@@ -300,7 +317,8 @@ public class GameBoard {
 		if (y >= boardHeight || y < 0)
 			return false;
 
-		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' ' || gameBoard[(int) point.getX()][(int) point.getY()] == '@')
+		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' '
+				|| gameBoard[(int) point.getX()][(int) point.getY()] == '@')
 			return true;
 
 		return false;
@@ -451,8 +469,8 @@ public class GameBoard {
 		int y = (int) p.getY();
 		char charRep = currentUnit.getCharRepresentation();
 
-		if (gameBoard[x][y] == ' ' || gameBoard[x][y] == '#' || gameBoard[x][y] == '@'
-				|| gameBoard[x][y] == '!')
+		if (gameBoard[x][y] == ' ' || gameBoard[x][y] == '#'
+				|| gameBoard[x][y] == '@' || gameBoard[x][y] == '!')
 			return false;
 		else if (charRep <= 'z' && charRep >= 'a') {
 			// the character is on the team represented by lowercase chars
@@ -489,11 +507,10 @@ public class GameBoard {
 			if (Math.abs(thisY - otherY) > thisRange)
 				return false;
 
-
-			if (thisY > otherY){
-				if (thisY-otherY==1)
+			if (thisY > otherY) {
+				if (thisY - otherY == 1)
 					return true;
-				for (int i = thisY-1; i > otherY; i--) {
+				for (int i = thisY - 1; i > otherY; i--) {
 					change.setLocation((double) thisX, (double) i);
 					if (!checkAvailable(change)) {
 						isOpen = false;
@@ -501,11 +518,10 @@ public class GameBoard {
 					}
 
 				}
-			}
-			else{
-				if(otherY-thisY==1)
+			} else {
+				if (otherY - thisY == 1)
 					return true;
-				for (int i = thisY+1; i < otherY; i++) {
+				for (int i = thisY + 1; i < otherY; i++) {
 					change.setLocation((double) thisX, (double) i);
 					if (!checkAvailable(change)) {
 						isOpen = false;
@@ -520,35 +536,33 @@ public class GameBoard {
 			if (Math.abs(thisX - otherX) > thisRange)
 				return false;
 
-			if(thisX-otherX==1){
+			if (thisX - otherX == 1) {
+				return true;
+			} else if (thisX > otherX)
+				for (int i = thisX - 1; i > otherX; i--) {
+					change.setLocation((double) i, (double) thisY);
+					if (!checkAvailable(change)) {
+						isOpen = false;
+						return isOpen;
+					}
+				}
+			else if (otherX - thisX == 1) {
 				return true;
 			}
-			else if (thisX > otherX)
-				for (int i = thisX-1; i > otherX; i--) {
-					change.setLocation((double) i, (double) thisY);
-					if (!checkAvailable(change)) {
-						isOpen = false;
-						return isOpen;
-					}
+			for (int i = thisX + 1; i < otherX; i++) {
+				change.setLocation((double) i, (double) thisY);
+				if (!checkAvailable(change)) {
+					isOpen = false;
+					return isOpen;
 				}
-			else
-				if(otherX-thisX==1){
-					return true;
-				}
-				for (int i = thisX+1; i < otherX; i++) {
-					change.setLocation((double) i, (double) thisY);
-					if (!checkAvailable(change)) {
-						isOpen = false;
-						return isOpen;
-					}
-				}
+			}
 		}
 
 		return isOpen;
 	}
 
 	public void removeItem(Point p) {
-		if(gameBoard[(int) p.getY()][(int) p.getX()] == '@')
+		if (gameBoard[(int) p.getY()][(int) p.getX()] == '@')
 			gameBoard[(int) p.getY()][(int) p.getX()] = ' ';
 	}
 
@@ -566,11 +580,11 @@ public class GameBoard {
 
 		int x = p.x;
 		int y = p.y;
-		int prevX=u.getLocation().x;
-		int prevY=u.getLocation().y;
+		int prevX = u.getLocation().x;
+		int prevY = u.getLocation().y;
 
 		if (checkAvailable(p)) {
-			gameBoard[prevX][prevY]=' ';
+			gameBoard[prevX][prevY] = ' ';
 			gameBoard[x][y] = u.getCharRepresentation();
 			u.setLocation(p);
 			return true;
@@ -624,18 +638,18 @@ public class GameBoard {
 	 */
 
 	public boolean gameOver() {
-		if (currentScenario == 1) {
-				if (getPlayerOneUnits().get(0).getHealth()<=0) {
-					userLost = true;
-					compWon = true;
-					return true;
-				}
-			
-				if (getPlayerTwoUnits().get(0).getHealth()<=0) {
-					compLost = true;
-					userWon = true;
-					return true;
-				}
+		if (currentScenario == Scenario.Princess) {
+			if (getPlayerOneUnits().get(0).getHealth() <= 0) {
+				userLost = true;
+				compWon = true;
+				return true;
+			}
+
+			if (getPlayerTwoUnits().get(0).getHealth() <= 0) {
+				compLost = true;
+				userWon = true;
+				return true;
+			}
 		}
 		userLost = checkIfUserLost();
 		compLost = checkIfCompLost();
@@ -788,7 +802,8 @@ public class GameBoard {
 
 		tiles[p.x][p.y].points.add(new Point(p.x, p.y));
 		if (p.x + 1 >= 0 && p.y >= 0 && p.x + 1 < gameBoard.length
-				&& p.y < gameBoard[0].length && checkAvailable(new Point(p.x+1, p.y))) {
+				&& p.y < gameBoard[0].length
+				&& checkAvailable(new Point(p.x + 1, p.y))) {
 			if (tiles[p.x + 1][p.y].status.equals("unmarked"))
 				tiles[p.x + 1][p.y].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x + 1][p.y].distance) {
@@ -802,7 +817,8 @@ public class GameBoard {
 			}
 		}
 		if (p.x - 1 >= 0 && p.y >= 0 && p.x - 1 < gameBoard.length
-				&& p.y < gameBoard[0].length && checkAvailable(new Point(p.x-1, p.y))) {
+				&& p.y < gameBoard[0].length
+				&& checkAvailable(new Point(p.x - 1, p.y))) {
 			if (tiles[p.x - 1][p.y].status.equals("unmarked"))
 				tiles[p.x - 1][p.y].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x - 1][p.y].distance) {
@@ -816,7 +832,8 @@ public class GameBoard {
 			}
 		}
 		if (p.x >= 0 && p.y + 1 >= 0 && p.x < gameBoard.length
-				&& p.y + 1 < gameBoard[0].length && checkAvailable(new Point(p.x, p.y+1))) {
+				&& p.y + 1 < gameBoard[0].length
+				&& checkAvailable(new Point(p.x, p.y + 1))) {
 			if (tiles[p.x][p.y + 1].status.equals("unmarked"))
 				tiles[p.x][p.y + 1].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y + 1].distance) {
@@ -831,7 +848,8 @@ public class GameBoard {
 			}
 		}
 		if (p.x >= 0 && p.y - 1 >= 0 && p.x < gameBoard.length
-				&& p.y - 1 < gameBoard[0].length && checkAvailable(new Point(p.x, p.y-1))) {
+				&& p.y - 1 < gameBoard[0].length
+				&& checkAvailable(new Point(p.x, p.y - 1))) {
 			if (tiles[p.x][p.y - 1].status.equals("unmarked"))
 				tiles[p.x][p.y - 1].status = "fringe";
 			if (tiles[p.x][p.y].distance + 1 < tiles[p.x][p.y - 1].distance) {
@@ -858,22 +876,22 @@ public class GameBoard {
 		tiles[p.x][p.y].distance = 0;
 		tiles = findRange(p, tiles);
 		boolean marked = true;
-		
-		//check to see which square to use as a reference
-		int l,k;
-		int row1=19-p.x;
-		int row2=p.x-0;
-		int col1=19-p.x;
-		int col2=p.x-0;
-		if(row1>row2)
-			l=19;
+
+		// check to see which square to use as a reference
+		int l, k;
+		int row1 = 19 - p.x;
+		int row2 = p.x - 0;
+		int col1 = 19 - p.x;
+		int col2 = p.x - 0;
+		if (row1 > row2)
+			l = 19;
 		else
-			l=0;
-		if(col1>col2)
-			k=19;
+			l = 0;
+		if (col1 > col2)
+			k = 19;
 		else
-			k=0;
-	
+			k = 0;
+
 		while (marked && !tiles[l][k].status.equals("marked")) {
 			marked = false;
 			for (int i = 0; i < gameBoard.length; i++) {
@@ -891,7 +909,7 @@ public class GameBoard {
 		for (int i = 0; i < gameBoard.length; i++) {
 			for (int j = 0; j < gameBoard[0].length; j++) {
 				if (tiles[i][j].distance <= range
-						&& checkAvailable(new Point(i, j))){
+						&& checkAvailable(new Point(i, j))) {
 					attRange.add(new Point(i, j));
 				}
 			}

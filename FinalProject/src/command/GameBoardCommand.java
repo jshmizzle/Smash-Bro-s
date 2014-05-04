@@ -3,6 +3,8 @@ package command;
 import java.util.ArrayList;
 
 import client.TRPGClient;
+import model.Map;
+import model.Scenario;
 import model.Unit;
 import server.TRPGServer;
 
@@ -10,8 +12,8 @@ public class GameBoardCommand extends Command<TRPGClient>{
 	
 	private ArrayList<Unit> userUnits;
 	private ArrayList<Unit> compUnits;
-	private int map;
-	private int scenario;
+	private Map map;
+	private Scenario scenario;
 /**
  * Initial board command that takes all info from client
  * 
@@ -21,7 +23,7 @@ public class GameBoardCommand extends Command<TRPGClient>{
  * @param map
  * @param scenario
  */
-	public GameBoardCommand(String source,ArrayList<Unit> userUnits,ArrayList<Unit> compUnits, int map, int scenario) {
+	public GameBoardCommand(String source,ArrayList<Unit> userUnits,ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 		super(source);
 		this.userUnits=userUnits;
 		this.compUnits=userUnits;
