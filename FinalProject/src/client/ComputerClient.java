@@ -259,7 +259,7 @@ public class ComputerClient extends JFrame implements Client {
 				}
 				z++;
 			}
-			path = currentBoard.findShortestPath(u.getLocation(), new Point(rand1,rand2));
+			path = currentBoard.findShortestPath(u.getLocation(), new Point(rand1, rand2));
 			System.out.println("path :" +path.size());
 			int use=0;
 			if(path.size()> u.getDistance()+1){
@@ -365,7 +365,7 @@ public class ComputerClient extends JFrame implements Client {
 	public void unitMoved(String source, int index, ArrayList<Point> moves) {
 		
 		for(int h=0; h<moves.size(); h++){
-		System.out.println("after"+moves.get(h).toString());
+			System.out.println("after"+moves.get(h).toString());
 		}
 		int actualTotalMoveLength;
 		
@@ -420,11 +420,11 @@ public class ComputerClient extends JFrame implements Client {
 				System.out.println(u.getName()+"move left");
 			}
 		}
+		System.out.println(u.getLocation());
 
 		System.out.println(u.getLocation() + "test");
 	System.out.println(u.getLocation() + "testComp");
 		moving=false;
-
 
 	}
 
