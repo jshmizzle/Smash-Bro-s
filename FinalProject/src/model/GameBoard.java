@@ -35,8 +35,7 @@ public class GameBoard implements Serializable {
 	 * scenario 3 is (dunno yet)
 	 */
 
-	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits,
-			Map map, Scenario scenario) {
+	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 
 		gameBoard = new char[boardWidth][boardHeight];
 		terrain = new char[boardWidth][boardHeight];
@@ -99,7 +98,10 @@ public class GameBoard implements Serializable {
 	}
 
 	private void setMapTwo() {
-
+		//princess rocks
+		gameBoard[boardHeight-1][boardWidth/2-1] = '#';
+		gameBoard[boardHeight-1][boardWidth/2+1] = '#';
+		
 		// top left rocks
 		gameBoard[boardHeight / 4][boardWidth / 4] = '#';
 		gameBoard[boardHeight / 4][boardWidth / 4 + 1] = '#';
@@ -174,11 +176,25 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight - (boardHeight / 3) - 7][boardWidth / 2 + 7] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 8][boardWidth / 2 + 8] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 9][boardWidth / 2 + 9] = '!';
+		
+		//set the princesses to the correct places on the map!
+		if(currentScenario==Scenario.Princess){
+			playerTwoUnits.get(0).setLocation(new Point(0, boardWidth / 2));
+			playerOneUnits.get(0).setLocation(new Point(boardHeight-1, boardWidth / 2));
+		}
 
 	}
 
 	private void setMapOne() {
 
+		//bottom princess rocks
+		gameBoard[boardHeight-1][boardWidth/2-1] = '#';
+		gameBoard[boardHeight-1][boardWidth/2+1] = '#';
+		
+		//top princess rocks
+		gameBoard[0][boardWidth/2-1]='#';
+		gameBoard[0][boardWidth/2+1] = '#';
+		
 		// rocks
 		gameBoard[boardHeight / 2 - 5][boardWidth / 2 - 2] = '#';
 		gameBoard[boardHeight / 2 - 4][boardWidth / 2 - 2] = '#';
@@ -282,7 +298,7 @@ public class GameBoard implements Serializable {
 		for (Unit c : playerOneUnits) {
 			if (c.getCharRepresentation() == 'P'
 					|| c.getCharRepresentation() == 'p') {
-				c.setLocation(new Point(0, boardHeight / 2));
+				c.setLocation(new Point(boardHeight-1, boardWidth / 2));
 			}
 
 			else {
@@ -1048,5 +1064,42 @@ public class GameBoard implements Serializable {
 			}
 		}
 		return tiles;
+	}
+
+	public boolean inQuadrantOne(Unit u) {
+		int yPos = (int) u.getLocation().getY();
+		int xPos = (int) u.getLocation().getX();
+		
+		if(yPos<boardHeight/2 && xPos <boardWidth/2)
+			return true;
+		
+		return false;
+	}
+
+	public boolean inQuadrantTwo(Unit u) {
+		int yPos = (int) u.getLocation().getY();
+		int xPos = (int) u.getLocation().getX();
+		
+		if(xPos>=boardWidth/2 && yPos <=boardHeight/2)
+			return true;
+		return false;
+	}
+
+	public boolean inQuadrantThree(Unit u) {
+		int yPos = (int) u.getLocation().getY();
+		int xPos = (int) u.getLocation().getX();
+		
+		if(yPos>=boardHeight/2 && xPos <=boardWidth/2)
+			return true;
+		return false;
+	}
+
+	public boolean inQuadrantFour(Unit u) {
+		int yPos = (int) u.getLocation().getY();
+		int xPos = (int) u.getLocation().getX();
+		
+		if(xPos>boardWidth/2 && yPos >boardHeight/2)
+			return true;
+		return false;
 	}
 }
