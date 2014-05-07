@@ -279,7 +279,13 @@ public class ComputerClient extends JFrame implements Client {
 				
 				
 				if(u.getName().equals("Sonic")){
-					//run away!!
+					//go toward princess if path to her is open
+					if(currentBoard.checkAvailable(new Point(18,10))){
+						xPoint=18;
+						yPoint=10;
+					}
+					else{
+					//else run away!!
 					int hello=0;
 					while (yes && hello<10){
 						hello ++;
@@ -315,7 +321,7 @@ public class ComputerClient extends JFrame implements Client {
 							yes=false;
 						}
 					}
-					}
+					}}
 				}
 				if(u.getName().equals("MegaMan")){
 					//go towards enemies, attack
@@ -392,7 +398,7 @@ public class ComputerClient extends JFrame implements Client {
 					}
 				}
 				if(u.getName().equals("Link")){
-					//go towards enemies, attack
+					//go towards enemies, attack (stay on edge of range)
 					for(int x=0; x<currentBoard.getBoardHeight(); x++){
 						for(int y=0; y<currentBoard.getBoardWidth(); y++){
 					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
@@ -476,23 +482,35 @@ public class ComputerClient extends JFrame implements Client {
 				}
 				z++;*/
 			}
+				
+				
 
 			//System.out.println(compUnits.get(i).getName()+" get point"+ xPoint +yPoint);
 			path = currentBoard.findShortestPath(u.getLocation(), new Point(xPoint,yPoint));
 			//System.out.println("path :" +path.size());
 			int use=0;
-			if(path.size()> u.getDistance()+1){
+			if(u.getAttackRange()>path.size()){
+				//dont move only attack
+			}
+			else{
+			if(path.size()> u.getDistance()+1 && u.getAttackRange()<path.size()){
 				for (int j = 1; j < u.getDistance()+1 ; j++) {
 					moves.add(path.get(j));
 				}
 			}
-			else{
+			else if(u.getAttackRange()<path.size()){
 				for (int j = 0; j < path.size() ; j++) {
+					moves.add(path.get(j));
+				}
+			}
+			else{ ///makes sure they dont move to close to the enemy
+				for (int j = path.size(); j > u.getAttackRange() ; j++) {
 					moves.add(path.get(j));
 				}
 			}
 			for(int h=0; h<moves.size(); h++){
 				//System.out.println("before " +moves.get(h).toString());
+			}
 			}
 //			for (int j = 1; j < u.getDistance() ; j++) {
 //				moves.add(path.get(j));
@@ -503,12 +521,256 @@ public class ComputerClient extends JFrame implements Client {
 			}catch(IOException e){
 				e.printStackTrace();
 			}
-		}
+	}
 			
 	}
 
 	private void moveTurnMele(){
-		//add attack stuff
+		ArrayList<Unit> compUnits = new ArrayList<>();
+		compUnits = currentBoard.getPlayerTwoUnits();
+		for (int i = 0; i < compUnits.size(); i++) {
+			ArrayList<Point> path = new ArrayList<>();
+			ArrayList<Point> moves = new ArrayList<>();
+			Unit u = compUnits.get(i);
+			if(!u.isAlive() || u.getName().equals("Princess")){
+				continue;
+			}
+		Random random=new Random();
+		boolean yes=true;
+		int xPoint=0;
+		int yPoint=0;
+		int z=0;
+		//while (yes){
+		//System.out.println(compUnits.get(i).getName()+" moves left "+compUnits.get(i).getMovesLeft());
+		//System.out.println(compUnits.get(i).getName()+" at "+compUnits.get(i).getLocation());
+			
+			
+			if(u.getName().equals("Sonic")){
+				//run away!!
+				int hello=0;
+				while (yes && hello<10){
+					hello ++;
+				//move from Q1 to Q2 or Q4
+				if(currentBoard.inQuadrantOne(u)){
+					xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
+					yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+					if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+						yes=false;
+					}
+				}
+				//move from Q2 to Q1 or Q3
+				if(currentBoard.inQuadrantTwo(u)){
+					xPoint = random.nextInt(currentBoard.getBoardWidth()/2);
+					yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+					if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+						yes=false;
+					}
+				}
+				//move from Q3 to Q2 or Q4
+				if(currentBoard.inQuadrantThree(u)){
+					xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
+					yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+					if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+						yes=false;
+					}
+				}
+				//move from Q4 to Q1 or Q3
+				if(currentBoard.inQuadrantFour(u)){
+					xPoint = random.nextInt(currentBoard.getBoardWidth()/2);
+					yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+					if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+						yes=false;
+					}
+				}
+				}
+			}
+			if(u.getName().equals("MegaMan")){
+				//go towards enemies, attack
+				for(int x=0; x<currentBoard.getBoardHeight(); x++){
+					for(int y=0; y<currentBoard.getBoardWidth(); y++){
+				//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+					//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+						Point currentPoint = new Point(x,y);
+						if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+							continue;
+						}
+						if(currentBoard.checkIfEnemy(u,currentPoint)){
+							if(currentBoard.checkAvailable(new Point(x-1,y))){
+								xPoint=x-1;
+								yPoint=y;
+							}
+							else if(currentBoard.checkAvailable(new Point(x,y-1))){
+								xPoint=x;
+								yPoint=y-1;
+							}
+							else if(currentBoard.checkAvailable(new Point(x,y+1))){
+								xPoint=x;
+								yPoint=y+1;
+							}
+							else if(currentBoard.checkAvailable(new Point(x+1,y))){
+								xPoint=x+1;
+								yPoint=y;
+							}
+							break;
+							//move towards fist enemy seen until enemy is within attackRange
+							
+							/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+								//attack if possible
+							}*/
+						}
+					}
+				}
+			}
+			if(u.getName().equals("Goku")){
+				//go towards enemies, attack
+				for(int x=0; x<currentBoard.getBoardHeight(); x++){
+					for(int y=0; y<currentBoard.getBoardWidth(); y++){
+				//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+					//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+						Point currentPoint = new Point(x,y);
+						if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+							continue;
+						}
+						if(currentBoard.checkIfEnemy(u,currentPoint)){
+							if(currentBoard.checkAvailable(new Point(x-1,y))){
+								xPoint=x-1;
+								yPoint=y;
+							}
+							else if(currentBoard.checkAvailable(new Point(x,y-1))){
+								xPoint=x;
+								yPoint=y-1;
+							}
+							else if(currentBoard.checkAvailable(new Point(x,y+1))){
+								xPoint=x;
+								yPoint=y+1;
+							}
+							else if(currentBoard.checkAvailable(new Point(x+1,y))){
+								xPoint=x+1;
+								yPoint=y;
+							}
+							break;
+							//move towards fist enemy seen until enemy is within attackRange
+							
+							/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+								//attack if possible
+							}*/
+						}
+					}
+				}
+			}
+			if(u.getName().equals("Link")){
+				//go towards enemies, attack
+				for(int x=0; x<currentBoard.getBoardHeight(); x++){
+					for(int y=0; y<currentBoard.getBoardWidth(); y++){
+				//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+					//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+						Point currentPoint = new Point(x,y);
+						if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+							continue;
+						}
+						if(currentBoard.checkIfEnemy(u,currentPoint)){
+							//move towards fist enemy seen until enemy is within attackRange
+							if(currentBoard.checkAvailable(new Point(x-1,y))){
+								xPoint=x-1;
+								yPoint=y;
+							}
+							else if(currentBoard.checkAvailable(new Point(x,y-1))){
+								xPoint=x;
+								yPoint=y-1;
+							}
+							else if(currentBoard.checkAvailable(new Point(x,y+1))){
+								xPoint=x;
+								yPoint=y+1;
+							}
+							else if(currentBoard.checkAvailable(new Point(x+1,y))){
+								xPoint=x+1;
+								yPoint=y;
+							}
+							break;
+							/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+								//attack if possible
+							}*/
+						}
+					}
+				}
+			}
+			if(u.getName().equals("Mario")){
+				//go towards enemies, attack
+				for(int x=0; x<currentBoard.getBoardHeight(); x++){
+					for(int y=0; y<currentBoard.getBoardWidth(); y++){
+				//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+					//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+						Point currentPoint = new Point(x,y);
+						if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+							continue;
+						}
+						if(currentBoard.checkIfEnemy(u,currentPoint)){
+							//move towards fist enemy seen until enemy is within attackRange
+							if(currentBoard.checkAvailable(new Point(x-1,y))){
+								xPoint=x-1;
+								yPoint=y;
+							}
+							else if(currentBoard.checkAvailable(new Point(x,y-1))){
+								xPoint=x;
+								yPoint=y-1;
+							}
+							else if(currentBoard.checkAvailable(new Point(x,y+1))){
+								xPoint=x;
+								yPoint=y+1;
+							}
+							else if(currentBoard.checkAvailable(new Point(x+1,y))){
+								xPoint=x+1;
+								yPoint=y;
+							}
+							break;
+							/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+								//attack if possible
+							}*/
+						}
+					}
+				}
+			//}
+			
+			
+			
+			/*xPoint = random.nextInt(19);
+			yPoint = random.nextInt(19);
+			if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+				yes=false;
+			}
+			if(z==10){
+				return;
+			}
+			z++;*/
+		}
+
+		//System.out.println(compUnits.get(i).getName()+" get point"+ xPoint +yPoint);
+		path = currentBoard.findShortestPath(u.getLocation(), new Point(xPoint,yPoint));
+		//System.out.println("path :" +path.size());
+		int use=0;
+		if(path.size()> u.getDistance()+1){
+			for (int j = 1; j < u.getDistance()+1 ; j++) {
+				moves.add(path.get(j));
+			}
+		}
+		else{
+			for (int j = 0; j < path.size() ; j++) {
+				moves.add(path.get(j));
+			}
+		}
+		for(int h=0; h<moves.size(); h++){
+			//System.out.println("before " +moves.get(h).toString());
+		}
+//		for (int j = 1; j < u.getDistance() ; j++) {
+//			moves.add(path.get(j));
+//		}
+		UnitMovedCommand moveCommand = new UnitMovedCommand(userName, i, moves);
+		try{
+			outputStream.writeObject(moveCommand);
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
 	}
 	
 	private void attackTurnPrincess() {
