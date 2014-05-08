@@ -36,6 +36,8 @@ import GUI.CharacterSelectPanel;
 import GUI.GameLobby;
 import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
+import GUI.SinglePlayerMapAndScenarioSelect;
+import GUI.WaitingOnCharacterSelection;
 import command.Command;
 import command.LobbyInfoCommand;
 
@@ -55,10 +57,9 @@ public class TRPGClient extends JFrame implements Client {
 	private boolean myTurn = true;
 	private ArrayList<Item> itemList = new ArrayList<Item>();
 	private ArrayList<Unit> playerUnits;
-	private ArrayList<Unit> compUnits;
 	private ServerHandler handler;
 	private ArrayList<Unit> myUnits;
-	private ArrayList<Unit> opponentUnits=new ArrayList<>();
+	private ArrayList<Unit> opponentUnits;
 
 	public static void main(String[] args) {
 		// try {
@@ -177,33 +178,33 @@ public class TRPGClient extends JFrame implements Client {
 		
 		//construct the computer client to play against
 		ComputerClient computer=new ComputerClient();
-		
+
 		//now we need to switch over from the mainMenuPanel directly to the character select
 		this.remove(currentPanel);
-		currentPanel = new CharacterSelectPanel(userName, outputStream, isHost);
+		this.setVisible(false);
+		
+		currentPanel=new SinglePlayerMapAndScenarioSelect(userName, outputStream);
 		currentPanel.grabFocus();
-		this.add(currentPanel);
+		this.add(currentPanel).setVisible(true);
 		currentPanel.requestFocus(true);
 		this.pack();
 		this.setVisible(true);
 	}
 
 	public void startMultiPlayerGame() {
-
+		
 	}
-
-	public void setMapAndScenario(Map map, Scenario scenario) {
-		this.mapChoice = map;
-		this.scenarioChoice = scenario;
-		// we no longer want to be looking at the lobby panel because we already
-		// got all of
-		// the use out of this panel as we can.
+	
+	public void setMapAndScenario(String source, Map map, Scenario scenario) {
+		this.mapChoice=map;
+		this.scenarioChoice=scenario;
+		//we no longer want to be looking at the lobby panel because we already got all of 
+		//the use out of this panel as we can.
 		this.remove(currentPanel);
 
 		// change the currentPanel to the character select panel so that we can
-		// select our
-		// units for the current game and then notify the other client
-		currentPanel = new CharacterSelectPanel(userName, outputStream, isHost);
+		// select our units for the current game and then notify the other client
+		currentPanel = new CharacterSelectPanel(userName, outputStream, isHost, scenarioChoice);
 		currentPanel.grabFocus();
 		this.add(currentPanel);
 		currentPanel.requestFocus(true);
@@ -226,42 +227,37 @@ public class TRPGClient extends JFrame implements Client {
 			System.out.println("User units set: \nMy Units: " + myUnits);
 			System.out.println("Opponent's Units: " + opponentUnits);
 			
-			if(singlePlayer){
+			if(singlePlayer && opponentUnits==null){
 				//we no longer want to be looking at the unit select panel because we already got
 				//the units we need to start a single player game.
 				this.remove(currentPanel);
-				
-				//randomly choose the enemies units so that we can actually construct the game
-				//randomlyChooseEnemyUnits();
-				
-				//we will need to check for the scenario later on but for now I know we need
-				//to add the princess to the list so I just do it no matter what for single player
-				myUnits.add(0, new Princess('P'));
-				
-				//change the currentPanel to the character select panel so that we can select our
-				//units for the current game and then notify the other client
-				currentBoard =new GameBoard(myUnits, opponentUnits, Map.First, Scenario.Princess);
-				currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream);
+				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, Scenario.Princess, outputStream);
 				currentPanel.grabFocus();
 				this.add(currentPanel);
 				currentPanel.requestFocus(true);
 				this.pack();
 				this.setVisible(true);
 			}
+			//now if the opponent just got set, then we now need to play the game 
+			else if(singlePlayer){
+				//change the currentPanel to the character select panel so that we can select our
+				//units for the current game and then notify the other client
+				((WaitingOnCharacterSelection)currentPanel).updateUnitLists(myUnits, opponentUnits);
+			}
 		//}
 	}
-
-	private void randomlyChooseEnemyUnits() {
-		ArrayList<Unit> choices = new ArrayList<>(
-				Arrays.asList(new Link('l'), new Goku('g'), new Mario('w'),
-						new MegaMan('m'), new Sonic('s')));
-
-		Random rand = new Random();
-		for (int i = 0; i < 5; i++) {
-			opponentUnits.add(choices.get(rand.nextInt(5)));
-		}
+	
+	public void beginGame(){
+		this.remove(currentPanel);
+		currentBoard =new GameBoard(myUnits, opponentUnits, mapChoice, scenarioChoice);
+		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream);
+		currentPanel.grabFocus();
+		this.add(currentPanel);
+		currentPanel.requestFocus(true);
+		this.pack();
+		this.setVisible(true);
 	}
-
+	
 	private void askUserForInfo() {
 		host = JOptionPane.showInputDialog(null,
 				"What host would you like to connect to?");
@@ -366,10 +362,10 @@ public class TRPGClient extends JFrame implements Client {
 			if (isHost)
 				currentBoard.useThisItem(client, playerUnits.get(index), item);
 			else
-				currentBoard.useThisItem(client, compUnits.get(index), item);
+				currentBoard.useThisItem(client, opponentUnits.get(index), item);
 		} else {
 			if (isHost) {
-				currentBoard.useThisItem(client, compUnits.get(index), item);
+				currentBoard.useThisItem(client, opponentUnits.get(index), item);
 			} else
 				currentBoard.useThisItem(client, playerUnits.get(index), item);
 
@@ -448,15 +444,9 @@ public class TRPGClient extends JFrame implements Client {
 
 	public void endTurn(String client) {
 		if (client.equals(userName)) {
-			if (isHost) {
-				myTurn = false;
-				((MainGamePanel) currentPanel).myTurn();
-				currentBoard.resetCompMoves();
-			} else {
-				myTurn = false;
-				((MainGamePanel) currentPanel).myTurn();
-				currentBoard.resetUserMoves();
-			}
+			myTurn = false;
+			((MainGamePanel) currentPanel).myTurn();
+			currentBoard.resetCompMoves();
 		} else {
 			if (isHost) {
 				myTurn = true;
@@ -468,6 +458,9 @@ public class TRPGClient extends JFrame implements Client {
 				((MainGamePanel) currentPanel).myTurn();
 				currentBoard.resetCompMoves();
 			}
+			myTurn = true;
+			((MainGamePanel) currentPanel).myTurn();
+			currentBoard.resetUserMoves();
 		}
 	}
 

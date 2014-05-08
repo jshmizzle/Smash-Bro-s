@@ -54,14 +54,13 @@ public class MainGamePanel extends JPanel {
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
 		this.localUserUnitList=gameBoard.getPlayerOneUnits();
-		this.currentUnit=localUserUnitList.get(1);
-		this.currentUnit=gameBoard.getPlayerOneUnits().get(1);
+
 		
 		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
 		
-		Point tempPoint=gameBoard.getPlayerOneUnits().get(1).getLocation();
+		Point tempPoint=gameBoard.getPlayerOneUnits().get(0).getLocation();
 		cursorLocation=new Point(tempPoint.y, tempPoint.x);
 				
 		//add the key listener to allow the cursor to send 
@@ -261,7 +260,7 @@ public class MainGamePanel extends JPanel {
 	}
 		
 	private boolean showStats=false;
-	private int unitIndex=1;
+	private int unitIndex=0;
 	private boolean myTurn=true;
 
 
@@ -351,7 +350,7 @@ public class MainGamePanel extends JPanel {
 							unitIndex++;
 						}
 						else if(unitIndex==gameBoard.getPlayerOneUnits().size()-1){
-							unitIndex=1;
+							unitIndex=0;
 						}
 	
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
@@ -362,10 +361,10 @@ public class MainGamePanel extends JPanel {
 						repaint();
 					}
 					else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
-						if(unitIndex>1){
+						if(unitIndex>0){
 							unitIndex--;
 						}
-						else if (unitIndex==1){
+						else if (unitIndex==0){
 							unitIndex=gameBoard.getPlayerOneUnits().size()-1;
 						}
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
@@ -376,7 +375,7 @@ public class MainGamePanel extends JPanel {
 						repaint();
 					}
 					//if the user presses enter while cycling through units
-					else if(key==KeyEvent.VK_ENTER){
+					else if(key==KeyEvent.VK_ENTER && unitIndex!=0){
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						if(gameBoard.getPlayerOneUnits().get(unitIndex).isAlive()){
 							currentUnit=localUserUnitList.get(unitIndex);

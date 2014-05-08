@@ -67,8 +67,6 @@ public class ComputerClient extends JFrame implements Client {
 	public ComputerClient() {
 		askUserForInfo();// now the client has been logged into the server'
 
-		initializeGameBoard();
-
 		ComputerServerHandler handler = new ComputerServerHandler(this,
 				inputStream);
 		Thread t = new Thread(handler);
@@ -103,11 +101,8 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	// temp method
-	private void initializeGameBoard() {
+	private void chooseRandomCompUnits() {
 		// initialize the units and the GameBoard
-		while(map==null && gameType==null){
-			//wait for game type and map to be initialized
-		}
 		compUnits = new ArrayList<Unit>();
 
 		ArrayList<Unit> choices=new ArrayList<>(Arrays.asList(new Link('l'), new Goku('g'), new Mario('w'), new MegaMan('m'), new Sonic('s')));
@@ -123,15 +118,16 @@ public class ComputerClient extends JFrame implements Client {
 			temp.add(choices.get(rand.nextInt(5)));
 		}
 		
-		SetUserUnits c=new  SetUserUnits(userName, temp);
-		
-		while(playerUnits==null){
-			//wait for player units to be sent;
+		Command command=new SetUserUnits(userName, temp);
+		//send the command that sets the user units for computer and the user
+		try {
+			outputStream.writeObject(command);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
 	}
 	
-	public void setMapAndScenario(Map map, Scenario scenario){
+	public void setMapAndScenario(String source, Map map, Scenario scenario){
 		this.map=map;
 		gameType=scenario;
 	}
@@ -139,9 +135,11 @@ public class ComputerClient extends JFrame implements Client {
 	public void setUserUnits(String source, ArrayList<Unit> userUnits){
 		if(userName.equals(source)){
 			compUnits=userUnits;
+			currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
 		}
 		else{
 			playerUnits=userUnits;
+			chooseRandomCompUnits();
 		}
 	}
 	
@@ -153,7 +151,7 @@ public class ComputerClient extends JFrame implements Client {
 	  this.pack(); this.setVisible(true); }*/
 	 
 
-	private void update(Command<?> command) {
+	private void update() {
 		this.gamePanel.update(currentBoard);
 	}
 
@@ -206,52 +204,160 @@ public class ComputerClient extends JFrame implements Client {
 		} else {
 			myTurn = true;
 			currentBoard.resetCompMoves();
-			executeProtocol();
+			executeTurn();
 		}
 	}
 
-	private void executeProtocol() {
-		System.out.println("h");
-		moveTurn();
-		attackTurn();
+	private void executeTurn() {
+		if(gameType==Scenario.Princess)
+			princessTurn();
+		else
+			meleTurn();
 		sendEndTurnCommand();
 	}
+	
+	public void princessTurn(){
+		moveTurnPrincess();
+		attackTurnPrincess();
+	}
+	
+	public void meleTurn(){
+		moveTurnMele();
+		attackTurnMele();
+	}
 
-	int florb=1;
-	private void moveTurn() {
+	
+	private void moveTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getPlayerTwoUnits();
 		Point princess = null;
 	
 		
-		for (int i = 1; i < compUnits.size(); i++) {
+		for (int i = 0; i < compUnits.size(); i++) {
 			ArrayList<Point> path = new ArrayList<>();
 			ArrayList<Point> moves = new ArrayList<>();
 			Unit u = compUnits.get(i);
-			if(!u.isAlive()){
-				return;
+			if(!u.isAlive() || u.getName().equals("Princess")){
+				continue;
 			}
 			else {
 				path = currentBoard.findShortestPath(u.getLocation(), new Point(19, 0));
-				florb=1;
+				//florb=1;
 			System.out.println(u.getName()+" "+u.getMovesLeft());
 			Random random=new Random();
 			boolean yes=true;
-			int rand1=0;
-			int rand2=0;
+			int xPoint=0;
+			int yPoint=0;
 			int z=0;
 			while (yes){
-				rand1 = random.nextInt(19);
-				rand2 = random.nextInt(19);
-				if (currentBoard.checkAvailable(new Point(rand1,rand2))){
+				
+				
+				
+				if(u.getName().equals("Sonic")){
+					//run away!!
+					
+					//move from Q1 to Q2 or Q4
+					if(currentBoard.inQuadrantOne(u)){
+						xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
+						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+						if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+							yes=false;
+						}
+					}
+					//move from Q2 to Q1 or Q3
+					if(currentBoard.inQuadrantTwo(u)){
+						xPoint = random.nextInt(currentBoard.getBoardWidth()/2);
+						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+						if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+							yes=false;
+						}
+					}
+					//move from Q3 to Q2 or Q4
+					if(currentBoard.inQuadrantThree(u)){
+						xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
+						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+						if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+							yes=false;
+						}
+					}
+					//move from Q4 to Q1 or Q3
+					if(currentBoard.inQuadrantFour(u)){
+						xPoint = random.nextInt(currentBoard.getBoardWidth()/2);
+						yPoint = random.nextInt(currentBoard.getBoardHeight()-1);
+						if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+							yes=false;
+						}
+					}
+				}
+				if(u.getName().equals("MegaMan")){
+					//go towards enemies, attack
+					
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+							Point currentPoint = new Point(x,y);
+							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+								continue;
+							}
+							if(currentBoard.checkIfEnemy(u,currentPoint)){
+								//move towards fist enemy seen until enemy is within attackRange
+								
+								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}
+							}
+						}
+					}
+				}
+				if(u.getName().equals("Link")){
+					//go towards enemies, attack
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+							Point currentPoint = new Point(x,y);
+							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+								continue;
+							}
+							if(currentBoard.checkIfEnemy(u,currentPoint)){
+								//move towards fist enemy seen until enemy is within attackRange
+								
+								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}
+							}
+						}
+					}
+				}
+				if(u.getName().equals("Mario")){
+					//go towards enemies, attack
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+							Point currentPoint = new Point(x,y);
+							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+								continue;
+							}
+							if(currentBoard.checkIfEnemy(u,currentPoint)){
+								//move towards fist enemy seen until enemy is within attackRange
+								
+								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}
+							}
+						}
+					}
+				}
+				
+				
+				
+				/*xPoint = random.nextInt(19);
+				yPoint = random.nextInt(19);
+				if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
 					yes=false;
 				}
 				if(z==10){
 					return;
 				}
-				z++;
+				z++;*/
 			}
-			path = currentBoard.findShortestPath(u.getLocation(), new Point(rand1,rand2));
+			path = currentBoard.findShortestPath(u.getLocation(), new Point(xPoint,yPoint));
 			System.out.println("path :" +path.size());
 			int use=0;
 			if(path.size()> u.getDistance()+1){
@@ -280,7 +386,11 @@ public class ComputerClient extends JFrame implements Client {
 	}
 }
 
-	private void attackTurn() {
+	private void moveTurnMele(){
+		//add attack stuff
+	}
+	
+	private void attackTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getPlayerTwoUnits();
 		ArrayList<Point> range = new ArrayList<>();
@@ -306,6 +416,10 @@ public class ComputerClient extends JFrame implements Client {
 			}
 		}
 
+	}
+	
+	private void attackTurnMele(){
+		
 	}
 
 	private void sendEndTurnCommand() {
@@ -417,5 +531,12 @@ public class ComputerClient extends JFrame implements Client {
 	public void pickUpItem(String source, Point p) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void beginGame() {
+		//THIS METHOD DOES NOT NEED TO BE USED IN THIS CLASS. IT MUST BE IN HERE SO THAT 
+		//IF A COMMAND IS SENT TO BEGIN GAME, THE PLAYER CLIENT CAN FIND OUT BUT THIS CLASS'S 
+		//SERVER HANDLER DOES NOT HAVE TO RUN INTO A RUNTIME CASTING EXCEPTION
 	}
 }

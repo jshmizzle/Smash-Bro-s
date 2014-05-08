@@ -25,6 +25,8 @@ import model.Goku;
 import model.Link;
 import model.Mario;
 import model.MegaMan;
+import model.Princess;
+import model.Scenario;
 import model.Sonic;
 import model.Unit;
 
@@ -38,12 +40,14 @@ public class CharacterSelectPanel extends JPanel {
 	private ArrayList<Unit> unitList=new ArrayList<>();
 	private JButton button;
 	private Image link, goku, mario, megaman, sonic, characterSelectLogo;
-	private boolean isHost, has5units=false;
+	private boolean isHost, hasEnoughUnits=false;
+	private Scenario scenario;
 	
-	public CharacterSelectPanel(String source, ObjectOutputStream serverOut, boolean isHost) {
+	public CharacterSelectPanel(String source, ObjectOutputStream serverOut, boolean isHost, Scenario scenario) {
 		this.source=source;
 		this.serverOut=serverOut;
 		this.isHost=isHost;
+		this.scenario=scenario;
 		
 		//set the size of the panel
 		this.setSize(1000, 600);
@@ -140,12 +144,19 @@ public class CharacterSelectPanel extends JPanel {
 				g2.drawString("?", (getWidth()/2)-(getWidth()/10)*3+getWidth()/10*i+30, getHeight()-getHeight()/6+30);
 			}
 		}
-		switch(unitList.size()-1){
-			case 4:	drawInTheRightPosition(g2, 4);
-			case 3:	drawInTheRightPosition(g2, 3);
-			case 2:	drawInTheRightPosition(g2, 2);
-			case 1:	drawInTheRightPosition(g2, 1);
-			case 0:	drawInTheRightPosition(g2, 0);
+		//adjust for the larger size of the unit list when the game mode is princess
+		int adjust;
+		if(hasEnoughUnits==true && scenario==Scenario.Princess)
+			adjust=1;
+		else 
+			adjust=0;
+		
+		switch(unitList.size()-1-adjust){
+			case 4:	drawInTheRightPosition(g2, 4, adjust);
+			case 3:	drawInTheRightPosition(g2, 3, adjust);
+			case 2:	drawInTheRightPosition(g2, 2, adjust);
+			case 1:	drawInTheRightPosition(g2, 1, adjust);
+			case 0:	drawInTheRightPosition(g2, 0, adjust);
 		}
 	}
 	
@@ -156,16 +167,17 @@ public class CharacterSelectPanel extends JPanel {
 	 * @param i The index in the unitList to look into. Also helps to determine what part of the
 	 * screen to draw it to.
 	 */
-	private void drawInTheRightPosition(Graphics2D g2, int i){
-		if (unitList.get(i) instanceof Sonic) {
+	private void drawInTheRightPosition(Graphics2D g2, int i, int adjust){
+		int adjustedi=i+adjust;
+		if (unitList.get(adjustedi) instanceof Sonic) {
 			g2.drawImage(sonic, (getWidth() / 2)- (getWidth() / 10) * 3 + getWidth() / 10 * i,getHeight() - getHeight() / 6-20, getWidth() / 10,getHeight() / 10, null);
-		} else if (unitList.get(i) instanceof MegaMan) {
+		} else if (unitList.get(adjustedi) instanceof MegaMan) {
 			g2.drawImage(megaman, (getWidth() / 2)- (getWidth() / 10) * 3 + getWidth() / 10 * i,getHeight() - getHeight() / 6-20, getWidth() / 10,getHeight() / 10, null);
-		} else if (unitList.get(i) instanceof Mario) {
+		} else if (unitList.get(adjustedi) instanceof Mario) {
 			g2.drawImage(mario, (getWidth() / 2)- (getWidth() / 10) * 3 + getWidth() / 10 * i,getHeight() - getHeight() / 6-20, getWidth() / 10,getHeight() / 10, null);
-		} else if (unitList.get(i) instanceof Goku) {
+		} else if (unitList.get(adjustedi) instanceof Goku) {
 			g2.drawImage(goku, (getWidth() / 2) - (getWidth() / 10)* 3 + getWidth() / 10 * i, getHeight()- getHeight() / 6-20, getWidth() / 10,getHeight() / 10, null);
-		} else if (unitList.get(i) instanceof Link) {
+		} else if (unitList.get(adjustedi) instanceof Link) {
 			g2.drawImage(link, (getWidth() / 2) - (getWidth() / 10)* 3 + getWidth() / 10 * i, getHeight()- getHeight() / 6-20, getWidth() / 10,getHeight() / 10, null);
 		}
 	}
@@ -230,7 +242,7 @@ public class CharacterSelectPanel extends JPanel {
 		@Override
 		public void keyPressed(KeyEvent arg0) {
 			int key=arg0.getKeyCode();
-			if(!has5units){
+			if(!hasEnoughUnits){
 				if(key==KeyEvent.VK_LEFT){
 					if(selectionIndex==1){
 						selectionIndex=5;
@@ -280,8 +292,20 @@ public class CharacterSelectPanel extends JPanel {
 				else if(key==KeyEvent.VK_ENTER){
 					addSelectedUnitToList(selectionIndex);
 					repaint();
+					
+					//make sure that we only allow the player to continue when they have chosen
+					//the correct number of units
 					if(unitList.size()==5){
-						has5units=true;
+						if(scenario==Scenario.Princess){
+							if(isHost){
+								unitList.add(0, new Princess('P'));
+							}
+							else{
+								unitList.add(0, new Princess('p'));
+							}
+						}
+						
+						hasEnoughUnits=true;
 						button.setEnabled(true);
 					}
 					System.out.println(unitList);

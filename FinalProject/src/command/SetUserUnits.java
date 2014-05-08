@@ -3,9 +3,10 @@ package command;
 import java.util.ArrayList;
 
 import model.Unit;
+import client.Client;
 import client.TRPGClient;
 
-public class SetUserUnits extends Command<TRPGClient> {
+public class SetUserUnits extends Command<Client> {
 
 	ArrayList<Unit> userUnitList;
 	
@@ -15,7 +16,7 @@ public class SetUserUnits extends Command<TRPGClient> {
 	}
 
 	@Override
-	public void execute(TRPGClient executeOn) {
+	public void execute(Client executeOn) {
 		executeOn.setUserUnits(getSource(), userUnitList);
 	}
 
