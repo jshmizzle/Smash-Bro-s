@@ -185,21 +185,6 @@ public class ComputerClient extends JFrame implements Client {
 	 * currentBoard.useThisItem(client, u, item); }
 	 */
 
-	public void welcomeToLobby(String client) {
-		// open lobby for whoever connected
-		if (playingAlready == true) {
-			; // do nothing
-		} else {
-			// load lobby (probably needs work)
-			askUserForInfo();// now the client has been logged into the server
-			// initializeFrame();
-			ComputerServerHandler handler = new ComputerServerHandler(this,
-					inputStream);
-			Thread t = new Thread(handler);
-			t.start();
-		}
-	}
-
 	public void attackUnit(String client, int fromIndex, int toIndex) {
 		if(client.equals(userName)){
 			if (isHost)
@@ -222,7 +207,7 @@ public class ComputerClient extends JFrame implements Client {
 			myTurn = false;
 		} else {
 			myTurn = true;
-			currentBoard.resetCompMoves();
+			currentBoard.resetPlayerTwoMoves();
 			executeTurn();
 		}
 	}

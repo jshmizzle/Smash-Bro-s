@@ -38,12 +38,20 @@ public class MainGamePanel extends JPanel {
 	private UnitStatusPanel statsPanel;
 	private String source;
 	private TRPGClient client;
-	private ArrayList<Unit> localUserUnitList;
+	private ArrayList<Unit> localUserUnitList, localOpponentUnitList;
+	private boolean isHost, myTurn;
 	
-	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut) {
+	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut, boolean isHost) {
 		this.serverOut=serverOut;
 		this.source=source;
 		this.client=client;
+		this.isHost=isHost;
+		
+		//decide if the game starts off on our turn based on who is the host
+		if(this.isHost)
+			myTurn=true;
+		else 
+			myTurn=false;
 		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
@@ -51,7 +59,18 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
-		this.localUserUnitList=gameBoard.getPlayerOneUnits();
+		
+		//we cannot assume that the current client's units are always going to be
+		//the player one units. Check whether or not they are the host in order to know which player they are
+		if(isHost){
+			this.localUserUnitList=gameBoard.getPlayerOneUnits();
+			this.localOpponentUnitList=gameBoard.getPlayerTwoUnits();
+		}
+		else{
+			this.localUserUnitList=gameBoard.getPlayerTwoUnits();
+			this.localOpponentUnitList=gameBoard.getPlayerOneUnits();
+		}
+		
 		this.currentUnit=localUserUnitList.get(0);
 
 		System.out.println(localUserUnitList.size());
@@ -60,7 +79,7 @@ public class MainGamePanel extends JPanel {
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
 		
-		Point tempPoint=gameBoard.getPlayerOneUnits().get(0).getLocation();
+		Point tempPoint=localUserUnitList.get(0).getLocation();
 		cursorLocation=new Point(tempPoint.y, tempPoint.x);
 				
 		//add the key listener to allow the cursor to send 
@@ -261,7 +280,6 @@ public class MainGamePanel extends JPanel {
 		
 	private boolean showStats=false;
 	private int unitIndex=0;
-	private boolean myTurn=true;
 
 
 	private class KeyManager implements KeyListener{
@@ -336,6 +354,7 @@ public class MainGamePanel extends JPanel {
 						try{
 							serverOut.writeObject(endTurn);
 							currentGameState=GameState.CyclingThroughUnits;
+							System.out.println("Sent the END TURN command");
 						}catch(IOException e){
 							e.printStackTrace();
 						}
@@ -346,17 +365,17 @@ public class MainGamePanel extends JPanel {
 				else if(currentGameState==GameState.CyclingThroughUnits){
 					
 					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
-						if(unitIndex<gameBoard.getPlayerOneUnits().size()-1){
+						if(unitIndex<localUserUnitList.size()-1){
 							unitIndex++;
 						}
-						else if(unitIndex==gameBoard.getPlayerOneUnits().size()-1){
+						else if(unitIndex==localUserUnitList.size()-1){
 							unitIndex=0;
 						}
 	
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						currentUnit=localUserUnitList.get(unitIndex);
 						
-						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
+						Point unitPoint=localUserUnitList.get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
@@ -365,19 +384,19 @@ public class MainGamePanel extends JPanel {
 							unitIndex--;
 						}
 						else if (unitIndex==0){
-							unitIndex=gameBoard.getPlayerOneUnits().size()-1;
+							unitIndex=localUserUnitList.size()-1;
 						}
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						currentUnit=localUserUnitList.get(unitIndex);
 						
-						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
+						Point unitPoint=localUserUnitList.get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
 					//if the user presses enter while cycling through units
 					else if(key==KeyEvent.VK_ENTER && unitIndex!=0){
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-						if(gameBoard.getPlayerOneUnits().get(unitIndex).isAlive()){
+						if(localUserUnitList.get(unitIndex).isAlive()){
 							currentUnit=localUserUnitList.get(unitIndex);
 		
 							currentGameState=GameState.ChoosingMove;
@@ -404,6 +423,7 @@ public class MainGamePanel extends JPanel {
 						try{
 							serverOut.writeObject(endTurn);
 							currentGameState=GameState.CyclingThroughUnits;
+							System.out.println("Sent the END TURN command");
 						}catch(IOException e){
 							e.printStackTrace();
 						}
@@ -432,9 +452,9 @@ public class MainGamePanel extends JPanel {
 						if(gameBoard.checkIfEnemy(currentUnit,new Point(cursorLocation.y, cursorLocation.x))){
 							System.out.println("found enemy");
 							int enemyIndex=-99;
-							ArrayList<Unit> temp=gameBoard.getPlayerTwoUnits();
-							for(int i=0; i<temp.size(); i++){
-								if(temp.get(i).getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
+
+							for(int i=0; i<localOpponentUnitList.size(); i++){
+								if(localOpponentUnitList.get(i).getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
 									enemyIndex=i;
 								}
 							}
@@ -446,7 +466,7 @@ public class MainGamePanel extends JPanel {
 								try {
 									serverOut.writeObject(moveCommand);
 	
-									gameBoard.getPlayerOneUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+									localUserUnitList.get(unitIndex).setLocation(currentUnit.getLocation());
 	
 									currentGameState = GameState.CyclingThroughUnits;
 									previousPath = null;

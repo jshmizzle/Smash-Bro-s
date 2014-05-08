@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import model.Map;
 import model.Scenario;
 import command.Command;
+import command.LobbyInfoCommand;
 import command.MapAndScenarioSelected;
 
 public class GameLobby extends JPanel {
@@ -40,6 +41,11 @@ public class GameLobby extends JPanel {
 	
 	public GameLobby(String source, ObjectOutputStream serverOut, boolean isHost) {
 		this.sourceUserName=source;
+		this.isHost=isHost;
+		
+		//start out by listing the client who just connected to the screen
+		clients.add(sourceUserName);
+		
 		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
@@ -59,12 +65,6 @@ public class GameLobby extends JPanel {
 		scenario1=new Point(getWidth()-130, 360);
 		scenario2=new Point(getWidth()-130, 410);
 		scenario3=new Point(getWidth()-130, 460);
-		
-		
-		clients.add("Hello World");
-		clients.add("Jimmy");
-		clients.add("Jason");
-		clientJoined("Random");
 		
 		//save the connection to the server
 		this.serverOut=serverOut;
@@ -162,6 +162,21 @@ public class GameLobby extends JPanel {
 		if(clients.size()>=2 && currentState==3){
 			button.setEnabled(true);
 		}
+		
+		//notify the client who just joined that people were already in the lobby waiting
+		try{
+			LobbyInfoCommand command = new LobbyInfoCommand(sourceUserName, clients);
+			serverOut.writeObject(command);
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		repaint();
+	}
+	
+	public void updateClients(ArrayList<String> users){
+		this.clients=users;
+		repaint();
 	}
 	
 	private class KeyManager implements KeyListener{
@@ -171,7 +186,7 @@ public class GameLobby extends JPanel {
 			int key=arg0.getKeyCode();
 
 			//only allow the HOST to actually select the gametype!
-			//if(isHost){
+			if(isHost){
 				if(key==KeyEvent.VK_DOWN){
 					//the host begins by selecting the map
 					if(currentState==1){
@@ -256,7 +271,7 @@ public class GameLobby extends JPanel {
 							button.setEnabled(true);
 					}
 				}
-			//}
+			}
 		}
 
 		@Override

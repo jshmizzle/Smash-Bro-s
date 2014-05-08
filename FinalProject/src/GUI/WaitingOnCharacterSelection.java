@@ -71,6 +71,13 @@ public class WaitingOnCharacterSelection extends JPanel {
 		this.requestFocusInWindow();
 		this.grabFocus();
 		this.setVisible(true);
+		
+		//on certain occasions, this panel will be constructed for the first time with 
+		//both unitLists already set in place, if that is the case, just start the 
+		//countdown right away in order to keep the countdowns in sync
+		if(playerOneUnits!=null && playerTwoUnits!=null){
+			startCountDown();
+		}
 	}
 	
 	private void initializeImages() {
