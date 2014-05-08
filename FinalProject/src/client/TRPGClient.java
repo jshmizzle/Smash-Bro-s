@@ -227,7 +227,7 @@ public class TRPGClient extends JFrame implements Client {
 			this.pack();
 			this.setVisible(true);
 		}
-		else{
+		else if(currentPanel instanceof GameLobby){
 			((GameLobby)currentPanel).clientJoined(source);
 		}
 	}
