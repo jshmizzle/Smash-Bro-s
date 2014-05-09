@@ -14,18 +14,17 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.GameBoard;
-import model.Scenario;
 import model.Unit;
-import client.TRPGClient;
+
 import command.EndTurnCommand;
 import command.PickUpItemCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
+@SuppressWarnings("serial")
 public class MainGamePanel extends JPanel {
 
 	char [][] currentBoard;
@@ -38,14 +37,12 @@ public class MainGamePanel extends JPanel {
 	private Unit currentUnit;
 	private UnitStatusPanel statsPanel;
 	private String source;
-	private TRPGClient client;
 	private ArrayList<Unit> localUserUnitList, localOpponentUnitList;
 	private boolean isHost, myTurn;
 	
-	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut, boolean isHost) {
+	public MainGamePanel(String source, GameBoard startingBoard, ObjectOutputStream serverOut, boolean isHost) {
 		this.serverOut=serverOut;
 		this.source=source;
-		this.client=client;
 		this.isHost=isHost;
 		
 		//decide if the game starts off on our turn based on who is the host
@@ -290,7 +287,7 @@ public class MainGamePanel extends JPanel {
 		Graphics2D g2=(Graphics2D)g;
 		
 		//draw the path as blue up to where the unit can travel, and red beyond that point
-		int moveDistance=currentUnit.getDistance();
+		int moveDistance=currentUnit.getMovesLeft();
 		
 		Point temp=new Point(cursorLocation.y, cursorLocation.x);
 		if(gameBoard.checkAvailable(temp)){
@@ -308,7 +305,7 @@ public class MainGamePanel extends JPanel {
 					if(moveDistance>=0)
 						g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
 					else
-						g2.drawImage(redOrb, (x-2) * gameTileWidth, (y-1) * gameTileHeight, null);
+						g2.drawImage(redOrb, (x-2) * gameTileWidth, (y-1) * gameTileHeight -7, null);
 					
 					moveDistance--;
 				}
@@ -325,7 +322,7 @@ public class MainGamePanel extends JPanel {
 				if(moveDistance>=0)
 					g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
 				else
-					g2.drawImage(redOrb, (x-2) * gameTileWidth, (y-1) * gameTileHeight, null);
+					g2.drawImage(redOrb, (x-2) * gameTileWidth, (y-1) * gameTileHeight -7, null);
 
 				moveDistance--;
 			}

@@ -27,10 +27,10 @@ import model.Scenario;
 import model.Sonic;
 import model.Unit;
 import client.Client;
-
 import command.BeginGameCommand;
 import command.Command;
 
+@SuppressWarnings("serial")
 public class WaitingOnCharacterSelection extends JPanel {
 
 	private ArrayList<Unit> playerOneUnits, playerTwoUnits;
@@ -112,13 +112,8 @@ public class WaitingOnCharacterSelection extends JPanel {
 		//draw the player's chosen units at the correct points
 		int temp;
 		
-		if(scenario==Scenario.Princess){
-			temp=1;
-		}
-		else 
-			temp=0;
 		if(playerOneUnits!=null){				
-			for(int i=temp; i<playerOneUnits.size(); i++){
+			for(int i=scenario==Scenario.Princess ? 1:0; i<playerOneUnits.size(); i++){
 				Unit curr=playerOneUnits.get(i);
 				if(curr instanceof Sonic){
 					Point placement = getLocation(i, 1);
@@ -142,10 +137,9 @@ public class WaitingOnCharacterSelection extends JPanel {
 				}
 			}
 		}
-		System.out.println("temp" + temp);
 		//draw the playerTwo units at the correct points ASSUMING that they have already been chosen 
 		if(playerTwoUnits!=null){
-			for(int i=temp; i<playerTwoUnits.size(); i++){
+			for(int i=scenario==Scenario.Princess ? 1:0; i<playerTwoUnits.size(); i++){
 				Unit curr=playerTwoUnits.get(i);
 				if(curr instanceof Sonic){
 					Point placement = getLocation(i, 2);
@@ -215,7 +209,7 @@ public class WaitingOnCharacterSelection extends JPanel {
 				case 1: return new Point(getWidth()-4*getWidth()/12, getHeight()/5);
 				case 2: return new Point(getWidth()-3*getWidth()/12, 2*getHeight()/5);
 				case 3: return new Point(getWidth()-2*getWidth()/12, 3*getHeight()/5);
-				case 4: return new Point(getWidth()-getWidth()/12 , 4*getHeight());
+				case 4: return new Point(getWidth()-getWidth()/12 , 4*getHeight()/5);
 				default: return null;
 				}
 			}
@@ -232,13 +226,12 @@ public class WaitingOnCharacterSelection extends JPanel {
 				}
 			}
 			else{
-				System.out.println("player two");
 				switch(index){
 				case 1: return new Point(getWidth()-5*getWidth()/12, 0);
 				case 2: return new Point(getWidth()-4*getWidth()/12, getHeight()/5);
 				case 3: return new Point(getWidth()-3*getWidth()/12, 2*getHeight()/5);
 				case 4: return new Point(getWidth()-2*getWidth()/12, 3*getHeight()/5);
-				case 5: return new Point(getWidth()-getWidth()/12 , 4*getHeight());
+				case 5: return new Point(getWidth()-getWidth()/12 , 4*getHeight()/5);
 				default: return null;
 				}
 			}

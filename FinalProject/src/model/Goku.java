@@ -2,6 +2,7 @@ package model;
 
 import java.awt.Point;
 
+@SuppressWarnings("serial")
 public class Goku extends Unit{
 
 	public Goku(char c) {

@@ -274,7 +274,7 @@ public class TRPGClient extends JFrame implements Client {
 				//we no longer want to be looking at the unit select panel because we already got
 				//the units we need to start a single player game.
 				this.remove(currentPanel);
-				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, Scenario.Princess, outputStream);
+				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, scenarioChoice, outputStream);
 				currentPanel.grabFocus();
 				this.add(currentPanel);
 				currentPanel.requestFocus(true);
@@ -292,7 +292,7 @@ public class TRPGClient extends JFrame implements Client {
 				//we no longer want to be looking at the unit select panel because we already got
 				//the units we need to start a single player game.
 				this.remove(currentPanel);
-				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, Scenario.Princess, outputStream);
+				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, scenarioChoice, outputStream);
 				currentPanel.grabFocus();
 				this.add(currentPanel);
 				currentPanel.requestFocus(true);
@@ -324,7 +324,7 @@ public class TRPGClient extends JFrame implements Client {
 		}
 		
 		
-		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream, isHost);
+		currentPanel=new MainGamePanel(userName, currentBoard, outputStream, isHost);
 		currentPanel.grabFocus();
 		this.add(currentPanel);
 		currentPanel.requestFocus(true);

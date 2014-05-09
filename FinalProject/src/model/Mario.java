@@ -2,6 +2,7 @@ package model;
 
 import java.awt.Point;
 
+@SuppressWarnings("serial")
 public class Mario extends Unit {
 
 	public Mario(char c) {

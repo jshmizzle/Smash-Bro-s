@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import model.Unit;
 
+@SuppressWarnings("serial")
 public class UnitStatusPanel extends JPanel {
 
 	private Unit unit;
