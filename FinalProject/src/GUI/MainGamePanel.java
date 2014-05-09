@@ -30,7 +30,7 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	private Image boulder, megaman, sonic, grass, mario, headstone, goku, link, princess, waypoint, tree, invalidMove, chest; 
+	private Image redOrb, swordCursor, boulder, grass, headstone, princess, waypoint, tree, invalidMove, chest, attackRange; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
@@ -97,17 +97,15 @@ public class MainGamePanel extends JPanel {
 	private void initializeImages(){
 		try {
 			boulder=ImageIO.read(new File("images/Boulder.png"));
-			megaman=ImageIO.read(new File("images/MegamanStanding.png"));
-			sonic=ImageIO.read(new File("images/SonicStanding.png"));
 			grass=ImageIO.read(new File("images/TRPGgrass.png"));
-			mario=ImageIO.read(new File("images/marioStanding.png"));
-			goku=ImageIO.read(new File("images/gokuStanding.png"));
-			link=ImageIO.read(new File("images/linkStanding.png"));
 			princess=ImageIO.read(new File("images/princess.png"));
 			waypoint=ImageIO.read(new File("images/1GlowingOrb.png"));
 			invalidMove=ImageIO.read(new File("images/notValidCursor.png"));
 			tree=ImageIO.read(new File("images/TreeSprites1.png"));
 			chest=ImageIO.read(new File("images/chestClosed.png"));
+			swordCursor=ImageIO.read(new File("images/redSwords.png"));
+			redOrb=ImageIO.read(new File("images/redOrb.png"));
+			attackRange=ImageIO.read(new File("images/attackRange.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -129,23 +127,16 @@ public class MainGamePanel extends JPanel {
 			else{
 				JOptionPane.showMessageDialog(null, "You won...woooow. Good for you.");
 			}
+			
+			//NOW SEND THE GAME OVER COMMAND TO THE CLIENT SO THAT WE CAN PUT UP A GAME OVER PANEL
 		}
 		
-			//NOTE::: I THINK THAT WHAT WE SHOULD ACTUALLY BE DOING WITH THIS PAINTING IS A LITTLE
-		//MORE COMPLEX. WE SHOULD NOT GO THROUGH AND SIMPLY LOOK FOR THE CHARACTERS B/C WE 
-		//ARE GOING TO HAVE TROUBLE NOW THAT WE ARE ACTUALLY USING TWO PLAYERS AND THEREFOR
-		//DUPLICATE UNITS. WE SHOULD EITHER JUST DRAW THE TERRAIN AND GRASS AND THEN LOOP 
-		//THROUGH THE PLAYER ONE UNITS AND PLAYERTWO UNITS AND THEN DRAW THEM BASED ON THEIR
-		//LOCATIONS SO THAT WE DO NOT ACCIDENTALLY DRAW LIVING UNITS AS DEAD SIMPLY BECAUSE
-		//ANOTHER ONE OF THE UNITS IS A DUPLICATE AND SO IT HAS THE SAME CHARACTER AND IT IS DEAD.
-			//WE SHOULD ALSO ACTUALLY CREATE A SYSTEM FOR SETTING WHICH UNITS ARE 
-		//UPPER CASE AND WHICH ARE NOT IMMEDIATELY WITHIN THE CHARACTERSELECTPANEL SO THAT WE
-		//NEVER INCORRECTLY ASSIGN THE CASE.
 		
-		
-		//loop through the current gameBoard and draw the images based on the current positions
-		//of the units currently in the game
 		for(int row=0; row<currentBoard.length; row++){
+			
+			//first thing to do, is to draw the attack range of the unit if it is choosing
+			//its attack that way, the units will get drawn above the range
+			
 			for(int col=0; col<currentBoard[0].length; col++){
 				if(currentBoard[row][col]==' '){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -224,11 +215,16 @@ public class MainGamePanel extends JPanel {
 		if(currentGameState==GameState.ChoosingMove){
 			drawShortestPathLineToCursor(g2);
 		}
-		if(currentGameState==GameState.CyclingThroughUnits){
+		else if(currentGameState==GameState.CyclingThroughUnits){
 			if(this.showStats==true){
 				drawStatsPanel();
 			}
 		}
+		else if(currentGameState==GameState.ChoosingAttack){
+			drawAttackCursor(g2);
+			drawAttackRange(g2);
+		}
+		
 	}
 	
 	private void drawTheUnits(Graphics2D g2) {
@@ -243,6 +239,30 @@ public class MainGamePanel extends JPanel {
 	private void drawCursor(Graphics2D g2){
 		g2.setColor(Color.RED);
 		g2.drawRect(cursorLocation.x*gameTileWidth, cursorLocation.y*gameTileHeight, gameTileWidth-1, gameTileHeight-1);
+	}
+	
+	private void drawAttackCursor(Graphics2D g2){
+		if(!currentUnit.getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
+			g2.drawImage(swordCursor, cursorLocation.x*gameTileWidth, cursorLocation.y*gameTileHeight, gameTileWidth, gameTileHeight, null);
+		}
+	}
+	
+	private void drawAttackRange(Graphics2D g2){
+		int attackRange=currentUnit.getAttackRange();
+		int x=currentUnit.getLocation().y;
+		int y=currentUnit.getLocation().x;
+		
+		//draw in all directions
+		for(int i=attackRange, y1=y+1, x1=x+1, y2=y-1, x2=x-1; i>0; i--, y1++, x1++, y2--, x2--){
+			//draw up
+			g2.drawImage(this.attackRange, x*gameTileWidth, y1*gameTileHeight, gameTileWidth, gameTileHeight, null);
+			//draw down
+			g2.drawImage(this.attackRange, x*gameTileWidth, y2*gameTileHeight, gameTileWidth, gameTileHeight, null);
+			//draw left
+			g2.drawImage(this.attackRange, x2*gameTileWidth, y*gameTileHeight, gameTileWidth, gameTileHeight, null);
+			//draw right
+			g2.drawImage(this.attackRange, x1*gameTileWidth, y*gameTileHeight, gameTileWidth, gameTileHeight, null);
+		}
 	}
 	
 	private void drawStatsPanel(){
@@ -281,10 +301,14 @@ public class MainGamePanel extends JPanel {
 	private void drawShortestPathLineToCursor(Graphics g){
 		Graphics2D g2=(Graphics2D)g;
 		
+		//draw the path as blue up to where the unit can travel, and red beyond that point
+		int moveDistance=currentUnit.getDistance();
+		
 		Point temp=new Point(cursorLocation.y, cursorLocation.x);
 		if(gameBoard.checkAvailable(temp)){
 			ArrayList<Point> path = gameBoard.findShortestPath(currentUnit.getLocation(), temp);
 			previousPath=path;
+			
 			
 			//loop through the points on the path that the player will follow and draw a waypoint
 			//icon at each of those points on the board to visualize it for the player
@@ -292,7 +316,13 @@ public class MainGamePanel extends JPanel {
 				for (int i = 0; i < path.size(); i++) {
 					int x = path.get(i).y;
 					int y = path.get(i).x;
-					g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
+					
+					if(moveDistance>=0)
+						g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
+					else
+						g2.drawImage(redOrb, (x-2) * gameTileWidth, (y-1) * gameTileHeight, null);
+					
+					moveDistance--;
 				}
 			}
 		}
@@ -301,7 +331,15 @@ public class MainGamePanel extends JPanel {
 				System.out.println("drawing");
 				int x = previousPath.get(i).y;
 				int y = previousPath.get(i).x;
-				g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
+				
+				//still give the effect of drawing blue orbs where they can walk and red orbs 
+				//at all of the points they cannot reach
+				if(moveDistance>=0)
+					g2.drawImage(waypoint, x * gameTileWidth, y * gameTileHeight, null);
+				else
+					g2.drawImage(redOrb, (x-2) * gameTileWidth, (y-1) * gameTileHeight, null);
+
+				moveDistance--;
 			}
 		}
 		
@@ -368,12 +406,7 @@ public class MainGamePanel extends JPanel {
 								UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
 								try {
 									serverOut.writeObject(moveCommand);
-									//the progression should be to now have the user select an attack 
-									//but for now for testing purposes we will jump straight
-									//to choosing another unit's move
-	
-									gameBoard.getPlayerOneUnits().get(unitIndex).setLocation(currentUnit.getLocation());
-	
+		
 									currentGameState=GameState.ChoosingAttack;
 									previousPath=null;
 								} catch (IOException e) {

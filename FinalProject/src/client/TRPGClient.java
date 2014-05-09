@@ -404,21 +404,13 @@ public class TRPGClient extends JFrame implements Client {
 	}
 
 	public void attackUnit(String client, int fromIndex, int toIndex) {
+		//if the attack was sent by you then the unit from your list attacks the unit from the
+		//opponent's list, make sure to take that into account. Doesn't matter who's hosting.
 		if (client.equals(userName)) {
-			if (isHost)
-				currentBoard.attackUnit(myUnits.get(fromIndex),
-						opponentUnits.get(toIndex));
-			// System.out.println(currentBoard.getCompUnits().get(2).getHealth());
-			else
-				currentBoard.attackUnit(opponentUnits.get(fromIndex),
-						myUnits.get(toIndex));
-		} else {
-			if (isHost) {
-				currentBoard.attackUnit(opponentUnits.get(fromIndex),
-						myUnits.get(toIndex));
-			} else
-				currentBoard.attackUnit(myUnits.get(fromIndex),
-						opponentUnits.get(toIndex));
+			currentBoard.attackUnit(myUnits.get(fromIndex),opponentUnits.get(toIndex));
+		} 
+		else {
+			currentBoard.attackUnit(opponentUnits.get(fromIndex), myUnits.get(toIndex));
 		}
 	}
 
@@ -471,19 +463,12 @@ public class TRPGClient extends JFrame implements Client {
 		moving = true;
 		int actualTotalMoveLength;
 
+		//again, it doesn't matter who's hosting..
 		Unit u;
 		if (source.equals(userName)) {
-			if(isHost){
-				u = currentBoard.getPlayerOneUnits().get(unitIndex);
-			}else{
-				u = currentBoard.getPlayerTwoUnits().get(unitIndex);
-			}
+			u=myUnits.get(unitIndex);
 		} else {
-			if(isHost){
-				u = currentBoard.getPlayerTwoUnits().get(unitIndex);
-			}else{
-				u = currentBoard.getPlayerOneUnits().get(unitIndex);
-			}
+			u=opponentUnits.get(unitIndex);
 		}
 		// first, determine how many moves from the chosen list can actually be
 		// taken.
