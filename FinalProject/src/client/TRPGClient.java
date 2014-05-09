@@ -412,6 +412,42 @@ public class TRPGClient extends JFrame implements Client {
 		else {
 			currentBoard.attackUnit(opponentUnits.get(fromIndex), myUnits.get(toIndex));
 		}
+		
+		// if the game is over let us know!	
+		if (scenarioChoice == Scenario.Princess) {
+			if (myUnits.get(0).getHealth() <= 0 || opponentUnits.get(0).getHealth() <= 0) {
+				if (myUnits.get(0).getHealth() <= 0) {
+					// client lost
+					currentPanel.repaint();
+					JOptionPane.showMessageDialog(null,"YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+				}
+				if (opponentUnits.get(0).getHealth() <= 0) {
+					// client won
+					currentPanel.repaint();
+					JOptionPane.showMessageDialog(null,"You won...woooow. Good for you.");
+				}
+			}
+		}
+		else{//it is the deathmatch scenario
+			if(allUnitsDead(myUnits)){
+				// client lost
+				currentPanel.repaint();
+				JOptionPane.showMessageDialog(null,"YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+			}
+			else if(allUnitsDead(opponentUnits)){
+				// client won
+				currentPanel.repaint();
+				JOptionPane.showMessageDialog(null,"You won...woooow. Good for you.");
+			}
+		}
+	}
+	
+	private boolean allUnitsDead(ArrayList<Unit> units){
+		for(Unit curr: units){
+			if(curr.isAlive())
+				return false;
+		}
+		return true;
 	}
 
 	public void endTurn(String client) {
@@ -522,20 +558,7 @@ public class TRPGClient extends JFrame implements Client {
 			}
 		}
 		((MainGamePanel) currentPanel).update(currentBoard);
-
-		// if the game is over let us know!
-		//System.out.println(currentBoard.getPlayerTwoUnits().get(0).getHealth());
-		/*
-		 * if(currentBoard.getCompUnits().get(0).getHealth()<=0){
-		 * System.out.println("game over");
-		 * if(currentBoard.getUserUnits().get(0).getHealth()<=0){
-		 * JOptionPane.showMessageDialog(null,
-		 * "YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY...."); }
-		 * //human won else
-		 * if(currentBoard.getCompUnits().get(0).getHealth()<=0){
-		 * JOptionPane.showMessageDialog(null,
-		 * "You won...woooow. Good for you."); } }
-		 */
+		 
 
 		moving = false;
 	}

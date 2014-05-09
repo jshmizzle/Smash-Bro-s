@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.GameBoard;
+import model.Scenario;
 import model.Unit;
 import client.TRPGClient;
 import command.EndTurnCommand;
@@ -117,19 +118,6 @@ public class MainGamePanel extends JPanel {
 		
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
-		
-		//if the game is over let us know!
-		if(gameBoard.gameOver()){
-			if(gameBoard.compWon()){
-				JOptionPane.showMessageDialog(null, "YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
-			}
-			//human won
-			else{
-				JOptionPane.showMessageDialog(null, "You won...woooow. Good for you.");
-			}
-			
-			//NOW SEND THE GAME OVER COMMAND TO THE CLIENT SO THAT WE CAN PUT UP A GAME OVER PANEL
-		}
 		
 		
 		for(int row=0; row<currentBoard.length; row++){
@@ -460,8 +448,12 @@ public class MainGamePanel extends JPanel {
 						repaint();
 					}
 					//if the user presses enter while cycling through units
-					else if(key==KeyEvent.VK_ENTER && unitIndex!=0){
-	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
+					else if(key==KeyEvent.VK_ENTER){
+						
+						if(gameBoard.getScenario().getValue() == 1){
+							if(unitIndex==0)
+								return;
+						}
 						if(localUserUnitList.get(unitIndex).isAlive()){
 							currentUnit=localUserUnitList.get(unitIndex);
 		

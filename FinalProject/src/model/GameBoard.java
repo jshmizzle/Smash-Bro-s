@@ -45,48 +45,11 @@ public class GameBoard implements Serializable {
 		currentScenario = scenario;
 		playerList = new ArrayList<>();
 
-		// playerList.add(player1);
-		// playerList.add(player2);
 
 		for (int i = 0; i < gameBoard.length; i++)
 			for (int j = 0; j < gameBoard[0].length; j++) {
 				gameBoard[i][j] = ' ';
 			}
-
-		gameBoard[0][boardHeight / 2] = 'P';
-
-		int i = 0;
-
-		for (Unit u : compUnits) {
-			if (u.getCharRepresentation() == 'P'
-					|| u.getCharRepresentation() == 'p') {
-
-			} else {
-				gameBoard[1][boardHeight / 2 - 2 + i] = u
-						.getCharRepresentation();
-				Point p = new Point(1, boardHeight / 2 - 2 + i);
-				u.setLocation(p);
-				i++;
-			}
-		}
-
-		int j = 0;
-
-		gameBoard[boardHeight - 1][boardHeight / 2] = 'p';
-		for (Unit c : userUnits) {
-			if (c.getCharRepresentation() == 'P'
-					|| c.getCharRepresentation() == 'p') {
-
-			}
-
-			else {
-				gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
-						.getCharRepresentation();
-				Point p = new Point(boardHeight - 2, boardWidth / 2 - 2 + j);
-				c.setLocation(p);
-				j++;
-			}
-		}
 
 		if (currentMap == Map.First) {
 			setMapOne();
@@ -273,13 +236,16 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 2][boardWidth - 1] = '@';
 		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
 
-		gameBoard[0][boardWidth / 2] = 'p';
+//		if(currentScenario==Scenario.Princess){
+//			gameBoard[0][boardWidth / 2] = 'p';
+//			gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
+//		}
 
 		int i = 0;
 		for (Unit u : playerTwoUnits) {
-			if (u.getCharRepresentation() == 'P'
-					|| u.getCharRepresentation() == 'p') {
+			if (u.getCharRepresentation() == 'p') {
 				u.setLocation(new Point(0, boardWidth / 2));
+				gameBoard[0][boardWidth / 2] = 'p';
 			}
 
 			else {
@@ -294,11 +260,10 @@ public class GameBoard implements Serializable {
 
 		int j = 0;
 
-		gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
 		for (Unit c : playerOneUnits) {
-			if (c.getCharRepresentation() == 'P'
-					|| c.getCharRepresentation() == 'p') {
+			if (c.getCharRepresentation() == 'P') {
 				c.setLocation(new Point(boardHeight-1, boardWidth / 2));
+				gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
 			}
 
 			else {
@@ -1101,5 +1066,9 @@ public class GameBoard implements Serializable {
 		if(xPos>boardWidth/2 && yPos >boardHeight/2)
 			return true;
 		return false;
+	}
+	
+	public Scenario getScenario(){
+		return currentScenario;
 	}
 }
