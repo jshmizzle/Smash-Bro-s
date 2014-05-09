@@ -304,10 +304,10 @@ public class ComputerClient extends JFrame implements Client {
 				}
 				if(u.getName().equals("MegaMan")){
 					//go towards enemies, attack
-					for(int x=0; x<currentBoard.getBoardHeight(); x++){
-						for(int y=0; y<currentBoard.getBoardWidth(); y++){
-					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
-						//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+					//for(int x=0; x<currentBoard.getBoardHeight(); x++){
+						//for(int y=0; y<currentBoard.getBoardWidth(); y++){
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
 							Point currentPoint = new Point(x,y);
 							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
 								continue;
@@ -341,10 +341,10 @@ public class ComputerClient extends JFrame implements Client {
 				}
 				if(u.getName().equals("Goku")){
 					//go towards enemies, attack
-					for(int x=0; x<currentBoard.getBoardHeight(); x++){
-						for(int y=0; y<currentBoard.getBoardWidth(); y++){
-					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
-						//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+					//for(int x=0; x<currentBoard.getBoardHeight(); x++){
+						//for(int y=0; y<currentBoard.getBoardWidth(); y++){
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
 							Point currentPoint = new Point(x,y);
 							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
 								continue;
@@ -378,10 +378,10 @@ public class ComputerClient extends JFrame implements Client {
 				}
 				if(u.getName().equals("Link")){
 					//go towards enemies, attack
-					for(int x=0; x<currentBoard.getBoardHeight(); x++){
-						for(int y=0; y<currentBoard.getBoardWidth(); y++){
-					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
-						//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+					//for(int x=0; x<currentBoard.getBoardHeight(); x++){
+						//for(int y=0; y<currentBoard.getBoardWidth(); y++){
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
 							Point currentPoint = new Point(x,y);
 							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
 								continue;
@@ -414,10 +414,10 @@ public class ComputerClient extends JFrame implements Client {
 				}
 				if(u.getName().equals("Mario")){
 					//go towards enemies, attack
-					for(int x=0; x<currentBoard.getBoardHeight(); x++){
-						for(int y=0; y<currentBoard.getBoardWidth(); y++){
-					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
-						//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+					//for(int x=0; x<currentBoard.getBoardHeight(); x++){
+						//for(int y=0; y<currentBoard.getBoardWidth(); y++){
+					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
 							Point currentPoint = new Point(x,y);
 							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
 								continue;

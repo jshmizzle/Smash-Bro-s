@@ -1,7 +1,11 @@
-package model;
+package Tests;
 
 import java.awt.Point;
 import java.util.ArrayList;
+
+import model.GameBoard;
+import model.Map;
+import model.Scenario;
 
 //can test if you want
 public class TestShortestPath {
