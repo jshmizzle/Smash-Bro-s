@@ -599,12 +599,14 @@ public class GameBoard implements Serializable {
 	public void resetPlayerTwoMoves() {
 		for (Unit u : playerTwoUnits) {
 			u.setMovesLeft(u.getDistance());
+			u.alreadyAttacked=false;
 		}
 	}
 
 	public void resetPlayerOneMoves() {
 		for (Unit u : playerOneUnits) {
 			u.setMovesLeft(u.getDistance());
+			u.alreadyAttacked=false;
 		}
 	}
 

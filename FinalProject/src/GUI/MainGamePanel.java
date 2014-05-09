@@ -395,7 +395,16 @@ public class MainGamePanel extends JPanel {
 								try {
 									serverOut.writeObject(moveCommand);
 		
-									currentGameState=GameState.ChoosingAttack;
+									//don't just go straight to letting them attack again
+									//we only want them to attack once per turn, so check if 
+									//they've already attacked or not. 
+									if(!currentUnit.checkIfAlreadyAttackedThisTurn())
+										currentGameState=GameState.ChoosingAttack;
+									//this unit has already attacked so we should just push
+									//the client back to selecting the next unit
+									else
+										currentGameState=GameState.CyclingThroughUnits;
+									
 									previousPath=null;
 								} catch (IOException e) {
 									e.printStackTrace();

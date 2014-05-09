@@ -25,7 +25,7 @@ public class Unit implements Serializable{
 	protected ArrayList <Item> items;
 	protected int [] stats;
 	//protected Strategy strategy;
-	protected boolean alive;
+	protected boolean alive, alreadyAttacked;
 	protected int attackPower;
 	protected Point location;
 	protected Image standingImage, headstone;
@@ -154,6 +154,12 @@ public class Unit implements Serializable{
 	
 	public void attack(Unit u){
 		u.takeHit(attackPower);
+		alreadyAttacked=true;
+	}
+	/************************************************************************************/
+	
+	public boolean checkIfAlreadyAttackedThisTurn(){
+		return alreadyAttacked;
 	}
 	
 	/************************************************************************************/
