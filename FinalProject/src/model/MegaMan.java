@@ -3,6 +3,7 @@ package model;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+@SuppressWarnings("serial")
 public class MegaMan extends Unit{
 
 	public MegaMan(String n, int hp, int distance, int attack, int attackRange, BufferedImage i, Point p, char c) {

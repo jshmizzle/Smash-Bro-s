@@ -9,9 +9,10 @@ public enum Scenario {
 		this.value=value;
 	}
 	
-	private int getValue(){
+	public int getValue(){
 		return this.value;
 	}
+	
 	public boolean compare(Scenario other){
 		if(other.getValue() == this.getValue()){
 			return true;

@@ -22,10 +22,11 @@ import javax.swing.JPanel;
 
 import model.Map;
 import model.Scenario;
-import command.Command;
+
 import command.LobbyInfoCommand;
 import command.MapAndScenarioSelected;
 
+@SuppressWarnings("serial")
 public class GameLobby extends JPanel {
 
 	private ArrayList<String> clients=new ArrayList<String>();

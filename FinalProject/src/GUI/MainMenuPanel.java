@@ -20,6 +20,7 @@ import command.HostMultiPlayerGame;
 import command.JoinMultiPlayerGame;
 import command.StartSinglePlayerGame;
 
+@SuppressWarnings("serial")
 public class MainMenuPanel extends JPanel {
 
 	private JButton singlePlayer, joinGame, hostGame;

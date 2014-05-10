@@ -274,7 +274,7 @@ public class TRPGClient extends JFrame implements Client {
 				//we no longer want to be looking at the unit select panel because we already got
 				//the units we need to start a single player game.
 				this.remove(currentPanel);
-				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, Scenario.Princess, outputStream);
+				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, scenarioChoice, outputStream);
 				currentPanel.grabFocus();
 				this.add(currentPanel);
 				currentPanel.requestFocus(true);
@@ -292,7 +292,7 @@ public class TRPGClient extends JFrame implements Client {
 				//we no longer want to be looking at the unit select panel because we already got
 				//the units we need to start a single player game.
 				this.remove(currentPanel);
-				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, Scenario.Princess, outputStream);
+				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, scenarioChoice, outputStream);
 				currentPanel.grabFocus();
 				this.add(currentPanel);
 				currentPanel.requestFocus(true);
@@ -324,7 +324,7 @@ public class TRPGClient extends JFrame implements Client {
 		}
 		
 		
-		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream, isHost);
+		currentPanel=new MainGamePanel(userName, currentBoard, outputStream, isHost);
 		currentPanel.grabFocus();
 		this.add(currentPanel);
 		currentPanel.requestFocus(true);
@@ -442,22 +442,50 @@ public class TRPGClient extends JFrame implements Client {
 	}
 
 	public void attackUnit(String client, int fromIndex, int toIndex) {
+		//if the attack was sent by you then the unit from your list attacks the unit from the
+		//opponent's list, make sure to take that into account. Doesn't matter who's hosting.
 		if (client.equals(userName)) {
-			if (isHost)
-				currentBoard.attackUnit(myUnits.get(fromIndex),
-						opponentUnits.get(toIndex));
-			// System.out.println(currentBoard.getCompUnits().get(2).getHealth());
-			else
-				currentBoard.attackUnit(opponentUnits.get(fromIndex),
-						myUnits.get(toIndex));
-		} else {
-			if (isHost) {
-				currentBoard.attackUnit(opponentUnits.get(fromIndex),
-						myUnits.get(toIndex));
-			} else
-				currentBoard.attackUnit(myUnits.get(fromIndex),
-						opponentUnits.get(toIndex));
+			currentBoard.attackUnit(myUnits.get(fromIndex),opponentUnits.get(toIndex));
+		} 
+		else {
+			currentBoard.attackUnit(opponentUnits.get(fromIndex), myUnits.get(toIndex));
 		}
+		
+		// if the game is over let us know!	
+		if (scenarioChoice == Scenario.Princess) {
+			if (myUnits.get(0).getHealth() <= 0 || opponentUnits.get(0).getHealth() <= 0) {
+				if (myUnits.get(0).getHealth() <= 0) {
+					// client lost
+					currentPanel.repaint();
+					JOptionPane.showMessageDialog(null,"YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+				}
+				if (opponentUnits.get(0).getHealth() <= 0) {
+					// client won
+					currentPanel.repaint();
+					JOptionPane.showMessageDialog(null,"You won...woooow. Good for you.");
+				}
+			}
+		}
+		else{//it is the deathmatch scenario
+			if(allUnitsDead(myUnits)){
+				// client lost
+				currentPanel.repaint();
+				JOptionPane.showMessageDialog(null,"YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+			}
+			else if(allUnitsDead(opponentUnits)){
+				// client won
+				currentPanel.repaint();
+				JOptionPane.showMessageDialog(null,"You won...woooow. Good for you.");
+			}
+		}
+	}
+	
+	private boolean allUnitsDead(ArrayList<Unit> units){
+		for(Unit curr: units){
+			if(curr.isAlive())
+				return false;
+		}
+		return true;
 	}
 
 	public void endTurn(String client) {
@@ -519,19 +547,12 @@ public class TRPGClient extends JFrame implements Client {
 		moving = true;
 		int actualTotalMoveLength;
 
+		//again, it doesn't matter who's hosting..
 		Unit u;
 		if (source.equals(userName)) {
-			if(isHost){
-				u = currentBoard.getPlayerOneUnits().get(unitIndex);
-			}else{
-				u = currentBoard.getPlayerTwoUnits().get(unitIndex);
-			}
+			u=myUnits.get(unitIndex);
 		} else {
-			if(isHost){
-				u = currentBoard.getPlayerTwoUnits().get(unitIndex);
-			}else{
-				u = currentBoard.getPlayerOneUnits().get(unitIndex);
-			}
+			u=opponentUnits.get(unitIndex);
 		}
 		// first, determine how many moves from the chosen list can actually be
 		// taken.
@@ -585,20 +606,7 @@ public class TRPGClient extends JFrame implements Client {
 			}
 		}
 		((MainGamePanel) currentPanel).update(currentBoard);
-
-		// if the game is over let us know!
-		//System.out.println(currentBoard.getPlayerTwoUnits().get(0).getHealth());
-		/*
-		 * if(currentBoard.getCompUnits().get(0).getHealth()<=0){
-		 * System.out.println("game over");
-		 * if(currentBoard.getUserUnits().get(0).getHealth()<=0){
-		 * JOptionPane.showMessageDialog(null,
-		 * "YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY...."); }
-		 * //human won else
-		 * if(currentBoard.getCompUnits().get(0).getHealth()<=0){
-		 * JOptionPane.showMessageDialog(null,
-		 * "You won...woooow. Good for you."); } }
-		 */
+		 
 
 		moving = false;
 	}

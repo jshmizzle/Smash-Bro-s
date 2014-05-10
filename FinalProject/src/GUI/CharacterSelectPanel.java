@@ -29,9 +29,9 @@ import model.Princess;
 import model.Scenario;
 import model.Sonic;
 import model.Unit;
-
 import command.SetUserUnits;
 
+@SuppressWarnings("serial")
 public class CharacterSelectPanel extends JPanel {
 
 	private ObjectOutputStream serverOut;

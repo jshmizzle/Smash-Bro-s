@@ -45,48 +45,11 @@ public class GameBoard implements Serializable {
 		currentScenario = scenario;
 		playerList = new ArrayList<>();
 
-		// playerList.add(player1);
-		// playerList.add(player2);
 
 		for (int i = 0; i < gameBoard.length; i++)
 			for (int j = 0; j < gameBoard[0].length; j++) {
 				gameBoard[i][j] = ' ';
 			}
-
-		gameBoard[0][boardHeight / 2] = 'P';
-
-		int i = 0;
-
-		for (Unit u : compUnits) {
-			if (u.getCharRepresentation() == 'P'
-					|| u.getCharRepresentation() == 'p') {
-
-			} else {
-				gameBoard[1][boardHeight / 2 - 2 + i] = u
-						.getCharRepresentation();
-				Point p = new Point(1, boardHeight / 2 - 2 + i);
-				u.setLocation(p);
-				i++;
-			}
-		}
-
-		int j = 0;
-
-		gameBoard[boardHeight - 1][boardHeight / 2] = 'p';
-		for (Unit c : userUnits) {
-			if (c.getCharRepresentation() == 'P'
-					|| c.getCharRepresentation() == 'p') {
-
-			}
-
-			else {
-				gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
-						.getCharRepresentation();
-				Point p = new Point(boardHeight - 2, boardWidth / 2 - 2 + j);
-				c.setLocation(p);
-				j++;
-			}
-		}
 
 		if (currentMap == Map.First) {
 			setMapOne();
@@ -98,9 +61,13 @@ public class GameBoard implements Serializable {
 	}
 
 	private void setMapTwo() {
-		//princess rocks
-		gameBoard[boardHeight-1][boardWidth/2-1] = '#';
-		gameBoard[boardHeight-1][boardWidth/2+1] = '#';
+		// bottom princess rocks
+		gameBoard[boardHeight - 1][boardWidth / 2 - 1] = '#';
+		gameBoard[boardHeight - 1][boardWidth / 2 + 1] = '#';
+
+		// top princess rocks
+		gameBoard[0][boardWidth / 2 - 1] = '#';
+		gameBoard[0][boardWidth / 2 + 1] = '#';
 		
 		// top left rocks
 		gameBoard[boardHeight / 4][boardWidth / 4] = '#';
@@ -131,13 +98,18 @@ public class GameBoard implements Serializable {
 				- (boardWidth / 4)] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth
 				- (boardWidth / 4) + 1] = '#';
-		// item
+		// items
 		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
+		
+		
+		//wormholes
+		gameBoard[boardHeight / 2 + 1][boardWidth / 2 - 4] = '%';
+		gameBoard[boardHeight / 2 - 1][boardWidth / 2 + 4] = '%';
 
 		// trees
 		gameBoard[boardHeight / 3][boardWidth / 2] = '!';
 		gameBoard[boardHeight / 3 + 1][boardWidth / 2 - 1] = '!';
-		gameBoard[boardHeight / 3 + 2][boardWidth / 2 - 2] = '!';
+		//gameBoard[boardHeight / 3 + 2][boardWidth / 2 - 2] = '!';
 		gameBoard[boardHeight / 3 + 3][boardWidth / 2 - 3] = '!';
 		gameBoard[boardHeight / 3 + 4][boardWidth / 2 - 4] = '!';
 		gameBoard[boardHeight / 3 + 5][boardWidth / 2 - 5] = '!';
@@ -147,7 +119,7 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 3 + 9][boardWidth / 2 - 9] = '!';
 
 		gameBoard[boardHeight / 3 + 1][boardWidth / 2 + 1] = '!';
-		gameBoard[boardHeight / 3 + 2][boardWidth / 2 + 2] = '!';
+		//gameBoard[boardHeight / 3 + 2][boardWidth / 2 + 2] = '!';
 		gameBoard[boardHeight / 3 + 3][boardWidth / 2 + 3] = '!';
 		gameBoard[boardHeight / 3 + 4][boardWidth / 2 + 4] = '!';
 		gameBoard[boardHeight / 3 + 5][boardWidth / 2 + 5] = '!';
@@ -158,7 +130,7 @@ public class GameBoard implements Serializable {
 
 		gameBoard[boardHeight - (boardHeight / 3)][boardWidth / 2] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 1][boardWidth / 2 - 1] = '!';
-		gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 - 2] = '!';
+		//gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 - 2] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 3][boardWidth / 2 - 3] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 4][boardWidth / 2 - 4] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 5][boardWidth / 2 - 5] = '!';
@@ -168,7 +140,7 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight - (boardHeight / 3) - 9][boardWidth / 2 - 9] = '!';
 
 		gameBoard[boardHeight - (boardHeight / 3) - 1][boardWidth / 2 + 1] = '!';
-		gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 + 2] = '!';
+		//gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 + 2] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 3][boardWidth / 2 + 3] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 4][boardWidth / 2 + 4] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 5][boardWidth / 2 + 5] = '!';
@@ -233,6 +205,10 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 2 - 1][boardWidth - 2] = '#';
 		gameBoard[boardHeight / 2 + 1][boardWidth - 1] = '#';
 		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
+		
+		//wormholes
+		gameBoard[boardHeight / 2 + 3][boardWidth / 2 + 3] = '%';
+		gameBoard[boardHeight / 2 - 3][boardWidth / 2 - 3] = '%';
 
 		// trees
 		// top left
@@ -273,13 +249,16 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 2][boardWidth - 1] = '@';
 		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
 
-		gameBoard[0][boardWidth / 2] = 'p';
+//		if(currentScenario==Scenario.Princess){
+//			gameBoard[0][boardWidth / 2] = 'p';
+//			gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
+//		}
 
 		int i = 0;
 		for (Unit u : playerTwoUnits) {
-			if (u.getCharRepresentation() == 'P'
-					|| u.getCharRepresentation() == 'p') {
+			if (u.getCharRepresentation() == 'p') {
 				u.setLocation(new Point(0, boardWidth / 2));
+				gameBoard[0][boardWidth / 2] = 'p';
 			}
 
 			else {
@@ -294,11 +273,10 @@ public class GameBoard implements Serializable {
 
 		int j = 0;
 
-		gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
 		for (Unit c : playerOneUnits) {
-			if (c.getCharRepresentation() == 'P'
-					|| c.getCharRepresentation() == 'p') {
+			if (c.getCharRepresentation() == 'P') {
 				c.setLocation(new Point(boardHeight-1, boardWidth / 2));
+				gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
 			}
 
 			else {
@@ -634,12 +612,14 @@ public class GameBoard implements Serializable {
 	public void resetPlayerTwoMoves() {
 		for (Unit u : playerTwoUnits) {
 			u.setMovesLeft(u.getDistance());
+			u.alreadyAttacked=false;
 		}
 	}
 
 	public void resetPlayerOneMoves() {
 		for (Unit u : playerOneUnits) {
 			u.setMovesLeft(u.getDistance());
+			u.alreadyAttacked=false;
 		}
 	}
 
@@ -1101,5 +1081,9 @@ public class GameBoard implements Serializable {
 		if(xPos>boardWidth/2 && yPos >boardHeight/2)
 			return true;
 		return false;
+	}
+	
+	public Scenario getScenario(){
+		return currentScenario;
 	}
 }
