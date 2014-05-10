@@ -357,17 +357,7 @@ public class MainGamePanel extends JPanel {
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
 						if(gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
-							//TODO wormhole, randomly find an available spot on the map and go there
 							
-							if(currentBoard[cursorLocation.y][cursorLocation.x] == '@'){
-								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
-								PickUpItemCommand command = new PickUpItemCommand(source,toMove);
-								try {
-									serverOut.writeObject(command);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
 							Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
 							ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 							if(path!=null){
@@ -387,11 +377,11 @@ public class MainGamePanel extends JPanel {
 									
 									previousPath=null;
 									
-									showInventory=false;
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
 							}
+							
 							
 							//now if the unit had just landed on a portal then randomly move it
 							//and also tell the other client

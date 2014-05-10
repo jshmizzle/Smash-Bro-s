@@ -878,7 +878,7 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	@Override
-	public void pickUpItem(String source, Point p) {
+	public void pickUpItem(String source) {
 		// TODO Auto-generated method stub
 
 	}
