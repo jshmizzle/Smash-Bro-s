@@ -41,7 +41,7 @@ public class ItemPanel extends JPanel {
 			potion=ImageIO.read(new File("images/potion.png"));
 			bag=ImageIO.read(new File("images/inventory.png"));
 			rage=ImageIO.read(new File("images/rage.png"));
-			sneakers=ImageIO.read(new File("images/sneakers.png"));
+			sneakers=ImageIO.read(new File("images/wingShoes.png"));
 			background=ImageIO.read(new File("images/itemPanelBackground.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
