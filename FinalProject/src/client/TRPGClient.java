@@ -520,7 +520,8 @@ public class TRPGClient extends JFrame implements Client {
 
 			//before you move to the next point and replace the char that was there with your 
 			//own, check if you should be receiving an item!
-			checkIfTheUnitWalkedOverAnItem(u, dx, dy);
+			if(source.equals(userName))	
+				checkIfTheUnitWalkedOverAnItem(u, dx, dy);
 			
 			if (x == dx && y == dy) {
 				//System.out.println("same");
