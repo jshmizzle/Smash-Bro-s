@@ -490,6 +490,7 @@ public class ComputerClient extends JFrame implements Client {
 		}
 			
 	}
+	}
 
 	private void moveTurnMele(){
 		//add attack stuff
@@ -739,12 +740,11 @@ public class ComputerClient extends JFrame implements Client {
 		}
 
 	}
-}
 
-	private void moveTurnMele(){
+	//private void moveTurnMele(){
 		//add attack stuff
 
-	}
+	//}
 	
 	private void attackTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();

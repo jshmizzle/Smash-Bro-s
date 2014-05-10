@@ -497,12 +497,12 @@ public class TRPGClient extends JFrame implements Client {
 			if (isHost) {
 				myTurn = true;
 				((MainGamePanel) currentPanel).myTurn();
-				currentBoard.resetUserMoves();
+				currentBoard.resetPlayerOneMoves();
 
 			} else {
 				myTurn = true;
 				((MainGamePanel) currentPanel).myTurn();
-				currentBoard.resetCompMoves();
+				currentBoard.resetPlayerTwoMoves();
 			}
 			myTurn = true;
 			((MainGamePanel) currentPanel).myTurn();
