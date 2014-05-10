@@ -16,19 +16,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.GameBoard;
-import model.Goku;
 import model.Item;
-import model.Link;
 import model.Map;
-import model.Mario;
-import model.MegaMan;
 import model.Potion;
-import model.Princess;
 import model.Rage;
 import model.Scenario;
 import model.Shield;
 import model.Sneakers;
-import model.Sonic;
+import model.Sniper;
 import model.Unit;
 import GUI.CharacterSelectPanel;
 import GUI.GameLobby;
@@ -36,8 +31,6 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import GUI.SinglePlayerMapAndScenarioSelect;
 import GUI.WaitingOnCharacterSelection;
-
-import command.LobbyInfoCommand;
 
 public class TRPGClient extends JFrame implements Client {
 
@@ -50,10 +43,9 @@ public class TRPGClient extends JFrame implements Client {
 	private ObjectOutputStream outputStream;
 	private JPanel currentPanel;
 	private GameBoard currentBoard;
-	private boolean playingAlready = false, isHost = false,
-			singlePlayer = false;
+	private boolean playingAlready = false, isHost = false,singlePlayer = false;
 	private boolean myTurn = true;
-	private ArrayList<Item> itemList = new ArrayList<Item>();
+	private ArrayList<Item> itemList=new ArrayList<>();
 	private ArrayList<Unit> playerUnits;
 	private ServerHandler handler;
 	private ArrayList<Unit> myUnits;
@@ -78,7 +70,7 @@ public class TRPGClient extends JFrame implements Client {
 		t.start();
 
 		this.setTitle("TRPG Final Project");
-
+		
 		currentPanel = new MainMenuPanel(userName, outputStream);
 		this.add(currentPanel).setVisible(true);
 		this.pack();
@@ -324,7 +316,7 @@ public class TRPGClient extends JFrame implements Client {
 		}
 		
 		
-		currentPanel=new MainGamePanel(userName, currentBoard, outputStream, isHost);
+		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream, isHost);
 		currentPanel.grabFocus();
 		this.add(currentPanel);
 		currentPanel.requestFocus(true);
@@ -473,11 +465,13 @@ public class TRPGClient extends JFrame implements Client {
 			Item potion = new Potion();
 			Item shield = new Shield();
 			Item sneakers = new Sneakers();
+			Item sniper = new Sniper();
 			// can add more
 			list.add(rage);
 			list.add(potion);
 			list.add(shield);
 			list.add(sneakers);
+			list.add(sniper);
 
 			Random random = new Random();
 			int num = random.nextInt(list.size() - 1);
@@ -567,5 +561,9 @@ public class TRPGClient extends JFrame implements Client {
 
 	public boolean isMoving() {
 		return moving;
+	}
+	
+	public ArrayList<Item> getItemList(){
+		return itemList;
 	}
 }
