@@ -542,10 +542,12 @@ public class ComputerClient extends JFrame implements Client {
 	private void moveTurnMele(){
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getPlayerTwoUnits();
+
 		for (int i = 0; i < compUnits.size(); i++) {
 			ArrayList<Point> path = new ArrayList<>();
 			ArrayList<Point> moves = new ArrayList<>();
 			Unit u = compUnits.get(i);
+
 			if(!u.isAlive()){
 				continue;
 			}
@@ -634,7 +636,7 @@ public class ComputerClient extends JFrame implements Client {
 						}
 					}
 					}
-				}
+				
 				if(someone==false){
 				for(int x=0; x<currentBoard.getBoardHeight(); x++){
 					for(int y=0; y<currentBoard.getBoardWidth(); y++){
@@ -661,6 +663,7 @@ public class ComputerClient extends JFrame implements Client {
 					}
 				
 				}
+			}
 			}
 			if(u.getName().equals("Goku")){
 				//go towards enemies, attack
@@ -725,35 +728,15 @@ public class ComputerClient extends JFrame implements Client {
 							}
 						}
 					
-					
-				}
-				if(someone==false){
-					for(int x=0; x<currentBoard.getBoardHeight(); x++){
-						for(int y=0; y<currentBoard.getBoardWidth(); y++){
-							Point currentPoint = new Point(x,y);
-							if(currentBoard.checkIfEnemy(u,currentPoint)){
-								if(currentBoard.checkAvailable(new Point(x-1,y))){
-									xPoint=x-1;
-									yPoint=y;
-								}
-								else if(currentBoard.checkAvailable(new Point(x,y-1))){
-									xPoint=x;
-									yPoint=y-1;
-								}
-								else if(currentBoard.checkAvailable(new Point(x,y+1))){
-									xPoint=x;
-									yPoint=y+1;
-								}
-								else if(currentBoard.checkAvailable(new Point(x+1,y))){
-									xPoint=x+1;
-									yPoint=y;
-								}
-								break;
-							}
-						}
 					}
 				}
-			}
+								//move towards fist enemy seen until enemy is within attackRange
+								
+								/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}*/
+
+			
 			if(u.getName().equals("Link")){
 				//go towards enemies, attack
 				//for(int x=0; x<currentBoard.getBoardHeight(); x++){
@@ -813,9 +796,11 @@ public class ComputerClient extends JFrame implements Client {
 								break;
 							}
 						}
+					
 					}
 				}
 			}
+				
 			if(u.getName().equals("Mario")){
 				//go towards enemies, attack
 				//for(int x=0; x<currentBoard.getBoardHeight(); x++){
@@ -876,9 +861,13 @@ public class ComputerClient extends JFrame implements Client {
 								break;
 							}
 						}
+					
 					}
-				}
-			//}
+				
+			}
+			}
+							
+				
 			
 			
 			
@@ -891,8 +880,8 @@ public class ComputerClient extends JFrame implements Client {
 				return;
 			}
 			z++;*/
-		}
-
+		
+	
 		//System.out.println(compUnits.get(i).getName()+" get point"+ xPoint +yPoint);
 		path = currentBoard.findShortestPath(u.getLocation(), new Point(xPoint,yPoint));
 		//System.out.println("path :" +path.size());
@@ -919,14 +908,15 @@ public class ComputerClient extends JFrame implements Client {
 		}catch(IOException e){
 			e.printStackTrace();
 		}
-			}
+		}
+			
 	}
 	
 	private void attackTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
 		compUnits = currentBoard.getPlayerTwoUnits();
 		ArrayList<Point> range = new ArrayList<>();
-		for (int i = 0; i < compUnits.size(); i++) {
+		for (int i = 1; i < compUnits.size(); i++) {
 			Unit u = compUnits.get(i);
 			/*range = currentBoard.findAttackRange(u.getLocation(), u.getAttackRange());
 			for (int j = 0; j < range.size(); j++) {
