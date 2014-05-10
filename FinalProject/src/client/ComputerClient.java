@@ -779,7 +779,7 @@ public class ComputerClient extends JFrame implements Client {
 		ArrayList<Point> range = new ArrayList<>();
 		for (int i = 0; i < compUnits.size(); i++) {
 			Unit u = compUnits.get(i);
-			range = currentBoard.findAttackRange(u.getLocation(), u.getAttackRange());
+			/*range = currentBoard.findAttackRange(u.getLocation(), u.getAttackRange());
 			for (int j = 0; j < range.size(); j++) {
 				Point temp = new Point(range.get(j));
 				if(currentBoard.checkIfEnemy(u, temp)){
@@ -796,7 +796,7 @@ public class ComputerClient extends JFrame implements Client {
 						}
 					}
 				}
-			}
+			}*/
 		}
 
 	}
