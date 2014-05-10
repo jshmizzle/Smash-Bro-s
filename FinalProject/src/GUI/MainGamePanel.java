@@ -35,7 +35,7 @@ public class MainGamePanel extends JPanel {
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
 	private Image redOrb, swordCursor, portal, boulder, grass, headstone, princess, waypoint, 
-	              tree, invalidMove, chest, attackRange; 
+	              tree, invalidMove, chest, attackRange, redDiamond, blueDiamond; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
@@ -113,6 +113,9 @@ public class MainGamePanel extends JPanel {
 			redOrb=ImageIO.read(new File("images/redOrb.png"));
 			attackRange=ImageIO.read(new File("images/attackRange.png"));
 			portal=ImageIO.read(new File("images/marioPipe.png"));
+			redDiamond=ImageIO.read(new File("images/redGlowingDiamond.png"));
+			blueDiamond=ImageIO.read(new File("images/blueGlowingDiamond.png"));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -183,10 +186,16 @@ public class MainGamePanel extends JPanel {
 
 	private void drawTheUnits(Graphics2D g2) {
 		for(Unit curr: localUserUnitList){
+			//draw the unit itself
 			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the blue diamond above its head to designate it as one of ours
+			g2.drawImage(blueDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
 		}
 		for(Unit curr: localOpponentUnitList){
+			//draw the unit itself
 			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the red diamond above its head to show it's an enemy
+			g2.drawImage(redDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
 		}
 	}
 
@@ -385,7 +394,16 @@ public class MainGamePanel extends JPanel {
 							
 							//now if the unit had just landed on a portal then randomly move it
 							//and also tell the other client
-							if(currentBoard[cursorLocation.y][cursorLocation.x] == '%'){
+							int lastPointIndex;
+							if(path.size()>=currentUnit.getMovesLeft()){
+								lastPointIndex=currentUnit.getMovesLeft();
+							}
+							else
+								lastPointIndex=path.size()-1;
+							
+							int finalX=path.get(lastPointIndex).x;
+							int finalY=path.get(lastPointIndex).y;
+							if(currentBoard[finalX][finalY] == '%'){
 								Random random = new Random();
 								
 								int xPoint = random.nextInt(19);
