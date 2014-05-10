@@ -7,10 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -38,7 +36,7 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import GUI.SinglePlayerMapAndScenarioSelect;
 import GUI.WaitingOnCharacterSelection;
-import command.Command;
+
 import command.LobbyInfoCommand;
 
 public class TRPGClient extends JFrame implements Client {
@@ -80,13 +78,6 @@ public class TRPGClient extends JFrame implements Client {
 		t.start();
 
 		this.setTitle("TRPG Final Project");
-
-		
-		//I don't think we need this method
-//		initializeFrame();
-
-		// I don't think we need this method
-		// initializeFrame();
 
 		currentPanel = new MainMenuPanel(userName, outputStream);
 		this.add(currentPanel).setVisible(true);
@@ -191,8 +182,60 @@ public class TRPGClient extends JFrame implements Client {
 		this.setVisible(true);
 	}
 
-	public void startMultiPlayerGame() {
-		
+	/**
+	 * When the player clicks 'Host Multiplayer Game' on the MainGamePanel, the command is 
+	 * sent for this client to become the host, and start a lobby.
+	 * @param source
+	 */
+	public void hostMultiPlayerGame(String source) {
+		if(source.equals(userName)){
+			//I want to start my own lobby and be the host to my own game
+			
+			//designate yourself as the HOST
+			isHost=true;
+			
+			//get rid of the MainMenuPanel
+			this.remove(currentPanel);
+			this.setVisible(false);
+			//replace it with the lobby panel
+			currentPanel=new GameLobby(userName, outputStream, isHost);
+			currentPanel.grabFocus();
+			this.add(currentPanel).setVisible(true);
+			currentPanel.requestFocus(true);
+			this.pack();
+			this.setVisible(true);
+		}
+		else{
+			//somebody else is trying to host a game while I'm already either a host
+			//or just don't care, do nothing
+		}
+	}
+	
+	public void joinMultiPlayerGame(String source){
+		if(source.equals(userName)){
+			//designate yourself not to be host
+			isHost=false;
+			
+			//get rid of the MainMenuPanel
+			this.remove(currentPanel);
+			this.setVisible(false);
+			//replace it with the lobby panel
+			currentPanel=new GameLobby(userName, outputStream, isHost);
+			currentPanel.grabFocus();
+			this.add(currentPanel).setVisible(true);
+			currentPanel.requestFocus(true);
+			this.pack();
+			this.setVisible(true);
+		}
+		else if(currentPanel instanceof GameLobby){
+			((GameLobby)currentPanel).clientJoined(source);
+		}
+	}
+	
+	public void updateLobby(ArrayList<String> users){
+		if(currentPanel instanceof GameLobby){
+			((GameLobby)currentPanel).updateClients(users);
+		}
 	}
 	
 	public void setMapAndScenario(String source, Map map, Scenario scenario) {
@@ -244,18 +287,50 @@ public class TRPGClient extends JFrame implements Client {
 				//units for the current game and then notify the other client
 				((WaitingOnCharacterSelection)currentPanel).updateUnitLists(myUnits, opponentUnits);
 			}
+			//it is multiPlayer
+			else if(source.equals(userName)){//if I sent the command open the waiting panel
+				//we no longer want to be looking at the unit select panel because we already got
+				//the units we need to start a single player game.
+				this.remove(currentPanel);
+				this.currentPanel=new WaitingOnCharacterSelection(userName, myUnits, opponentUnits, Scenario.Princess, outputStream);
+				currentPanel.grabFocus();
+				this.add(currentPanel);
+				currentPanel.requestFocus(true);
+				this.pack();
+				this.setVisible(true);
+				this.repaint();
+			}
+			else{//both unit lists have already been set
+				//if we have already switched to the waiting panel, then we need to update 
+				if(currentPanel instanceof WaitingOnCharacterSelection){
+					((WaitingOnCharacterSelection)currentPanel).updateUnitLists(myUnits, opponentUnits);
+				}
+			}
 		//}
 	}
 	
 	public void beginGame(){
 		this.remove(currentPanel);
-		currentBoard =new GameBoard(myUnits, opponentUnits, mapChoice, scenarioChoice);
-		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream);
+		
+		//we need to make sure that each client has the same exact setup as the other client
+		//that means that we can't just put my units in first everytime. That results
+		//in both clients having opposite boards
+		if(isHost){
+			//host units always gets to be at the bottom
+			currentBoard =new GameBoard(myUnits, opponentUnits, mapChoice, scenarioChoice);
+		}
+		else{
+			currentBoard =new GameBoard(opponentUnits, myUnits, mapChoice, scenarioChoice);
+		}
+		
+		
+		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream, isHost);
 		currentPanel.grabFocus();
 		this.add(currentPanel);
 		currentPanel.requestFocus(true);
 		this.pack();
 		this.setVisible(true);
+		this.repaint();
 	}
 	
 	private void askUserForInfo() {
@@ -345,17 +420,6 @@ public class TRPGClient extends JFrame implements Client {
 		this.setVisible(true);
 	}
 
-	//
-	// private void update(Command<?> command) {
-	// this.gamePanel.update(currentBoard);
-	// }
-
-	public void createGameBoard(ArrayList<Unit> userUnits,
-			ArrayList<Unit> compUnits, Map map, Scenario scenario) {
-		currentBoard = new GameBoard(userUnits, compUnits, map, scenario);
-		playingAlready = true;
-	}
-
 	public void useItem(String client, int index, Item item) {
 
 		if (client.equals(userName)) {
@@ -371,52 +435,6 @@ public class TRPGClient extends JFrame implements Client {
 
 		}
 
-	}
-
-	public void welcomeToLobby(String client) {
-		// if you are already past the whole game creation phase and are in a
-		// game you should
-		// not bother paying attention to commands like this.
-		if (playingAlready == true) {
-			; // do nothing
-		} else {
-			// load lobby (probably needs work)
-
-			// if we are not in the lobby yet then we have to log into the lobby
-			if (!(currentPanel instanceof GameLobby)) {
-				this.remove(currentPanel);
-				currentPanel = new GameLobby(userName, outputStream, isHost);
-				currentPanel.grabFocus();
-				this.add(currentPanel);
-				currentPanel.requestFocus(true);
-				this.pack();
-				this.setVisible(true);
-			}
-
-			// if we were already in the lobby and waiting then that means
-			// another player has
-			// joined and we need to account for that in the lobby Panel because
-			// now we can
-			// choose the map and scenario
-			else if (!client.equals(userName)) {
-				((GameLobby) currentPanel).clientJoined(client);
-
-				// even though you have already been in the lobby for a while, I
-				// think
-				// we should still send a LobbyInfoCommand of our own back to
-				// the other client
-				// just so they don't risk not ever hearing that there is
-				// another person in
-				// the lobby with them. I don't know if this is a complete fix
-				// to the problem.
-				LobbyInfoCommand command = new LobbyInfoCommand(userName);
-				try {
-					outputStream.writeObject(command);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
 	}
 
 	public void newGame() {
@@ -446,7 +464,7 @@ public class TRPGClient extends JFrame implements Client {
 		if (client.equals(userName)) {
 			myTurn = false;
 			((MainGamePanel) currentPanel).myTurn();
-			currentBoard.resetCompMoves();
+			currentBoard.resetPlayerTwoMoves();
 		} else {
 			if (isHost) {
 				myTurn = true;
@@ -460,7 +478,7 @@ public class TRPGClient extends JFrame implements Client {
 			}
 			myTurn = true;
 			((MainGamePanel) currentPanel).myTurn();
-			currentBoard.resetUserMoves();
+			currentBoard.resetPlayerOneMoves();
 		}
 	}
 
@@ -486,7 +504,7 @@ public class TRPGClient extends JFrame implements Client {
 
 			Item item = (list.get(num));
 			itemList.add(item);
-			System.out.println("Picked up item: " + item.getName());
+			//System.out.println("Picked up item: " + item.getName());
 			// currentBoard.removeItem(p);
 		} else
 			; // do nothing
@@ -498,23 +516,22 @@ public class TRPGClient extends JFrame implements Client {
 	 * before its moves are up.
 	 */
 	public void unitMoved(String source, int unitIndex, ArrayList<Point> moves) {
-		// indicate that the movement has begun
-		for (int h = 0; h < moves.size(); h++) {
-			System.out.println("after" + moves.get(h).toString());
-		}
 		moving = true;
 		int actualTotalMoveLength;
 
-		System.out.println(source + ":  ");
-		for (int i = 0; i < moves.size(); i++) {
-			System.out.println(moves.get(i));
-		}
-
 		Unit u;
 		if (source.equals(userName)) {
-			u = currentBoard.getPlayerOneUnits().get(unitIndex);
+			if(isHost){
+				u = currentBoard.getPlayerOneUnits().get(unitIndex);
+			}else{
+				u = currentBoard.getPlayerTwoUnits().get(unitIndex);
+			}
 		} else {
-			u = currentBoard.getPlayerTwoUnits().get(unitIndex);
+			if(isHost){
+				u = currentBoard.getPlayerTwoUnits().get(unitIndex);
+			}else{
+				u = currentBoard.getPlayerOneUnits().get(unitIndex);
+			}
 		}
 		// first, determine how many moves from the chosen list can actually be
 		// taken.
@@ -535,33 +552,33 @@ public class TRPGClient extends JFrame implements Client {
 			int dy = moves.get(i + 1).y;
 
 			if (x == dx && y == dy) {
-				System.out.println("same");
+				//System.out.println("same");
 			}
 			// if the move is upwards
 			if (x > dx && y == dy) {
 				currentBoard.moveUp(userName, u);
 				((MainGamePanel) currentPanel).update(currentBoard);
-				System.out.println("move up");
+				//System.out.println("move up");
 			}
 			// if the move is downwards
 			else if (x < dx && y == dy) {
 				currentBoard.moveDown(userName, u);
 				((MainGamePanel) currentPanel).update(currentBoard);
-				System.out.println("move down");
+				//System.out.println("move down");
 			}
 			// if the move is to the right
 			else if (x == dx && y < dy) {
 				currentBoard.moveRight(userName, u);
 				((MainGamePanel) currentPanel).update(currentBoard);
-				System.out.println("move right");
+				//System.out.println("move right");
 			}
 			// if the move is left
 			else if (x == dx && y > dy) {
 				currentBoard.moveLeft(userName, u);
 				((MainGamePanel) currentPanel).update(currentBoard);
-				System.out.println("move left");
+				//System.out.println("move left");
 			} else {
-				System.out.println("awkward position");
+				//System.out.println("awkward position");
 				// just let the stupid AI jump wherever it wants to...
 				currentBoard.setUnitToThisSpot(u, moves.get(i + 1));
 				((MainGamePanel) currentPanel).update(currentBoard);
@@ -570,7 +587,7 @@ public class TRPGClient extends JFrame implements Client {
 		((MainGamePanel) currentPanel).update(currentBoard);
 
 		// if the game is over let us know!
-		System.out.println(currentBoard.getPlayerTwoUnits().get(0).getHealth());
+		//System.out.println(currentBoard.getPlayerTwoUnits().get(0).getHealth());
 		/*
 		 * if(currentBoard.getCompUnits().get(0).getHealth()<=0){
 		 * System.out.println("game over");

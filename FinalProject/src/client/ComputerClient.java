@@ -114,8 +114,24 @@ public class ComputerClient extends JFrame implements Client {
 			temp.add(p);
 		}
 		
+		//initialize random computer units
 		for(int i=0; i<5; i++){
-			temp.add(choices.get(rand.nextInt(5)));
+			int num=rand.nextInt(5);
+			if(num==0){
+				temp.add(new Link('l'));
+			}
+			else if(num==1){
+				temp.add(new Goku('g'));
+			}
+			else if(num==2){
+				temp.add(new MegaMan('m'));
+			}
+			else if(num==3){
+				temp.add(new Mario('w'));
+			}
+			else{
+				temp.add(new Sonic('s'));
+			}
 		}
 		
 		Command command=new SetUserUnits(userName, temp);
@@ -136,6 +152,9 @@ public class ComputerClient extends JFrame implements Client {
 		if(userName.equals(source)){
 			compUnits=userUnits;
 			currentBoard = new GameBoard(playerUnits, compUnits, map, gameType);
+			for (int i = 0; i < compUnits.size(); i++) {
+				 //System.out.println(compUnits.get(i).getName()+" "+compUnits.get(i).getLocation()+" yah");
+			}
 		}
 		else{
 			playerUnits=userUnits;
@@ -166,21 +185,6 @@ public class ComputerClient extends JFrame implements Client {
 	 * currentBoard.useThisItem(client, u, item); }
 	 */
 
-	public void welcomeToLobby(String client) {
-		// open lobby for whoever connected
-		if (playingAlready == true) {
-			; // do nothing
-		} else {
-			// load lobby (probably needs work)
-			askUserForInfo();// now the client has been logged into the server
-			// initializeFrame();
-			ComputerServerHandler handler = new ComputerServerHandler(this,
-					inputStream);
-			Thread t = new Thread(handler);
-			t.start();
-		}
-	}
-
 	public void attackUnit(String client, int fromIndex, int toIndex) {
 		if(client.equals(userName)){
 			if (isHost)
@@ -203,7 +207,7 @@ public class ComputerClient extends JFrame implements Client {
 			myTurn = false;
 		} else {
 			myTurn = true;
-			currentBoard.resetCompMoves();
+			currentBoard.resetPlayerTwoMoves();
 			executeTurn();
 		}
 	}
@@ -240,22 +244,29 @@ public class ComputerClient extends JFrame implements Client {
 			if(!u.isAlive() || u.getName().equals("Princess")){
 				continue;
 			}
+
 			else {
 				path = currentBoard.findShortestPath(u.getLocation(), new Point(19, 0));
 				//florb=1;
 			System.out.println(u.getName()+" "+u.getMovesLeft());
+
+			//System.out.println(u.getName()+" "+u.getMovesLeft());
+
 			Random random=new Random();
 			boolean yes=true;
 			int xPoint=0;
 			int yPoint=0;
 			int z=0;
-			while (yes){
-				
+			//while (yes){
+			//System.out.println(compUnits.get(i).getName()+" moves left "+compUnits.get(i).getMovesLeft());
+			//System.out.println(compUnits.get(i).getName()+" at "+compUnits.get(i).getLocation());
 				
 				
 				if(u.getName().equals("Sonic")){
 					//run away!!
-					
+					int hello=0;
+					while (yes && hello<10){
+						hello ++;
 					//move from Q1 to Q2 or Q4
 					if(currentBoard.inQuadrantOne(u)){
 						xPoint = currentBoard.getBoardWidth()/2 + random.nextInt(currentBoard.getBoardWidth()/2-1);
@@ -288,62 +299,154 @@ public class ComputerClient extends JFrame implements Client {
 							yes=false;
 						}
 					}
+					}
 				}
 				if(u.getName().equals("MegaMan")){
 					//go towards enemies, attack
-					
-					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
-						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+					for(int x=0; x<currentBoard.getBoardHeight(); x++){
+						for(int y=0; y<currentBoard.getBoardWidth(); y++){
+					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
 							Point currentPoint = new Point(x,y);
 							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
 								continue;
 							}
 							if(currentBoard.checkIfEnemy(u,currentPoint)){
+								if(currentBoard.checkAvailable(new Point(x-1,y))){
+									xPoint=x-1;
+									yPoint=y;
+								}
+								else if(currentBoard.checkAvailable(new Point(x,y-1))){
+									xPoint=x;
+									yPoint=y-1;
+								}
+								else if(currentBoard.checkAvailable(new Point(x,y+1))){
+									xPoint=x;
+									yPoint=y+1;
+								}
+								else if(currentBoard.checkAvailable(new Point(x+1,y))){
+									xPoint=x+1;
+									yPoint=y;
+								}
+								break;
 								//move towards fist enemy seen until enemy is within attackRange
 								
-								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+								/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
 									//attack if possible
+								}*/
+							}
+						}
+					}
+				}
+				if(u.getName().equals("Goku")){
+					//go towards enemies, attack
+					for(int x=0; x<currentBoard.getBoardHeight(); x++){
+						for(int y=0; y<currentBoard.getBoardWidth(); y++){
+					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+							Point currentPoint = new Point(x,y);
+							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
+								continue;
+							}
+							if(currentBoard.checkIfEnemy(u,currentPoint)){
+								if(currentBoard.checkAvailable(new Point(x-1,y))){
+									xPoint=x-1;
+									yPoint=y;
 								}
+								else if(currentBoard.checkAvailable(new Point(x,y-1))){
+									xPoint=x;
+									yPoint=y-1;
+								}
+								else if(currentBoard.checkAvailable(new Point(x,y+1))){
+									xPoint=x;
+									yPoint=y+1;
+								}
+								else if(currentBoard.checkAvailable(new Point(x+1,y))){
+									xPoint=x+1;
+									yPoint=y;
+								}
+								break;
+								//move towards fist enemy seen until enemy is within attackRange
+								
+								/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}*/
 							}
 						}
 					}
 				}
 				if(u.getName().equals("Link")){
 					//go towards enemies, attack
-					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
-						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+					for(int x=0; x<currentBoard.getBoardHeight(); x++){
+						for(int y=0; y<currentBoard.getBoardWidth(); y++){
+					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
 							Point currentPoint = new Point(x,y);
 							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
 								continue;
 							}
 							if(currentBoard.checkIfEnemy(u,currentPoint)){
 								//move towards fist enemy seen until enemy is within attackRange
-								
-								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
-									//attack if possible
+								if(currentBoard.checkAvailable(new Point(x-1,y))){
+									xPoint=x-1;
+									yPoint=y;
 								}
+								else if(currentBoard.checkAvailable(new Point(x,y-1))){
+									xPoint=x;
+									yPoint=y-1;
+								}
+								else if(currentBoard.checkAvailable(new Point(x,y+1))){
+									xPoint=x;
+									yPoint=y+1;
+								}
+								else if(currentBoard.checkAvailable(new Point(x+1,y))){
+									xPoint=x+1;
+									yPoint=y;
+								}
+								break;
+								/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}*/
 							}
 						}
 					}
 				}
 				if(u.getName().equals("Mario")){
 					//go towards enemies, attack
-					for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
-						for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
+					for(int x=0; x<currentBoard.getBoardHeight(); x++){
+						for(int y=0; y<currentBoard.getBoardWidth(); y++){
+					//for(int x = (int) u.getLocation().getX()-u.getDistance(); x<(u.getDistance()+(int)u.getLocation().getX());x++){
+						//for(int y = (int) u.getLocation().getY()-u.getDistance(); y<(u.getDistance()+(int)u.getLocation().getY());y++){
 							Point currentPoint = new Point(x,y);
 							if(x<0||x>currentBoard.getBoardWidth()-1||y<0||y>currentBoard.getBoardHeight()-1){
 								continue;
 							}
 							if(currentBoard.checkIfEnemy(u,currentPoint)){
 								//move towards fist enemy seen until enemy is within attackRange
-								
-								if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
-									//attack if possible
+								if(currentBoard.checkAvailable(new Point(x-1,y))){
+									xPoint=x-1;
+									yPoint=y;
 								}
+								else if(currentBoard.checkAvailable(new Point(x,y-1))){
+									xPoint=x;
+									yPoint=y-1;
+								}
+								else if(currentBoard.checkAvailable(new Point(x,y+1))){
+									xPoint=x;
+									yPoint=y+1;
+								}
+								else if(currentBoard.checkAvailable(new Point(x+1,y))){
+									xPoint=x+1;
+									yPoint=y;
+								}
+								break;
+								/*if(currentBoard.checkOpenLineOfFire(u, currentPoint)){
+									//attack if possible
+								}*/
 							}
 						}
 					}
-				}
+				//}
 				
 				
 				
@@ -357,8 +460,10 @@ public class ComputerClient extends JFrame implements Client {
 				}
 				z++;*/
 			}
+
+			//System.out.println(compUnits.get(i).getName()+" get point"+ xPoint +yPoint);
 			path = currentBoard.findShortestPath(u.getLocation(), new Point(xPoint,yPoint));
-			System.out.println("path :" +path.size());
+			//System.out.println("path :" +path.size());
 			int use=0;
 			if(path.size()> u.getDistance()+1){
 				for (int j = 1; j < u.getDistance()+1 ; j++) {
@@ -371,7 +476,7 @@ public class ComputerClient extends JFrame implements Client {
 				}
 			}
 			for(int h=0; h<moves.size(); h++){
-				System.out.println("before " +moves.get(h).toString());
+				//System.out.println("before " +moves.get(h).toString());
 			}
 //			for (int j = 1; j < u.getDistance() ; j++) {
 //				moves.add(path.get(j));
@@ -383,6 +488,7 @@ public class ComputerClient extends JFrame implements Client {
 				e.printStackTrace();
 			}
 		}
+
 	}
 }
 
@@ -464,7 +570,7 @@ public class ComputerClient extends JFrame implements Client {
 	public void unitMoved(String source, int index, ArrayList<Point> moves) {
 		
 		for(int h=0; h<moves.size(); h++){
-		System.out.println("after"+moves.get(h).toString());
+			//System.out.println("after"+moves.get(h).toString());
 		}
 		int actualTotalMoveLength;
 		
@@ -494,36 +600,36 @@ public class ComputerClient extends JFrame implements Client {
 			int dy=moves.get(i+1).y;
 			
 			if(x==dx && y==dy){
-				System.out.println("same");
+				//System.out.println("same");
 			}
 			//if the move is upwards
 			if(x>dx && y==dy){
 				
 				currentBoard.moveUp(userName, u);
-				System.out.println(u.getName()+"move up");
+				//System.out.println(u.getName()+"move up");
 			}
 			//if the move is downwards
 			else if(x<dx && y==dy){
 				
 				currentBoard.moveDown(userName, u);
-				System.out.println(u.getName()+"move down");
+				//System.out.println(u.getName()+"move down");
 			}
 			//if the move is to the right
 			else if(x==dx && y<dy){
 				currentBoard.moveRight(userName, u);
-				System.out.println(u.getName()+"move right");
+				//System.out.println(u.getName()+"move right");
 			}
 			//if the move is left
 			else if(x==dx && y>dy){
 				currentBoard.moveLeft(userName, u);
-				System.out.println(u.getName()+"move left");
+				//System.out.println(u.getName()+"move left");
 			}
 		}
+		//System.out.println(u.getLocation());
 
-		System.out.println(u.getLocation() + "test");
-	System.out.println(u.getLocation() + "testComp");
+		System.out.println(u.getName()+" at "+u.getLocation());
+	//System.out.println(u.getLocation() + "testComp");
 		moving=false;
-
 
 	}
 

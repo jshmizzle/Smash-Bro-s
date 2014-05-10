@@ -40,12 +40,20 @@ public class MainGamePanel extends JPanel {
 	private UnitStatusPanel statsPanel;
 	private String source;
 	private TRPGClient client;
-	private ArrayList<Unit> localUserUnitList;
+	private ArrayList<Unit> localUserUnitList, localOpponentUnitList;
+	private boolean isHost, myTurn;
 	
-	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut) {
+	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut, boolean isHost) {
 		this.serverOut=serverOut;
 		this.source=source;
 		this.client=client;
+		this.isHost=isHost;
+		
+		//decide if the game starts off on our turn based on who is the host
+		if(this.isHost)
+			myTurn=true;
+		else 
+			myTurn=false;
 		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
@@ -53,14 +61,30 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
+<<<<<<< HEAD
 		this.localUserUnitList=gameBoard.getPlayerOneUnits();
+=======
+		
+		//we cannot assume that the current client's units are always going to be
+		//the player one units. Check whether or not they are the host in order to know which player they are
+		if(isHost){
+			this.localUserUnitList=gameBoard.getPlayerOneUnits();
+			this.localOpponentUnitList=gameBoard.getPlayerTwoUnits();
+		}
+		else{
+			this.localUserUnitList=gameBoard.getPlayerTwoUnits();
+			this.localOpponentUnitList=gameBoard.getPlayerOneUnits();
+		}
+		
+		this.currentUnit=localUserUnitList.get(0);
+>>>>>>> 665b9e9f2d368cb49b521d91a1b230d4240a0b57
 
 		
 		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
 		
-		Point tempPoint=gameBoard.getPlayerOneUnits().get(0).getLocation();
+		Point tempPoint=localUserUnitList.get(0).getLocation();
 		cursorLocation=new Point(tempPoint.y, tempPoint.x);
 				
 		//add the key listener to allow the cursor to send 
@@ -75,7 +99,7 @@ public class MainGamePanel extends JPanel {
 		this.currentGameState=GameState.CyclingThroughUnits;
 	}
 	
-	public void initializeImages(){
+	private void initializeImages(){
 		try {
 			boulder=ImageIO.read(new File("images/Boulder.png"));
 			megaman=ImageIO.read(new File("images/MegamanStanding.png"));
@@ -89,7 +113,6 @@ public class MainGamePanel extends JPanel {
 			invalidMove=ImageIO.read(new File("images/notValidCursor.png"));
 			tree=ImageIO.read(new File("images/TreeSprites1.png"));
 			chest=ImageIO.read(new File("images/chestClosed.png"));
-			headstone=ImageIO.read(new File("images/headstone.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -138,35 +161,35 @@ public class MainGamePanel extends JPanel {
 				}
 				else if(currentBoard[row][col]=='S' || currentBoard[row][col]=='s'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					g2.drawImage(sonic, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+//					g2.drawImage(sonic, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 				else if(currentBoard[row][col]=='M' || currentBoard[row][col]=='m'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					
-					//check if this unit is dead
-					if(gameBoard.getPlayerTwoUnits().get(2).isAlive()){
-					g2.drawImage(megaman, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					}else{
-						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					}
+//					//check if this unit is dead
+//					if(gameBoard.getPlayerTwoUnits().get(2).isAlive()){
+//					g2.drawImage(megaman, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+//					}else{
+//						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+//					}
 				}
 				else if(currentBoard[row][col]=='W' || currentBoard[row][col]=='w'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					g2.drawImage(mario, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+//					g2.drawImage(mario, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 				else if(currentBoard[row][col]=='G' || currentBoard[row][col]=='g'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					g2.drawImage(goku, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+//					g2.drawImage(goku, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 				else if(currentBoard[row][col]=='L'|| currentBoard[row][col]=='l'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					
-					//check if this unit is dead
-					if(gameBoard.getPlayerTwoUnits().get(1).isAlive()){
-					g2.drawImage(link, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					}else{
-						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					}
+//					//check if this unit is dead
+//					if(gameBoard.getPlayerTwoUnits().get(1).isAlive()){
+//					g2.drawImage(link, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+//					}else{
+//						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+//					}
 				}
 				else if(currentBoard[row][col]=='P'|| currentBoard[row][col]=='p'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -197,6 +220,11 @@ public class MainGamePanel extends JPanel {
 				}
 			}
 		}
+		//now draw the units individually by accessing the lists, not by looking at their 
+		//char on the board, this will prevent from thinking every unit with the same char 
+		//dies at the same time
+		drawTheUnits(g2);
+		
 		drawCursor(g2);
 		if(currentGameState==GameState.ChoosingMove){
 			drawShortestPathLineToCursor(g2);
@@ -208,6 +236,15 @@ public class MainGamePanel extends JPanel {
 		}
 	}
 	
+	private void drawTheUnits(Graphics2D g2) {
+		for(Unit curr: localUserUnitList){
+			curr.draw(g2, gameTileHeight, gameTileWidth);
+		}
+		for(Unit curr: localOpponentUnitList){
+			curr.draw(g2, gameTileHeight, gameTileWidth);
+		}
+	}
+
 	private void drawCursor(Graphics2D g2){
 		g2.setColor(Color.RED);
 		g2.drawRect(cursorLocation.x*gameTileWidth, cursorLocation.y*gameTileHeight, gameTileWidth-1, gameTileHeight-1);
@@ -218,13 +255,34 @@ public class MainGamePanel extends JPanel {
 			MainGamePanel.this.remove(statsPanel);
 		}
 		statsPanel=new UnitStatusPanel(currentUnit);
-		Point temp=currentUnit.getLocation();
-		statsPanel.setLocation( (temp.y+1)*gameTileWidth, (temp.x-2)*gameTileHeight);
+		
+		setStatsPanelLocationBasedOnContext();
+		
 		statsPanel.setSize(gameTileWidth*2, gameTileHeight*3);
 		MainGamePanel.this.add(statsPanel).setVisible(true);
 	}
 	
+	private void setStatsPanelLocationBasedOnContext(){
+		//we need to make sure that the panel is not drawn off the screen at the very top
+		//or the very right
+		Point temp=currentUnit.getLocation();		
+		
+		if(temp.x>2){//not near top edge
+			if(temp.y<=17)//not near right edge
+				statsPanel.setLocation( (temp.y+1)*gameTileWidth, (temp.x-2)*gameTileHeight);
+			else//near right edge
+				statsPanel.setLocation((temp.y-2)*gameTileWidth, (temp.x-2)*gameTileHeight);
+		}
+		else{//near top edge
+			if(temp.y<=17)//not near right edge
+				statsPanel.setLocation( (temp.y+1)*gameTileWidth, 0);
+			else//near right edge
+				statsPanel.setLocation((temp.y-2)*gameTileWidth, 0);
+		}
+	}
+	
 	private ArrayList<Point> previousPath;
+	
 	private void drawShortestPathLineToCursor(Graphics g){
 		Graphics2D g2=(Graphics2D)g;
 		
@@ -261,7 +319,6 @@ public class MainGamePanel extends JPanel {
 		
 	private boolean showStats=false;
 	private int unitIndex=0;
-	private boolean myTurn=true;
 
 
 	private class KeyManager implements KeyListener{
@@ -307,7 +364,6 @@ public class MainGamePanel extends JPanel {
 								try {
 									serverOut.writeObject(command);
 								} catch (IOException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 							}
@@ -336,6 +392,7 @@ public class MainGamePanel extends JPanel {
 						try{
 							serverOut.writeObject(endTurn);
 							currentGameState=GameState.CyclingThroughUnits;
+							System.out.println("Sent the END TURN command");
 						}catch(IOException e){
 							e.printStackTrace();
 						}
@@ -346,17 +403,17 @@ public class MainGamePanel extends JPanel {
 				else if(currentGameState==GameState.CyclingThroughUnits){
 					
 					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
-						if(unitIndex<gameBoard.getPlayerOneUnits().size()-1){
+						if(unitIndex<localUserUnitList.size()-1){
 							unitIndex++;
 						}
-						else if(unitIndex==gameBoard.getPlayerOneUnits().size()-1){
+						else if(unitIndex==localUserUnitList.size()-1){
 							unitIndex=0;
 						}
 	
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						currentUnit=localUserUnitList.get(unitIndex);
 						
-						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
+						Point unitPoint=localUserUnitList.get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
@@ -365,19 +422,19 @@ public class MainGamePanel extends JPanel {
 							unitIndex--;
 						}
 						else if (unitIndex==0){
-							unitIndex=gameBoard.getPlayerOneUnits().size()-1;
+							unitIndex=localUserUnitList.size()-1;
 						}
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
 						currentUnit=localUserUnitList.get(unitIndex);
 						
-						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
+						Point unitPoint=localUserUnitList.get(unitIndex).getLocation();
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
 					//if the user presses enter while cycling through units
 					else if(key==KeyEvent.VK_ENTER && unitIndex!=0){
 	//					currentUnit=gameBoard.getUserUnits().get(unitIndex);
-						if(gameBoard.getPlayerOneUnits().get(unitIndex).isAlive()){
+						if(localUserUnitList.get(unitIndex).isAlive()){
 							currentUnit=localUserUnitList.get(unitIndex);
 		
 							currentGameState=GameState.ChoosingMove;
@@ -404,6 +461,11 @@ public class MainGamePanel extends JPanel {
 						try{
 							serverOut.writeObject(endTurn);
 							currentGameState=GameState.CyclingThroughUnits;
+							if(showStats==true){
+								showStats=false;
+								MainGamePanel.this.remove(statsPanel);
+								repaint();
+							}
 						}catch(IOException e){
 							e.printStackTrace();
 						}
@@ -432,9 +494,9 @@ public class MainGamePanel extends JPanel {
 						if(gameBoard.checkIfEnemy(currentUnit,new Point(cursorLocation.y, cursorLocation.x))){
 							System.out.println("found enemy");
 							int enemyIndex=-99;
-							ArrayList<Unit> temp=gameBoard.getPlayerTwoUnits();
-							for(int i=0; i<temp.size(); i++){
-								if(temp.get(i).getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
+
+							for(int i=0; i<localOpponentUnitList.size(); i++){
+								if(localOpponentUnitList.get(i).getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
 									enemyIndex=i;
 								}
 							}
@@ -446,7 +508,7 @@ public class MainGamePanel extends JPanel {
 								try {
 									serverOut.writeObject(moveCommand);
 	
-									gameBoard.getPlayerOneUnits().get(unitIndex).setLocation(currentUnit.getLocation());
+									localUserUnitList.get(unitIndex).setLocation(currentUnit.getLocation());
 	
 									currentGameState = GameState.CyclingThroughUnits;
 									previousPath = null;
@@ -487,6 +549,7 @@ public class MainGamePanel extends JPanel {
 	public void update(GameBoard currentGameBoard){
 		this.currentBoard=currentGameBoard.getGameBoard();
 		this.gameBoard=currentGameBoard;
+		
 		this.repaint();
 	}
 	

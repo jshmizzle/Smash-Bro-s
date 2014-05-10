@@ -10,8 +10,6 @@ import model.Unit;
 
 public interface Client {
 
-	public void welcomeToLobby(String client);
-	
 	public void endTurn(String client);
 	
 	public void newGame();

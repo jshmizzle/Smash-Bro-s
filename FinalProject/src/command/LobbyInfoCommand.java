@@ -17,14 +17,16 @@ public class LobbyInfoCommand extends Command<TRPGClient>{
 	 * @param source
 	 * 
 	 */
+	private ArrayList<String> users;
 	
-	public LobbyInfoCommand(String source) {
+	public LobbyInfoCommand(String source, ArrayList<String> users) {
 		super(source);
+		this.users=users;
 	}
 
 	@Override
 	public void execute(TRPGClient executeOn) {
-		executeOn.welcomeToLobby(source);
+		executeOn.updateLobby(users);
 	}
 
 }
