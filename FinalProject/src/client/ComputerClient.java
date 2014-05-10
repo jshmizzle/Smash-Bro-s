@@ -987,6 +987,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void attackTurnPrincess() {
 		compUnits = currentBoard.getPlayerTwoUnits();
+		playerUnits = currentBoard.getPlayerOneUnits();
 		//go through all comp units except for indice one (princess can't attack)
 		for (int i = 1; i < compUnits.size(); i++) {
 			Unit u = compUnits.get(i);
@@ -1008,6 +1009,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	private void attackTurnMele() {
 		compUnits = currentBoard.getPlayerTwoUnits();
+		playerUnits = currentBoard.getPlayerOneUnits();
 		// go through all comp units
 		for (int i = 0; i < compUnits.size(); i++) {
 			Unit u = compUnits.get(i);
