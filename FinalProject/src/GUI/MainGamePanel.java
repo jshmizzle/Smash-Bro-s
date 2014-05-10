@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -19,7 +20,6 @@ import javax.swing.JPanel;
 import model.GameBoard;
 import model.Unit;
 import client.TRPGClient;
-
 import command.EndTurnCommand;
 import command.PickUpItemCommand;
 import command.UnitAttackCommand;
@@ -396,6 +396,17 @@ public class MainGamePanel extends JPanel {
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
 						if(gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
+							//TODO wormhole, randomly find an available spot on the map and go there
+							/*if(currentBoard[cursorLocation.y][cursorLocation.x] == '%'){
+								Random random = new Random();
+								int xPoint = random.nextInt(19);
+								int yPoint = random.nextInt(19);
+								if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
+									
+								}
+								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
+								
+							}*/
 							if(currentBoard[cursorLocation.y][cursorLocation.x] == '@'){
 								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
 								PickUpItemCommand command = new PickUpItemCommand(source,toMove);
