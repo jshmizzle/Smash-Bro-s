@@ -889,4 +889,13 @@ public class ComputerClient extends JFrame implements Client {
 		//IF A COMMAND IS SENT TO BEGIN GAME, THE PLAYER CLIENT CAN FIND OUT BUT THIS CLASS'S 
 		//SERVER HANDLER DOES NOT HAVE TO RUN INTO A RUNTIME CASTING EXCEPTION
 	}
+	
+	public void teleportUnit(String source, int unitIndex, Point teleLocation){
+		if(this.userName.equals(source)){
+			compUnits.get(unitIndex).setLocation(teleLocation);
+		}
+		else{
+			playerUnits.get(unitIndex).setLocation(teleLocation);
+		}
+	}
 }

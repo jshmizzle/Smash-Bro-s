@@ -566,4 +566,13 @@ public class TRPGClient extends JFrame implements Client {
 	public ArrayList<Item> getItemList(){
 		return itemList;
 	}
+	
+	public void teleportUnit(String source, int unitIndex, Point teleLocation){
+		if(this.userName.equals(source)){
+			myUnits.get(unitIndex).setLocation(teleLocation);
+		}
+		else{
+			opponentUnits.get(unitIndex).setLocation(teleLocation);
+		}
+	}
 }
