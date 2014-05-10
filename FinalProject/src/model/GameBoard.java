@@ -61,9 +61,13 @@ public class GameBoard implements Serializable {
 	}
 
 	private void setMapTwo() {
-		//princess rocks
-		gameBoard[boardHeight-1][boardWidth/2-1] = '#';
-		gameBoard[boardHeight-1][boardWidth/2+1] = '#';
+		// bottom princess rocks
+		gameBoard[boardHeight - 1][boardWidth / 2 - 1] = '#';
+		gameBoard[boardHeight - 1][boardWidth / 2 + 1] = '#';
+
+		// top princess rocks
+		gameBoard[0][boardWidth / 2 - 1] = '#';
+		gameBoard[0][boardWidth / 2 + 1] = '#';
 		
 		// top left rocks
 		gameBoard[boardHeight / 4][boardWidth / 4] = '#';
@@ -94,13 +98,18 @@ public class GameBoard implements Serializable {
 				- (boardWidth / 4)] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth
 				- (boardWidth / 4) + 1] = '#';
-		// item
+		// items
 		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
+		
+		
+		//wormholes
+		gameBoard[boardHeight / 2 + 1][boardWidth / 2 - 4] = '%';
+		gameBoard[boardHeight / 2 - 1][boardWidth / 2 + 4] = '%';
 
 		// trees
 		gameBoard[boardHeight / 3][boardWidth / 2] = '!';
 		gameBoard[boardHeight / 3 + 1][boardWidth / 2 - 1] = '!';
-		gameBoard[boardHeight / 3 + 2][boardWidth / 2 - 2] = '!';
+		//gameBoard[boardHeight / 3 + 2][boardWidth / 2 - 2] = '!';
 		gameBoard[boardHeight / 3 + 3][boardWidth / 2 - 3] = '!';
 		gameBoard[boardHeight / 3 + 4][boardWidth / 2 - 4] = '!';
 		gameBoard[boardHeight / 3 + 5][boardWidth / 2 - 5] = '!';
@@ -110,7 +119,7 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 3 + 9][boardWidth / 2 - 9] = '!';
 
 		gameBoard[boardHeight / 3 + 1][boardWidth / 2 + 1] = '!';
-		gameBoard[boardHeight / 3 + 2][boardWidth / 2 + 2] = '!';
+		//gameBoard[boardHeight / 3 + 2][boardWidth / 2 + 2] = '!';
 		gameBoard[boardHeight / 3 + 3][boardWidth / 2 + 3] = '!';
 		gameBoard[boardHeight / 3 + 4][boardWidth / 2 + 4] = '!';
 		gameBoard[boardHeight / 3 + 5][boardWidth / 2 + 5] = '!';
@@ -121,7 +130,7 @@ public class GameBoard implements Serializable {
 
 		gameBoard[boardHeight - (boardHeight / 3)][boardWidth / 2] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 1][boardWidth / 2 - 1] = '!';
-		gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 - 2] = '!';
+		//gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 - 2] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 3][boardWidth / 2 - 3] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 4][boardWidth / 2 - 4] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 5][boardWidth / 2 - 5] = '!';
@@ -131,7 +140,7 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight - (boardHeight / 3) - 9][boardWidth / 2 - 9] = '!';
 
 		gameBoard[boardHeight - (boardHeight / 3) - 1][boardWidth / 2 + 1] = '!';
-		gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 + 2] = '!';
+		//gameBoard[boardHeight - (boardHeight / 3) - 2][boardWidth / 2 + 2] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 3][boardWidth / 2 + 3] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 4][boardWidth / 2 + 4] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 5][boardWidth / 2 + 5] = '!';
@@ -196,6 +205,10 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 2 - 1][boardWidth - 2] = '#';
 		gameBoard[boardHeight / 2 + 1][boardWidth - 1] = '#';
 		gameBoard[boardHeight / 2 + 1][boardWidth - 2] = '#';
+		
+		//wormholes
+		gameBoard[boardHeight / 2 + 3][boardWidth / 2 + 3] = '%';
+		gameBoard[boardHeight / 2 - 3][boardWidth / 2 - 3] = '%';
 
 		// trees
 		// top left
