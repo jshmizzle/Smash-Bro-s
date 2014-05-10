@@ -13,7 +13,6 @@ public class GameBoard implements Serializable {
 	private int boardHeight = 20;
 	private ArrayList<Unit> playerOneUnits;
 	private ArrayList<Unit> playerTwoUnits;
-	private char[][] terrain;
 	/*
 	 * private int currentMap; private int currentScenario;
 	 */
@@ -38,7 +37,6 @@ public class GameBoard implements Serializable {
 	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 
 		gameBoard = new char[boardWidth][boardHeight];
-		terrain = new char[boardWidth][boardHeight];
 		this.playerOneUnits = userUnits;
 		this.playerTwoUnits = compUnits;
 		currentMap = map;
@@ -311,7 +309,7 @@ public class GameBoard implements Serializable {
 		if (y >= boardHeight || y < 0)
 			return false;
 
-		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' '
+		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' ' || gameBoard[(int) point.getX()][(int) point.getY()] == '%'
 				|| gameBoard[(int) point.getX()][(int) point.getY()] == '@')
 			return true;
 
@@ -420,12 +418,6 @@ public class GameBoard implements Serializable {
 
 	public int getBoardHeight() {
 		return boardHeight;
-	}
-
-	/************************************************************************************/
-
-	public char[][] getTerrain() {
-		return terrain;
 	}
 
 	/************************************************************************************/
