@@ -395,7 +395,7 @@ public class MainGamePanel extends JPanel {
 							//now if the unit had just landed on a portal then randomly move it
 							//and also tell the other client
 							int lastPointIndex;
-							if(path.size()>=currentUnit.getMovesLeft()){
+							if(path.size()>currentUnit.getMovesLeft()){
 								lastPointIndex=currentUnit.getMovesLeft();
 							}
 							else
