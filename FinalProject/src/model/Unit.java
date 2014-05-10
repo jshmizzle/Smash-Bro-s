@@ -1,30 +1,36 @@
  package model;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 /*
  * Unit class. Holds all the information and methods for each unit
  */
 public class Unit implements Serializable{ 
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8650763360508589614L;
 	protected String name;
 	protected int health;
 	protected int moveDistance;
 	protected ArrayList <Item> items;
 	protected int [] stats;
 	//protected Strategy strategy;
-	protected boolean alive;
+	protected boolean alive, alreadyAttacked;
 	protected int attackPower;
 	protected Point location;
-	protected BufferedImage image;
+	protected Image standingImage, headstone;
 	protected char charRepresentation;
-	protected int defenseAmount;
-	protected int healthFull;
-	protected int attackRange;
-	protected int movesLeft;
+	protected int defenseAmount,healthFull,attackRange, movesLeft;
 
 	
 	/************************************************************************************/
@@ -45,13 +51,13 @@ public class Unit implements Serializable{
 		healthFull=hp;
 		this.moveDistance = distance;
 		this.attackPower=attackPower;
-		image=i;
 		location=p;
 		attackRange=this.attackRange;
 		charRepresentation=c;
 		defenseAmount=1;
 		alive=true;
 		movesLeft = distance;
+		
 	}
 	
 	/************************************************************************************/
@@ -63,6 +69,8 @@ public class Unit implements Serializable{
 	 * @param attack Amount of damage the unit does
 	 * @param p Location of unit
 	 * @param c The character that represents the unit
+	 * @param i The standing image of the unit so that we could easily just call the draw method
+	 * in the gui to make things easier over there.
 	 */
 	
 	public Unit (String n, int hp, int distance, int attack, int attackRange, Point p, char c){
@@ -78,6 +86,8 @@ public class Unit implements Serializable{
 		defenseAmount=1;
 		alive=true;
 		movesLeft = distance;
+		
+		
 	}
 	/************************************************************************************/
 	//Returns the location on the board the unit is in 
@@ -90,7 +100,7 @@ public class Unit implements Serializable{
 	//sets the location of the unit to the point that is passed in
 	
 	public void setLocation(Point p){
-		this.location = p;
+		location.setLocation(p);
 	}
 	
 	/************************************************************************************/
@@ -144,6 +154,12 @@ public class Unit implements Serializable{
 	
 	public void attack(Unit u){
 		u.takeHit(attackPower);
+		alreadyAttacked=true;
+	}
+	/************************************************************************************/
+	
+	public boolean checkIfAlreadyAttackedThisTurn(){
+		return alreadyAttacked;
 	}
 	
 	/************************************************************************************/
@@ -260,5 +276,69 @@ public class Unit implements Serializable{
 		movesLeft--;
 	}
 	
+	public void draw(Graphics2D g2, int height, int width){
+		if(standingImage==null){
+			initializeImages();
+		}
+		
+		if(isAlive()){
+			g2.drawImage(standingImage, location.y*width, location.x*height, width, height, null);
+		}
+		else{//this unit is dead
+			g2.drawImage(headstone, location.y*width, location.x*height, width, height, null);
+		}
+	}
 	/************************************************************************************/
+
+	private void initializeImages() {
+		//need to figure out which image the unit should have with them
+		switch(charRepresentation){
+		case 'l'://if it is good link or bad link it is the same image
+		case 'L':
+			try {
+				standingImage=ImageIO.read(new File("images/linkStanding.png"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			break;
+		case 'g':
+		case 'G':
+			try {
+				standingImage=ImageIO.read(new File("images/gokuStanding.png"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			break;
+		case 'w':
+		case 'W':
+			try {
+				standingImage=ImageIO.read(new File("images/marioStanding.png"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			break;
+		case 'm':
+		case 'M':
+			try {
+				standingImage=ImageIO.read(new File("images/MegaManStanding.png"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			break;
+		case 's':
+		case 'S':
+			try {
+				standingImage=ImageIO.read(new File("images/SonicStanding.png"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		//initialize the headstone image
+		try {
+			headstone=ImageIO.read(new File("images/headstone.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

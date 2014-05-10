@@ -16,8 +16,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import command.HostMultiPlayerGame;
+import command.JoinMultiPlayerGame;
 import command.StartSinglePlayerGame;
 
+@SuppressWarnings("serial")
 public class MainMenuPanel extends JPanel {
 
 	private JButton singlePlayer, joinGame, hostGame;
@@ -28,6 +31,7 @@ public class MainMenuPanel extends JPanel {
 	
 	public MainMenuPanel(String name, ObjectOutputStream output) {
 		this.output=output;
+		this.name=name;
 		this.setLayout(null);
 		
 		this.setSize(600, 600);
@@ -111,14 +115,20 @@ public class MainMenuPanel extends JPanel {
 			}
 			else if(e.getSource()==joinGame){
 				//tell the server that the player has chosen the target elimination mode
-				try {
-					output.writeObject(new Integer(1));
+				try {					
+					JoinMultiPlayerGame command = new JoinMultiPlayerGame(name);
+					output.writeObject(command);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
 			else if(e.getSource()==hostGame){
-				
+				try{
+					HostMultiPlayerGame command=new HostMultiPlayerGame(name);
+					output.writeObject(command);
+				}catch(IOException e1){
+					e1.printStackTrace();
+				}
 			}
 		}
 		

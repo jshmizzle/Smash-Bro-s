@@ -2,6 +2,7 @@ package model;
 
 import java.awt.Point;
 
+@SuppressWarnings("serial")
 public class Link extends Unit{
 
 	public Link(char c) {

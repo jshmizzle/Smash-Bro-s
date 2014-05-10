@@ -12,7 +12,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import model.GameBoard;
 import client.Client;
-import client.TRPGClient;
 import command.Command;
 import command.DisconnectCommand;
 
@@ -42,7 +41,9 @@ public class TRPGServer {
 	 */
 	private class ClientHandler implements Runnable{
 		
+		@SuppressWarnings("unused")
 		private String clientId; // name of the client
+		@SuppressWarnings("unused")
 		private Deque<Command<TRPGServer>> history; // history of executed commands
 		private ObjectInputStream input; // input stream to read command from
 		
@@ -53,10 +54,9 @@ public class TRPGServer {
 			input = inputs.get(id);
 			
 			System.out.println("New Client " + id + " connected");
-			
-			//updateClients();
 		}
 
+		@SuppressWarnings("unchecked")
 		public void run() {
 			while(true){
 				try{

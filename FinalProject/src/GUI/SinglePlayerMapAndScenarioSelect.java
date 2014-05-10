@@ -14,19 +14,19 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import client.Client;
-import command.BeginGameCommand;
-import command.Command;
-import command.MapAndScenarioSelected;
 import model.Map;
 import model.Scenario;
+import client.Client;
 
+import command.Command;
+import command.MapAndScenarioSelected;
+
+@SuppressWarnings("serial")
 public class SinglePlayerMapAndScenarioSelect extends JPanel {
 
 	private JButton button;
