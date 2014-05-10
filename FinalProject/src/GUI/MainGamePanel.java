@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 
 import model.GameBoard;
 import model.Unit;
+import client.TRPGClient;
 import command.EndTurnCommand;
 import command.PickUpItemCommand;
 import command.UnitAttackCommand;
@@ -35,21 +36,24 @@ public class MainGamePanel extends JPanel {
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
 	private Unit currentUnit;
-	private UnitStatusPanel statsPanel;
 	private String source;
 	private ArrayList<Unit> localUserUnitList, localOpponentUnitList;
-	private boolean isHost, myTurn;
+	private boolean isHost, myTurn,showInventory;
+	private JPanel inventoryPanel, statsPanel;
+	private TRPGClient client;
 	
-	public MainGamePanel(String source, GameBoard startingBoard, ObjectOutputStream serverOut, boolean isHost) {
+	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut, boolean isHost) {
 		this.serverOut=serverOut;
 		this.source=source;
 		this.isHost=isHost;
+		this.client=client;
 		
 		//decide if the game starts off on our turn based on who is the host
 		if(this.isHost)
 			myTurn=true;
 		else 
 			myTurn=false;
+		
 		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
@@ -209,9 +213,13 @@ public class MainGamePanel extends JPanel {
 			drawAttackCursor(g2);
 			drawAttackRange(g2);
 		}
+		//if the user ever wants to see the inventory they can
+		if(this.showInventory==true){
+			drawInventory();
+		}
 		
 	}
-	
+
 	private void drawTheUnits(Graphics2D g2) {
 		for(Unit curr: localUserUnitList){
 			curr.draw(g2, gameTileHeight, gameTileWidth);
@@ -262,6 +270,7 @@ public class MainGamePanel extends JPanel {
 		MainGamePanel.this.add(statsPanel).setVisible(true);
 	}
 	
+
 	private void setStatsPanelLocationBasedOnContext(){
 		//we need to make sure that the panel is not drawn off the screen at the very top
 		//or the very right
@@ -279,6 +288,17 @@ public class MainGamePanel extends JPanel {
 			else//near right edge
 				statsPanel.setLocation((temp.y-2)*gameTileWidth, 0);
 		}
+	}
+	
+	private void drawInventory() {
+		if(inventoryPanel!=null){
+			MainGamePanel.this.remove(inventoryPanel);
+		}
+		inventoryPanel=new ItemPanel(client.getItemList());
+				
+		inventoryPanel.setSize(getWidth()/2, gameTileHeight*3);
+		inventoryPanel.setLocation(getWidth()/4, getHeight()/2-(gameTileHeight-2));
+		MainGamePanel.this.add(inventoryPanel).setVisible(true);
 	}
 	
 	private ArrayList<Point> previousPath;
@@ -414,6 +434,8 @@ public class MainGamePanel extends JPanel {
 										currentGameState=GameState.CyclingThroughUnits;
 									
 									previousPath=null;
+									
+									showInventory=false;
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
@@ -425,9 +447,22 @@ public class MainGamePanel extends JPanel {
 						try{
 							serverOut.writeObject(endTurn);
 							currentGameState=GameState.CyclingThroughUnits;
-							System.out.println("Sent the END TURN command");
+
+							showInventory=false;
+							repaint();
 						}catch(IOException e){
 							e.printStackTrace();
+						}
+					}
+					else if(key==KeyEvent.VK_I){
+						if(showInventory){
+							showInventory=false;
+							MainGamePanel.this.remove(inventoryPanel);
+							repaint();
+						}
+						else{
+							showInventory=true;
+							repaint();
 						}
 					}
 				}
@@ -435,7 +470,7 @@ public class MainGamePanel extends JPanel {
 				//just jump to the location of the unit next or previously in line.
 				else if(currentGameState==GameState.CyclingThroughUnits){
 					
-					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+					if(key==KeyEvent.VK_RIGHT){
 						if(unitIndex<localUserUnitList.size()-1){
 							unitIndex++;
 						}
@@ -450,7 +485,7 @@ public class MainGamePanel extends JPanel {
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
-					else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+					else if(key==KeyEvent.VK_LEFT){
 						if(unitIndex>0){
 							unitIndex--;
 						}
@@ -493,6 +528,17 @@ public class MainGamePanel extends JPanel {
 							repaint();
 						}
 					}
+					else if(key==KeyEvent.VK_I){
+						if(showInventory){
+							showInventory=false;
+							MainGamePanel.this.remove(inventoryPanel);
+							repaint();
+						}
+						else{
+							showInventory=true;
+							repaint();
+						}
+					}
 					else if(key==KeyEvent.VK_E){
 						EndTurnCommand endTurn=new EndTurnCommand(source);
 						try{
@@ -501,6 +547,8 @@ public class MainGamePanel extends JPanel {
 							if(showStats==true){
 								showStats=false;
 								MainGamePanel.this.remove(statsPanel);
+								
+								showInventory=false;
 								repaint();
 							}
 						}catch(IOException e){
@@ -565,8 +613,22 @@ public class MainGamePanel extends JPanel {
 						try{
 							serverOut.writeObject(endTurn);
 							currentGameState=GameState.CyclingThroughUnits;
+
+							showInventory=false;
+							repaint();
 						}catch(IOException e){
 							e.printStackTrace();
+						}
+					}
+					else if(key==KeyEvent.VK_I){
+						if(showInventory){
+							showInventory=false;
+							MainGamePanel.this.remove(inventoryPanel);
+							repaint();
+						}
+						else{
+							showInventory=true;
+							repaint();
 						}
 					}
 				}
