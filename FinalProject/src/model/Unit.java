@@ -332,6 +332,14 @@ public class Unit implements Serializable{
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
+			break;
+		case 'p':
+		case 'P':
+			try {
+				standingImage=ImageIO.read(new File("images/Princess.png"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 		
 		//initialize the headstone image

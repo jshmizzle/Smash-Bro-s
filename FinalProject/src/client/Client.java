@@ -18,7 +18,7 @@ public interface Client {
 	
 	public void unitMoved(String source, int unitIndex, ArrayList<Point> moves);
 
-	public void pickUpItem(String source, Point p);
+	public void pickUpItem(String source);
 
 	public void attackUnit(String source, int fromIndex, int toIndex);
 
@@ -27,5 +27,7 @@ public interface Client {
 	public void setMapAndScenario(String source, Map map, Scenario scenario);
 	
 	public void beginGame();
-	public ArrayList <Item> getItemList();
+	
+	public void teleportUnit(String source, int unitIndex, Point teleLocation);
+
 }

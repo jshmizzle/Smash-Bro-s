@@ -21,8 +21,11 @@ import model.GameBoard;
 import model.Unit;
 import client.Client;
 import client.TRPGClient;
+
+import command.Command;
 import command.EndTurnCommand;
 import command.PickUpItemCommand;
+import command.TeleportUnitCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
@@ -32,7 +35,8 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	private Image redOrb, swordCursor, boulder, grass, headstone, princess, waypoint, tree, invalidMove, chest, attackRange; 
+	private Image redOrb, swordCursor, portal, boulder, grass, headstone, princess, waypoint, 
+	              tree, invalidMove, chest, attackRange, redDiamond, blueDiamond; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
@@ -109,6 +113,10 @@ public class MainGamePanel extends JPanel {
 			swordCursor=ImageIO.read(new File("images/redSwords.png"));
 			redOrb=ImageIO.read(new File("images/redOrb.png"));
 			attackRange=ImageIO.read(new File("images/attackRange.png"));
+			portal=ImageIO.read(new File("images/marioPipe.png"));
+			redDiamond=ImageIO.read(new File("images/redGlowingDiamond.png"));
+			blueDiamond=ImageIO.read(new File("images/blueGlowingDiamond.png"));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -135,57 +143,6 @@ public class MainGamePanel extends JPanel {
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(boulder, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
-				else if(currentBoard[row][col]=='S' || currentBoard[row][col]=='s'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					g2.drawImage(sonic, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-				}
-				else if(currentBoard[row][col]=='M' || currentBoard[row][col]=='m'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					
-//					//check if this unit is dead
-//					if(gameBoard.getPlayerTwoUnits().get(2).isAlive()){
-//					g2.drawImage(megaman, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					}else{
-//						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					}
-				}
-				else if(currentBoard[row][col]=='W' || currentBoard[row][col]=='w'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					g2.drawImage(mario, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-				}
-				else if(currentBoard[row][col]=='G' || currentBoard[row][col]=='g'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					g2.drawImage(goku, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-				}
-				else if(currentBoard[row][col]=='L'|| currentBoard[row][col]=='l'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					
-//					//check if this unit is dead
-//					if(gameBoard.getPlayerTwoUnits().get(1).isAlive()){
-//					g2.drawImage(link, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					}else{
-//						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					}
-				}
-				else if(currentBoard[row][col]=='P'|| currentBoard[row][col]=='p'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					
-					//check if this unit is dead
-					if(currentBoard[row][col]=='P'){
-						if(gameBoard.getPlayerOneUnits().get(0).isAlive()){
-						g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-						}else{
-							g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-						}
-					}
-					else{//then this is the friendly princess
-						if(gameBoard.getPlayerTwoUnits().get(0).isAlive()){
-							g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-							}else{
-								g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-							}
-					}
-				}
 				else if(currentBoard[row][col]=='!'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(tree, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -193,6 +150,13 @@ public class MainGamePanel extends JPanel {
 				else if(currentBoard[row][col]=='@'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(chest, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+				}
+				else if(currentBoard[row][col]=='%'){
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					g2.drawImage(portal, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+				}
+				else{
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 			}
 		}
@@ -223,10 +187,16 @@ public class MainGamePanel extends JPanel {
 
 	private void drawTheUnits(Graphics2D g2) {
 		for(Unit curr: localUserUnitList){
+			//draw the unit itself
 			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the blue diamond above its head to designate it as one of ours
+			g2.drawImage(blueDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
 		}
 		for(Unit curr: localOpponentUnitList){
+			//draw the unit itself
 			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the red diamond above its head to show it's an enemy
+			g2.drawImage(redDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
 		}
 	}
 
@@ -397,26 +367,7 @@ public class MainGamePanel extends JPanel {
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
 						if(gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
-							//TODO wormhole, randomly find an available spot on the map and go there
-							/*if(currentBoard[cursorLocation.y][cursorLocation.x] == '%'){
-								Random random = new Random();
-								int xPoint = random.nextInt(19);
-								int yPoint = random.nextInt(19);
-								if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
-									
-								}
-								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
-								
-							}*/
-							if(currentBoard[cursorLocation.y][cursorLocation.x] == '@'){
-								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
-								PickUpItemCommand command = new PickUpItemCommand(source,toMove);
-								try {
-									serverOut.writeObject(command);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
+							
 							Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
 							ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 							if(path!=null){
@@ -436,10 +387,47 @@ public class MainGamePanel extends JPanel {
 									
 									previousPath=null;
 									
-									showInventory=false;
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
+							}
+							
+							
+							//now if the unit had just landed on a portal then randomly move it
+							//and also tell the other client
+							int lastPointIndex;
+							if(path.size()>currentUnit.getMovesLeft()){
+								lastPointIndex=currentUnit.getMovesLeft();
+							}
+							else
+								lastPointIndex=path.size()-1;
+							
+							int finalX=path.get(lastPointIndex).x;
+							int finalY=path.get(lastPointIndex).y;
+							if(currentBoard[finalX][finalY] == '%'){
+								Random random = new Random();
+								
+								int xPoint = random.nextInt(19);
+								int yPoint = random.nextInt(19);
+								if (gameBoard.checkAvailable(new Point(xPoint,yPoint))){
+									
+								}
+								else{
+									do{
+										xPoint = random.nextInt(19);
+										yPoint = random.nextInt(19);
+									}while(!gameBoard.checkAvailable(new Point(xPoint, yPoint)));
+								}
+								Point teleportLocation=new Point(xPoint, yPoint);
+								
+								try{
+									Command command = new TeleportUnitCommand(source, unitIndex, teleportLocation);
+									serverOut.writeObject(command);
+								}catch(IOException e){
+									e.printStackTrace();
+								}
+								cursorLocation=new Point(yPoint, xPoint);
+								repaint();
 							}
 						}
 					}
