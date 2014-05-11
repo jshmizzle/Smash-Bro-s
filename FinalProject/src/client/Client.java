@@ -14,7 +14,7 @@ public interface Client {
 	
 	public void newGame();
 
-	public void useItem(String source, int index, Item item);
+	public void useItem(String source, int index, int itemIndex);
 	
 	public void unitMoved(String source, int unitIndex, ArrayList<Point> moves);
 

@@ -18,15 +18,17 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import model.GameBoard;
+import model.Item;
 import model.Unit;
+import client.Client;
 import client.TRPGClient;
 
 import command.Command;
 import command.EndTurnCommand;
-import command.PickUpItemCommand;
 import command.TeleportUnitCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
+import command.UseItemCommand;
 
 @SuppressWarnings("serial")
 public class MainGamePanel extends JPanel {
@@ -176,6 +178,9 @@ public class MainGamePanel extends JPanel {
 		else if(currentGameState==GameState.ChoosingAttack){
 			drawAttackCursor(g2);
 			drawAttackRange(g2);
+			if(this.showStats==true){
+				drawStatsPanel();
+			}
 		}
 		//if the user ever wants to see the inventory they can
 		if(this.showInventory==true){
@@ -336,6 +341,26 @@ public class MainGamePanel extends JPanel {
 		public void keyPressed(KeyEvent arg0) {
 			int key=arg0.getKeyCode();
 			if(myTurn){
+				//just allow them to use their hard earned items any time they have the 
+				//inventory open
+				if(showInventory==true){
+					int temp=0;
+					switch(key){
+					case KeyEvent.VK_3:temp++; 
+					case KeyEvent.VK_2:temp++;
+					case KeyEvent.VK_1:temp++;
+						if(client.getItemList().size()>=temp){
+							try{
+								Item item=client.getItemList().get(temp-1);
+								Command<Client> command=new UseItemCommand(source, unitIndex, temp-1);
+								serverOut.writeObject(command);
+								repaint();
+							}catch(IOException e){
+								e.printStackTrace();
+							}
+						}
+					}
+				}
 				if(currentGameState==GameState.ChoosingMove){
 					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
 						cursorLocation.translate(1, 0);
@@ -356,7 +381,7 @@ public class MainGamePanel extends JPanel {
 					else if(key==KeyEvent.VK_BACK_SPACE){
 						currentGameState=GameState.CyclingThroughUnits;
 						Point unitPoint=gameBoard.getPlayerOneUnits().get(unitIndex).getLocation();
-						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+						cursorLocation=swap(unitPoint);
 						if(statsPanel!=null){
 							MainGamePanel.this.add(statsPanel);
 						}
@@ -365,23 +390,18 @@ public class MainGamePanel extends JPanel {
 					else if(key==KeyEvent.VK_ENTER){
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
-						if(gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
+						if(gameBoard.checkAvailable(swap(cursorLocation))){
 							
-							Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
+							Point offsetCorrectedCursor=swap(cursorLocation);
 							ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 							if(path!=null){
 								UnitMovedCommand moveCommand =new UnitMovedCommand(source, unitIndex, path);
 								try {
 									serverOut.writeObject(moveCommand);
 		
-									//don't just go straight to letting them attack again
-									//we only want them to attack once per turn, so check if 
-									//they've already attacked or not. 
+									//don't just go straight to letting them attack they can
+									//manually specify if they want to attack or not
 									if(!currentUnit.checkIfAlreadyAttackedThisTurn())
-										currentGameState=GameState.ChoosingAttack;
-									//this unit has already attacked so we should just push
-									//the client back to selecting the next unit
-									else
 										currentGameState=GameState.CyclingThroughUnits;
 									
 									previousPath=null;
@@ -470,7 +490,7 @@ public class MainGamePanel extends JPanel {
 						currentUnit=localUserUnitList.get(unitIndex);
 						
 						Point unitPoint=localUserUnitList.get(unitIndex).getLocation();
-						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+						cursorLocation=swap(unitPoint);
 						repaint();
 					}
 					else if(key==KeyEvent.VK_LEFT){
@@ -484,7 +504,7 @@ public class MainGamePanel extends JPanel {
 						currentUnit=localUserUnitList.get(unitIndex);
 						
 						Point unitPoint=localUserUnitList.get(unitIndex).getLocation();
-						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
+						cursorLocation=swap(unitPoint);
 						repaint();
 					}
 					//if the user presses enter while cycling through units
@@ -543,6 +563,13 @@ public class MainGamePanel extends JPanel {
 							e.printStackTrace();
 						}
 					}
+					//allow the player to manually make the decision to attack
+					else if(key==KeyEvent.VK_A){
+						if(!currentUnit.checkIfAlreadyAttackedThisTurn()){
+							currentGameState=GameState.ChoosingAttack;
+							repaint();
+						}
+					}
 				}
 				//now after the player has had his unit move, he freely moves the cursor to 
 				//attempt to make an attack selection
@@ -564,24 +591,22 @@ public class MainGamePanel extends JPanel {
 						repaint();
 					}
 					else if(key==KeyEvent.VK_ENTER){
-						if(gameBoard.checkIfEnemy(currentUnit,new Point(cursorLocation.y, cursorLocation.x))){
+						if(gameBoard.checkIfEnemy(currentUnit,swap(cursorLocation))){
 							System.out.println("found enemy");
 							int enemyIndex=-99;
 
 							for(int i=0; i<localOpponentUnitList.size(); i++){
-								if(localOpponentUnitList.get(i).getLocation().equals(new Point(cursorLocation.y, cursorLocation.x))){
+								if(localOpponentUnitList.get(i).getLocation().equals(swap(cursorLocation))){
 									enemyIndex=i;
 								}
 							}
 							//only actually send the command if the unit is within range and its
 							//line of fire is not obstructed
-							if (gameBoard.checkOpenLineOfFire(currentUnit, new Point(cursorLocation.y, cursorLocation.x))) {
+							if (gameBoard.checkOpenLineOfFire(currentUnit, swap(cursorLocation))) {
 								UnitAttackCommand moveCommand = new UnitAttackCommand(source, unitIndex, enemyIndex);
 								System.out.println("attacking");
 								try {
 									serverOut.writeObject(moveCommand);
-	
-									localUserUnitList.get(unitIndex).setLocation(currentUnit.getLocation());
 	
 									currentGameState = GameState.CyclingThroughUnits;
 									previousPath = null;
@@ -593,7 +618,7 @@ public class MainGamePanel extends JPanel {
 					}
 					else if(key==KeyEvent.VK_BACK_SPACE){
 						currentGameState=GameState.CyclingThroughUnits;
-						cursorLocation=new Point(currentUnit.getLocation().y, currentUnit.getLocation().x);
+						cursorLocation=swap(currentUnit.getLocation());
 						repaint();
 					}
 					else if(key==KeyEvent.VK_E){
@@ -616,6 +641,25 @@ public class MainGamePanel extends JPanel {
 						}
 						else{
 							showInventory=true;
+							repaint();
+						}
+					}
+					else if(key==KeyEvent.VK_S){
+						if(showStats==true){
+							showStats=false;
+							MainGamePanel.this.remove(statsPanel);
+							repaint();
+						}
+						else{
+							showStats=true;
+							repaint();
+						}
+					}
+					//allow the player to toggle off of the attack mode
+					else if(key==KeyEvent.VK_A){
+						if(!currentUnit.checkIfAlreadyAttackedThisTurn()){
+							currentGameState=GameState.CyclingThroughUnits;
+							cursorLocation=swap(currentUnit.getLocation());
 							repaint();
 						}
 					}
@@ -649,5 +693,14 @@ public class MainGamePanel extends JPanel {
 			myTurn=true;
 		else 
 			myTurn=false;
+	}
+	
+	/**
+	 * Return takes a Point and returns a new one with the x and y coordinates swapped. 
+	 * @param original The original Point to have its points swapped.
+	 * @return
+	 */
+	private Point swap(Point original){
+		return new Point(original.y, original.x);
 	}
 }

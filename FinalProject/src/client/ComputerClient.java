@@ -20,8 +20,13 @@ import model.Link;
 import model.Map;
 import model.Mario;
 import model.MegaMan;
+import model.Potion;
 import model.Princess;
+import model.Rage;
 import model.Scenario;
+import model.Shield;
+import model.Sneakers;
+import model.Sniper;
 import model.Sonic;
 import model.Unit;
 import GUI.CharacterSelectPanel;
@@ -53,6 +58,7 @@ public class ComputerClient extends JFrame implements Client {
 	private boolean isHost = false;
 	private Scenario gameType = null;
 	private Map map = null;
+	private ArrayList<Item> compItemList=new ArrayList<>(), playerItemList=new ArrayList<>();
 
 	public static void main(String[] args) {
 		// try {
@@ -566,6 +572,7 @@ public class ComputerClient extends JFrame implements Client {
 						i, moves);
 				try {
 					outputStream.writeObject(moveCommand);
+					System.out.println("************\n COMPUTER MOVED! \n************");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1051,8 +1058,18 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	@Override
-	public void useItem(String source, int index, Item item) {
-
+	public void useItem(String source, int unitIndex, int itemIndex) {
+		Item item;
+		
+		if (source.compareTo(userName)==0) {
+			item=compItemList.get(itemIndex);
+			currentBoard.useThisItem(source, compUnits.get(unitIndex), item);
+			compItemList.remove(item);
+		} else {
+			item=playerItemList.get(itemIndex);
+			currentBoard.useThisItem(source, playerUnits.get(unitIndex), item);
+			playerItemList.remove(item);
+		}
 	}
 
 	public void unitAttacked(String source, int attackUnit, int defendUnit) {
@@ -1138,8 +1155,28 @@ public class ComputerClient extends JFrame implements Client {
 
 	@Override
 	public void pickUpItem(String source) {
-		// TODO Auto-generated method stub
+		ArrayList<Item> list = new ArrayList<>();
+		Item rage = new Rage();
+		Item potion = new Potion();
+		Item shield = new Shield();
+		Item sneakers = new Sneakers();
+		Item sniper = new Sniper();
+		// can add more
+		list.add(rage);
+		list.add(potion);
+		list.add(shield);
+		list.add(sneakers);
+		list.add(sniper);
 
+		Random random = new Random();
+		int num = random.nextInt(list.size() - 1);
+
+		Item item = (list.get(num));
+		if (source.equals(userName)) {
+			compItemList.add(item);
+		} else{
+			playerItemList.add(item);
+		}
 	}
 
 	@Override

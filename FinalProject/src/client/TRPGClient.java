@@ -36,7 +36,7 @@ import GUI.WaitingOnCharacterSelection;
 
 public class TRPGClient extends JFrame implements Client {
 
-	private String host, userName;
+	public String host, userName;
 	private int port = 0;
 	private Map mapChoice; 
 	private Scenario scenarioChoice;
@@ -47,8 +47,7 @@ public class TRPGClient extends JFrame implements Client {
 	private GameBoard currentBoard;
 	private boolean playingAlready = false, isHost = false,singlePlayer = false;
 	private boolean myTurn = true;
-	private ArrayList<Item> itemList=new ArrayList<>();
-	private ArrayList<Unit> playerUnits;
+	private ArrayList<Item> itemList=new ArrayList<>(), opponentItemList=new ArrayList<>();
 	private ServerHandler handler;
 	private ArrayList<Unit> myUnits;
 	private ArrayList<Unit> opponentUnits;
@@ -376,21 +375,18 @@ public class TRPGClient extends JFrame implements Client {
 		this.setVisible(true);
 	}
 
-	public void useItem(String client, int index, Item item) {
-
-		if (client.equals(userName)) {
-			if (isHost)
-				currentBoard.useThisItem(client, playerUnits.get(index), item);
-			else
-				currentBoard.useThisItem(client, opponentUnits.get(index), item);
+	public void useItem(String client, int unitIndex, int itemIndex) {
+		Item item;
+		
+		if (client.compareTo(userName)==0) {
+			item=itemList.get(itemIndex);
+			currentBoard.useThisItem(client, myUnits.get(unitIndex), item);
+			itemList.remove(item);
 		} else {
-			if (isHost) {
-				currentBoard.useThisItem(client, opponentUnits.get(index), item);
-			} else
-				currentBoard.useThisItem(client, playerUnits.get(index), item);
-
+			item=opponentItemList.get(itemIndex);
+			currentBoard.useThisItem(client, opponentUnits.get(unitIndex), item);
+			opponentItemList.remove(item);
 		}
-
 	}
 
 	public void newGame() {
@@ -461,27 +457,29 @@ public class TRPGClient extends JFrame implements Client {
 	}
 
 	public void pickUpItem(String client) {
+		ArrayList<Item> list = new ArrayList<>();
+		Item rage = new Rage();
+		Item potion = new Potion();
+		Item shield = new Shield();
+		Item sneakers = new Sneakers();
+		Item sniper = new Sniper();
+		// can add more
+		list.add(rage);
+		list.add(potion);
+		list.add(shield);
+		list.add(sneakers);
+		list.add(sniper);
+
+		Random random = new Random();
+		int num = random.nextInt(list.size() - 1);
+
+		Item item = (list.get(num));
 		if (client.equals(userName)) {
-			ArrayList<Item> list = new ArrayList<>();
-			Item rage = new Rage();
-			Item potion = new Potion();
-			Item shield = new Shield();
-			Item sneakers = new Sneakers();
-			Item sniper = new Sniper();
-			// can add more
-			list.add(rage);
-			list.add(potion);
-			list.add(shield);
-			list.add(sneakers);
-			list.add(sniper);
-
-			Random random = new Random();
-			int num = random.nextInt(list.size() - 1);
-
-			Item item = (list.get(num));
 			itemList.add(item);
-		} else
-			; // do nothing
+		} else{
+			opponentItemList.add(item);
+		}
+			
 	}
 
 	/**
@@ -562,10 +560,10 @@ public class TRPGClient extends JFrame implements Client {
 		moving = false;
 	}
 
+	//WORKING
 	private void checkIfTheUnitWalkedOverAnItem(Unit unit, int x, int y) {
 		if(currentBoard.getGameBoard()[x][y]=='@'){
 			//the unit is currently on top of an item
-			System.out.println("FOUND AN ITEM!");
 			PickUpItemCommand command = new PickUpItemCommand(userName);
 			try {
 				outputStream.writeObject(command);
