@@ -1088,7 +1088,7 @@ public class ComputerClient extends JFrame implements Client {
 
 			if ((xPoint == 0 && yPoint == 0)) {
 				unitIndex++;
-				moveTurnPrincess();
+				moveTurnMele();
 			} else {
 //				System.out.println(u.getName() + " " + new Point(xPoint, yPoint));
 //				System.out.println(u.getName() + " "
@@ -1097,14 +1097,14 @@ public class ComputerClient extends JFrame implements Client {
 				if (currentBoard.checkOpenLineOfFire(u, new Point(userPointX,
 						userPointY))) {
 					unitIndex++;
-					moveTurnPrincess();
+					moveTurnMele();
 				} else {
 
 					path = currentBoard.findShortestPath(u.getLocation(),
 							new Point(xPoint, yPoint));
 					if(path==null){
 						unitIndex++;
-						moveTurnPrincess();
+						moveTurnMele();
 					}
 					else{
 					if (path.size() > u.getDistance() + 1) {
