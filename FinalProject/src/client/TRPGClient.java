@@ -402,7 +402,7 @@ public class TRPGClient extends JFrame implements Client {
 		else {
 			currentBoard.attackUnit(opponentUnits.get(fromIndex), myUnits.get(toIndex));
 		}
-		
+		currentPanel.repaint();
 		// if the game is over let us know!	
 		if (scenarioChoice == Scenario.Princess) {
 			if (myUnits.get(0).getHealth() <= 0 || opponentUnits.get(0).getHealth() <= 0) {
@@ -519,7 +519,7 @@ public class TRPGClient extends JFrame implements Client {
 			//before you move to the next point and replace the char that was there with your 
 			//own, check if you should be receiving an item!
 			if(source.equals(userName))	
-				checkIfTheUnitWalkedOverAnItem(u, dx, dy);
+				checkIfTheUnitWalkedOverAnItem(source, dx, dy);
 			
 			if (x == dx && y == dy) {
 				//System.out.println("same");
@@ -561,15 +561,16 @@ public class TRPGClient extends JFrame implements Client {
 	}
 
 	//WORKING
-	private void checkIfTheUnitWalkedOverAnItem(Unit unit, int x, int y) {
+	private void checkIfTheUnitWalkedOverAnItem(String source,int x, int y) {
 		if(currentBoard.getGameBoard()[x][y]=='@'){
 			//the unit is currently on top of an item
-			PickUpItemCommand command = new PickUpItemCommand(userName);
+			PickUpItemCommand command = new PickUpItemCommand(source);
 			try {
 				outputStream.writeObject(command);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			System.out.println(opponentItemList);
 		}
 	}
 
@@ -585,10 +586,16 @@ public class TRPGClient extends JFrame implements Client {
 	
 	public void teleportUnit(String source, int unitIndex, Point teleLocation){
 		if(this.userName.equals(source)){
-			myUnits.get(unitIndex).setLocation(teleLocation);
+			Unit unit=myUnits.get(unitIndex);
+			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=' ';
+			unit.setLocation(teleLocation);
+			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=unit.getCharRepresentation();
 		}
 		else{
-			opponentUnits.get(unitIndex).setLocation(teleLocation);
+			Unit unit=opponentUnits.get(unitIndex);
+			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=' ';
+			unit.setLocation(teleLocation);
+			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=unit.getCharRepresentation();
 		}
 	}
 }

@@ -84,7 +84,7 @@ public class UnitStatusPanel extends JPanel {
 			heartsToDraw=3;
 		else if(currentHealth>halfHealth)
 			heartsToDraw=2;
-		else if(currentHealth>quarterHealth)
+		else if(currentHealth>0)
 			heartsToDraw=1;
 		
 		
