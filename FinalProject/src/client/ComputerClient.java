@@ -282,7 +282,7 @@ public class ComputerClient extends JFrame implements Client {
 
 			if (u.getName().equals("Sonic")) {
 				// go toward princess if path to her is open
-				if (u.getLocation() == new Point(18, 10)) {
+				if (u.getLocation().equals(new Point(18, 10))) {
 					xPoint = 0;
 					yPoint = 0;
 				} else if (currentBoard.checkAvailable(new Point(18, 10))) {
