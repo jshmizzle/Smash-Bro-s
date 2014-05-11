@@ -15,20 +15,17 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import command.PickUpItemCommand;
+
 import model.GameBoard;
-import model.Goku;
 import model.Item;
-import model.Link;
 import model.Map;
-import model.Mario;
-import model.MegaMan;
 import model.Potion;
-import model.Princess;
 import model.Rage;
 import model.Scenario;
 import model.Shield;
 import model.Sneakers;
-import model.Sonic;
+import model.Sniper;
 import model.Unit;
 import GUI.CharacterSelectPanel;
 import GUI.GameLobby;
@@ -36,8 +33,6 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import GUI.SinglePlayerMapAndScenarioSelect;
 import GUI.WaitingOnCharacterSelection;
-
-import command.LobbyInfoCommand;
 
 public class TRPGClient extends JFrame implements Client {
 
@@ -50,10 +45,9 @@ public class TRPGClient extends JFrame implements Client {
 	private ObjectOutputStream outputStream;
 	private JPanel currentPanel;
 	private GameBoard currentBoard;
-	private boolean playingAlready = false, isHost = false,
-			singlePlayer = false;
+	private boolean playingAlready = false, isHost = false,singlePlayer = false;
 	private boolean myTurn = true;
-	private ArrayList<Item> itemList = new ArrayList<Item>();
+	private ArrayList<Item> itemList=new ArrayList<>();
 	private ArrayList<Unit> playerUnits;
 	private ServerHandler handler;
 	private ArrayList<Unit> myUnits;
@@ -78,7 +72,7 @@ public class TRPGClient extends JFrame implements Client {
 		t.start();
 
 		this.setTitle("TRPG Final Project");
-
+		
 		currentPanel = new MainMenuPanel(userName, outputStream);
 		this.add(currentPanel).setVisible(true);
 		this.pack();
@@ -324,7 +318,7 @@ public class TRPGClient extends JFrame implements Client {
 		}
 		
 		
-		currentPanel=new MainGamePanel(userName, currentBoard, outputStream, isHost);
+		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream, isHost);
 		currentPanel.grabFocus();
 		this.add(currentPanel);
 		currentPanel.requestFocus(true);
@@ -514,26 +508,26 @@ public class TRPGClient extends JFrame implements Client {
 		return myTurn;
 	}
 
-	public void pickUpItem(String client, Point p) {
+	public void pickUpItem(String client) {
 		if (client.equals(userName)) {
 			ArrayList<Item> list = new ArrayList<>();
 			Item rage = new Rage();
 			Item potion = new Potion();
 			Item shield = new Shield();
 			Item sneakers = new Sneakers();
+			Item sniper = new Sniper();
 			// can add more
 			list.add(rage);
 			list.add(potion);
 			list.add(shield);
 			list.add(sneakers);
+			list.add(sniper);
 
 			Random random = new Random();
 			int num = random.nextInt(list.size() - 1);
 
 			Item item = (list.get(num));
 			itemList.add(item);
-			//System.out.println("Picked up item: " + item.getName());
-			// currentBoard.removeItem(p);
 		} else
 			; // do nothing
 	}
@@ -572,6 +566,11 @@ public class TRPGClient extends JFrame implements Client {
 			int dx = moves.get(i + 1).x;
 			int dy = moves.get(i + 1).y;
 
+			//before you move to the next point and replace the char that was there with your 
+			//own, check if you should be receiving an item!
+			if(source.equals(userName))	
+				checkIfTheUnitWalkedOverAnItem(u, dx, dy);
+			
 			if (x == dx && y == dy) {
 				//System.out.println("same");
 			}
@@ -604,16 +603,42 @@ public class TRPGClient extends JFrame implements Client {
 				currentBoard.setUnitToThisSpot(u, moves.get(i + 1));
 				((MainGamePanel) currentPanel).update(currentBoard);
 			}
+			
 		}
 		((MainGamePanel) currentPanel).update(currentBoard);
 		 
-
 		moving = false;
+	}
+
+	private void checkIfTheUnitWalkedOverAnItem(Unit unit, int x, int y) {
+		if(currentBoard.getGameBoard()[x][y]=='@'){
+			//the unit is currently on top of an item
+			System.out.println("FOUND AN ITEM!");
+			PickUpItemCommand command = new PickUpItemCommand(userName);
+			try {
+				outputStream.writeObject(command);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private boolean moving = true;
 
 	public boolean isMoving() {
 		return moving;
+	}
+	
+	public ArrayList<Item> getItemList(){
+		return itemList;
+	}
+	
+	public void teleportUnit(String source, int unitIndex, Point teleLocation){
+		if(this.userName.equals(source)){
+			myUnits.get(unitIndex).setLocation(teleLocation);
+		}
+		else{
+			opponentUnits.get(unitIndex).setLocation(teleLocation);
+		}
 	}
 }

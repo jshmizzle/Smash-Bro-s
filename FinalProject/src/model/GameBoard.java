@@ -147,10 +147,38 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight - (boardHeight / 3) - 8][boardWidth / 2 + 8] = '!';
 		gameBoard[boardHeight - (boardHeight / 3) - 9][boardWidth / 2 + 9] = '!';
 		
-		//set the princesses to the correct places on the map!
-		if(currentScenario==Scenario.Princess){
-			playerTwoUnits.get(0).setLocation(new Point(0, boardWidth / 2));
-			playerOneUnits.get(0).setLocation(new Point(boardHeight-1, boardWidth / 2));
+		int i = 0;
+		for (Unit u : playerTwoUnits) {
+			if (u.getCharRepresentation() == 'p') {
+				u.setLocation(new Point(0, boardWidth / 2));
+				gameBoard[0][boardWidth / 2] = 'p';
+			}
+
+			else {
+				gameBoard[1][boardHeight / 2 - 2 + i] = u
+						.getCharRepresentation();
+				Point p = new Point(1, boardWidth / 2 - 2 + i);
+				u.setLocation(p);
+				i++;
+			}
+
+		}
+
+		int j = 0;
+
+		for (Unit c : playerOneUnits) {
+			if (c.getCharRepresentation() == 'P') {
+				c.setLocation(new Point(boardHeight-1, boardWidth / 2));
+				gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
+			}
+
+			else {
+				gameBoard[boardHeight - 2][boardWidth / 2 - 2 + j] = c
+						.getCharRepresentation();
+				Point p = new Point(boardHeight - 2, boardWidth / 2 - 2 + j);
+				c.setLocation(p);
+				j++;
+			}
 		}
 
 	}
@@ -247,10 +275,6 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 2][boardWidth - 1] = '@';
 		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
 
-//		if(currentScenario==Scenario.Princess){
-//			gameBoard[0][boardWidth / 2] = 'p';
-//			gameBoard[boardHeight - 1][boardHeight / 2] = 'P';
-//		}
 
 		int i = 0;
 		for (Unit u : playerTwoUnits) {

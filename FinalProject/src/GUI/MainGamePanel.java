@@ -19,8 +19,12 @@ import javax.swing.JPanel;
 
 import model.GameBoard;
 import model.Unit;
+import client.TRPGClient;
+
+import command.Command;
 import command.EndTurnCommand;
 import command.PickUpItemCommand;
+import command.TeleportUnitCommand;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
 
@@ -30,32 +34,31 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-
 	
-	//private Image boulder, megaman, sonic, grass, mario, headstone, goku, link, princess, waypoint, tree, invalidMove, chest; 
-
-
-	private Image redOrb, swordCursor, boulder, grass, headstone, princess, waypoint, tree, invalidMove, chest, attackRange; 
-
+	private Image redOrb, swordCursor, portal, boulder, grass, headstone, princess, waypoint, 
+	              tree, invalidMove, chest, attackRange, redDiamond, blueDiamond; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
 	private GameState currentGameState;
 	private Unit currentUnit;
-	private UnitStatusPanel statsPanel;
 	private String source;
 	private ArrayList<Unit> localUserUnitList, localOpponentUnitList;
-	private boolean isHost, myTurn;
+	private boolean isHost, myTurn,showInventory;
+	private JPanel inventoryPanel, statsPanel;
+	private TRPGClient client;
 	
-	public MainGamePanel(String source, GameBoard startingBoard, ObjectOutputStream serverOut, boolean isHost) {
+	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut, boolean isHost) {
 		this.serverOut=serverOut;
 		this.source=source;
 		this.isHost=isHost;
+		this.client=client;
 		
 		//decide if the game starts off on our turn based on who is the host
 		if(this.isHost)
 			myTurn=true;
 		else 
 			myTurn=false;
+		
 		
 		//determine the size of the JPanel
 		this.setPreferredSize(new Dimension(600, 600));
@@ -110,6 +113,10 @@ public class MainGamePanel extends JPanel {
 			swordCursor=ImageIO.read(new File("images/redSwords.png"));
 			redOrb=ImageIO.read(new File("images/redOrb.png"));
 			attackRange=ImageIO.read(new File("images/attackRange.png"));
+			portal=ImageIO.read(new File("images/marioPipe.png"));
+			redDiamond=ImageIO.read(new File("images/redGlowingDiamond.png"));
+			blueDiamond=ImageIO.read(new File("images/blueGlowingDiamond.png"));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -136,57 +143,6 @@ public class MainGamePanel extends JPanel {
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(boulder, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
-				else if(currentBoard[row][col]=='S' || currentBoard[row][col]=='s'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					g2.drawImage(sonic, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-				}
-				else if(currentBoard[row][col]=='M' || currentBoard[row][col]=='m'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					
-//					//check if this unit is dead
-//					if(gameBoard.getPlayerTwoUnits().get(2).isAlive()){
-//					g2.drawImage(megaman, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					}else{
-//						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					}
-				}
-				else if(currentBoard[row][col]=='W' || currentBoard[row][col]=='w'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					g2.drawImage(mario, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-				}
-				else if(currentBoard[row][col]=='G' || currentBoard[row][col]=='g'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					g2.drawImage(goku, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-				}
-				else if(currentBoard[row][col]=='L'|| currentBoard[row][col]=='l'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					
-//					//check if this unit is dead
-//					if(gameBoard.getPlayerTwoUnits().get(1).isAlive()){
-//					g2.drawImage(link, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					}else{
-//						g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-//					}
-				}
-				else if(currentBoard[row][col]=='P'|| currentBoard[row][col]=='p'){
-					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-					
-					//check if this unit is dead
-					if(currentBoard[row][col]=='P'){
-						if(gameBoard.getPlayerOneUnits().get(0).isAlive()){
-						g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-						}else{
-							g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-						}
-					}
-					else{//then this is the friendly princess
-						if(gameBoard.getPlayerTwoUnits().get(0).isAlive()){
-							g2.drawImage(princess, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-							}else{
-								g2.drawImage(headstone, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
-							}
-					}
-				}
 				else if(currentBoard[row][col]=='!'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(tree, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
@@ -194,6 +150,13 @@ public class MainGamePanel extends JPanel {
 				else if(currentBoard[row][col]=='@'){
 					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 					g2.drawImage(chest, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+				}
+				else if(currentBoard[row][col]=='%'){
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+					g2.drawImage(portal, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
+				}
+				else{
+					g2.drawImage(grass, col*gameTileWidth, row*gameTileHeight, gameTileWidth, gameTileHeight, null);
 				}
 			}
 		}
@@ -215,15 +178,25 @@ public class MainGamePanel extends JPanel {
 			drawAttackCursor(g2);
 			drawAttackRange(g2);
 		}
+		//if the user ever wants to see the inventory they can
+		if(this.showInventory==true){
+			drawInventory();
+		}
 		
 	}
-	
+
 	private void drawTheUnits(Graphics2D g2) {
 		for(Unit curr: localUserUnitList){
+			//draw the unit itself
 			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the blue diamond above its head to designate it as one of ours
+			g2.drawImage(blueDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
 		}
 		for(Unit curr: localOpponentUnitList){
+			//draw the unit itself
 			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the red diamond above its head to show it's an enemy
+			g2.drawImage(redDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
 		}
 	}
 
@@ -268,6 +241,7 @@ public class MainGamePanel extends JPanel {
 		MainGamePanel.this.add(statsPanel).setVisible(true);
 	}
 	
+
 	private void setStatsPanelLocationBasedOnContext(){
 		//we need to make sure that the panel is not drawn off the screen at the very top
 		//or the very right
@@ -285,6 +259,17 @@ public class MainGamePanel extends JPanel {
 			else//near right edge
 				statsPanel.setLocation((temp.y-2)*gameTileWidth, 0);
 		}
+	}
+	
+	private void drawInventory() {
+		if(inventoryPanel!=null){
+			MainGamePanel.this.remove(inventoryPanel);
+		}
+		inventoryPanel=new ItemPanel(client.getItemList());
+				
+		inventoryPanel.setSize(getWidth()/2, gameTileHeight*3);
+		inventoryPanel.setLocation(getWidth()/4, getHeight()/2-(gameTileHeight-2));
+		MainGamePanel.this.add(inventoryPanel).setVisible(true);
 	}
 	
 	private ArrayList<Point> previousPath;
@@ -382,26 +367,7 @@ public class MainGamePanel extends JPanel {
 						//The player wants this unit to move to this location so we have to go and
 						//check if that is a valid destination.
 						if(gameBoard.checkAvailable(new Point(cursorLocation.y, cursorLocation.x))){
-							//TODO wormhole, randomly find an available spot on the map and go there
-							/*if(currentBoard[cursorLocation.y][cursorLocation.x] == '%'){
-								Random random = new Random();
-								int xPoint = random.nextInt(19);
-								int yPoint = random.nextInt(19);
-								if (currentBoard.checkAvailable(new Point(xPoint,yPoint))){
-									
-								}
-								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
-								
-							}*/
-							if(currentBoard[cursorLocation.y][cursorLocation.x] == '@'){
-								Point toMove=new Point(cursorLocation.y, cursorLocation.x);
-								PickUpItemCommand command = new PickUpItemCommand(source,toMove);
-								try {
-									serverOut.writeObject(command);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
+							
 							Point offsetCorrectedCursor=new Point(cursorLocation.y, cursorLocation.x);
 							ArrayList<Point> path=gameBoard.findShortestPath(currentUnit.getLocation(), offsetCorrectedCursor);
 							if(path!=null){
@@ -420,9 +386,48 @@ public class MainGamePanel extends JPanel {
 										currentGameState=GameState.CyclingThroughUnits;
 									
 									previousPath=null;
+									
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
+							}
+							
+							
+							//now if the unit had just landed on a portal then randomly move it
+							//and also tell the other client
+							int lastPointIndex;
+							if(path.size()>currentUnit.getMovesLeft()){
+								lastPointIndex=currentUnit.getMovesLeft();
+							}
+							else
+								lastPointIndex=path.size()-1;
+							
+							int finalX=path.get(lastPointIndex).x;
+							int finalY=path.get(lastPointIndex).y;
+							if(currentBoard[finalX][finalY] == '%'){
+								Random random = new Random();
+								
+								int xPoint = random.nextInt(19);
+								int yPoint = random.nextInt(19);
+								if (gameBoard.checkAvailable(new Point(xPoint,yPoint))){
+									
+								}
+								else{
+									do{
+										xPoint = random.nextInt(19);
+										yPoint = random.nextInt(19);
+									}while(!gameBoard.checkAvailable(new Point(xPoint, yPoint)));
+								}
+								Point teleportLocation=new Point(xPoint, yPoint);
+								
+								try{
+									Command command = new TeleportUnitCommand(source, unitIndex, teleportLocation);
+									serverOut.writeObject(command);
+								}catch(IOException e){
+									e.printStackTrace();
+								}
+								cursorLocation=new Point(yPoint, xPoint);
+								repaint();
 							}
 						}
 					}
@@ -431,9 +436,22 @@ public class MainGamePanel extends JPanel {
 						try{
 							serverOut.writeObject(endTurn);
 							currentGameState=GameState.CyclingThroughUnits;
-							System.out.println("Sent the END TURN command");
+
+							showInventory=false;
+							repaint();
 						}catch(IOException e){
 							e.printStackTrace();
+						}
+					}
+					else if(key==KeyEvent.VK_I){
+						if(showInventory){
+							showInventory=false;
+							MainGamePanel.this.remove(inventoryPanel);
+							repaint();
+						}
+						else{
+							showInventory=true;
+							repaint();
 						}
 					}
 				}
@@ -441,7 +459,7 @@ public class MainGamePanel extends JPanel {
 				//just jump to the location of the unit next or previously in line.
 				else if(currentGameState==GameState.CyclingThroughUnits){
 					
-					if(key==KeyEvent.VK_RIGHT && cursorLocation.x<19){
+					if(key==KeyEvent.VK_RIGHT){
 						if(unitIndex<localUserUnitList.size()-1){
 							unitIndex++;
 						}
@@ -456,7 +474,7 @@ public class MainGamePanel extends JPanel {
 						cursorLocation.setLocation(unitPoint.y, unitPoint.x);
 						repaint();
 					}
-					else if(key==KeyEvent.VK_LEFT && cursorLocation.x>0){
+					else if(key==KeyEvent.VK_LEFT){
 						if(unitIndex>0){
 							unitIndex--;
 						}
@@ -499,6 +517,17 @@ public class MainGamePanel extends JPanel {
 							repaint();
 						}
 					}
+					else if(key==KeyEvent.VK_I){
+						if(showInventory){
+							showInventory=false;
+							MainGamePanel.this.remove(inventoryPanel);
+							repaint();
+						}
+						else{
+							showInventory=true;
+							repaint();
+						}
+					}
 					else if(key==KeyEvent.VK_E){
 						EndTurnCommand endTurn=new EndTurnCommand(source);
 						try{
@@ -507,6 +536,8 @@ public class MainGamePanel extends JPanel {
 							if(showStats==true){
 								showStats=false;
 								MainGamePanel.this.remove(statsPanel);
+								
+								showInventory=false;
 								repaint();
 							}
 						}catch(IOException e){
@@ -571,8 +602,22 @@ public class MainGamePanel extends JPanel {
 						try{
 							serverOut.writeObject(endTurn);
 							currentGameState=GameState.CyclingThroughUnits;
+
+							showInventory=false;
+							repaint();
 						}catch(IOException e){
 							e.printStackTrace();
+						}
+					}
+					else if(key==KeyEvent.VK_I){
+						if(showInventory){
+							showInventory=false;
+							MainGamePanel.this.remove(inventoryPanel);
+							repaint();
+						}
+						else{
+							showInventory=true;
+							repaint();
 						}
 					}
 				}
