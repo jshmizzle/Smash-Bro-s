@@ -336,7 +336,24 @@ public class GameBoard implements Serializable {
 		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' ' || gameBoard[(int) point.getX()][(int) point.getY()] == '%'
 				|| gameBoard[(int) point.getX()][(int) point.getY()] == '@')
 			return true;
-
+		else{
+			for(Unit u: playerOneUnits){
+				if(u.getLocation().equals(point)){
+					if(!u.isAlive()){
+						return true;
+					}
+					return false;
+				}
+			}
+			for(Unit u: playerTwoUnits){
+				if(u.getLocation().equals(point)){
+					if(!u.isAlive()){
+						return true;
+					}
+					return false;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -484,17 +501,32 @@ public class GameBoard implements Serializable {
 			return false;
 		else if (charRep <= 'z' && charRep >= 'a') {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'A' && gameBoard[x][y] <= 'Z')
-				return true;
-			else
+			if (gameBoard[x][y] >= 'A' && gameBoard[x][y] <= 'Z'){
+				for(Unit u: playerOneUnits){
+					if(u.getLocation().equals(p)){
+						if(!u.isAlive()){
+							return false;
+						}
+						return true;
+					}
+				}
 				return false;
+			}
 		} else {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'a' && gameBoard[x][y] <= 'z')
-				return true;
-			else
-				return false;
+			if (gameBoard[x][y] >= 'a' && gameBoard[x][y] <= 'z'){
+					for(Unit u: playerTwoUnits){
+						if(u.getLocation().equals(p)){
+							if(!u.isAlive()){
+								return false;
+							}
+							return true;
+						}
+					}
+					return false;
+			}
 		}
+		return false;
 	}
 
 	/************************************************************************************/

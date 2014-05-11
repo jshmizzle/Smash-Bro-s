@@ -172,7 +172,6 @@ public class ComputerClient extends JFrame implements Client {
 	 * //currentPanel = gamePanel; this.add(currentPanel).setVisible(true);
 	 * this.pack(); this.setVisible(true); }
 	 */
-
 	private void update() {
 		this.gamePanel.update(currentBoard);
 	}
@@ -1088,7 +1087,7 @@ public class ComputerClient extends JFrame implements Client {
 
 			if ((xPoint == 0 && yPoint == 0)) {
 				unitIndex++;
-				moveTurnPrincess();
+				moveTurnMele();
 			} else {
 //				System.out.println(u.getName() + " " + new Point(xPoint, yPoint));
 //				System.out.println(u.getName() + " "
@@ -1097,14 +1096,14 @@ public class ComputerClient extends JFrame implements Client {
 				if (currentBoard.checkOpenLineOfFire(u, new Point(userPointX,
 						userPointY))) {
 					unitIndex++;
-					moveTurnPrincess();
+					moveTurnMele();
 				} else {
 
 					path = currentBoard.findShortestPath(u.getLocation(),
 							new Point(xPoint, yPoint));
 					if(path==null){
 						unitIndex++;
-						moveTurnPrincess();
+						moveTurnMele();
 					}
 					else{
 					if (path.size() > u.getDistance() + 1) {
@@ -1181,7 +1180,7 @@ public class ComputerClient extends JFrame implements Client {
 				for(int j = 0; j < playerUnits.size(); j++){
 					Point toCheck = new Point(playerUnits.get(j).getLocation());
 					// if the comp unit is in range and has a shot, TAKE IT!
-					if(!u.checkIfAlreadyAttackedThisTurn() && currentBoard.checkOpenLineOfFire(u, toCheck)){
+					if(!u.checkIfAlreadyAttackedThisTurn() && currentBoard.checkOpenLineOfFire(u, toCheck) && u.isAlive()){
 						UnitAttackCommand command = new UnitAttackCommand(userName,i,j);
 						try {
 							outputStream.writeObject(command);
@@ -1207,7 +1206,7 @@ public class ComputerClient extends JFrame implements Client {
 			for (int j = 0; j < playerUnits.size(); j++) {
 				Point toCheck = new Point(playerUnits.get(j).getLocation());
 				// if the comp unit is in range and has a shot, TAKE IT!
-				if (!u.checkIfAlreadyAttackedThisTurn() &&currentBoard.checkOpenLineOfFire(u, toCheck)) {
+				if (!u.checkIfAlreadyAttackedThisTurn() &&currentBoard.checkOpenLineOfFire(u, toCheck) && u.isAlive()) {
 					UnitAttackCommand command = new UnitAttackCommand(userName,
 							i, j);
 					try {
