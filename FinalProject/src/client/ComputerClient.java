@@ -601,10 +601,10 @@ public class ComputerClient extends JFrame implements Client {
 				 */
 			}
 
-			// System.out.println(compUnits.get(i).getName()+" get point"+
-			// xPoint +yPoint);
-			// System.out.println(u.getName());
-//			System.out.println(u.getLocation());
+			 System.out.println(compUnits.get(i).getName()+" get point"+
+			 xPoint +yPoint);
+			System.out.println(u.getName());
+  			System.out.println(u.getLocation());
 			if ((xPoint == 0 && yPoint == 0)) {
 				unitIndex++;
 				moveTurnPrincess();
@@ -1400,10 +1400,16 @@ public class ComputerClient extends JFrame implements Client {
 	
 	public void teleportUnit(String source, int unitIndex, Point teleLocation){
 		if(this.userName.equals(source)){
-			compUnits.get(unitIndex).setLocation(teleLocation);
+			Unit unit=compUnits.get(unitIndex);
+			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=' ';
+			unit.setLocation(teleLocation);
+			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=unit.getCharRepresentation();
 		}
 		else{
-			playerUnits.get(unitIndex).setLocation(teleLocation);
+		Unit unit=playerUnits.get(unitIndex);
+		currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=' ';
+		unit.setLocation(teleLocation);
+		currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=unit.getCharRepresentation();
 		}
 	}
 }
