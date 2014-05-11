@@ -570,6 +570,77 @@ public class GameBoard implements Serializable {
 
 		return isOpen;
 	}
+	
+	public boolean checkOpenLineOfFire(Unit u, Point s, Point p) {
+
+		int thisRange = u.getAttackRange();
+		int thisX = (int) s.getX();
+		int thisY = (int) s.getY();
+		int otherX = (int) p.getX();
+		int otherY = (int) p.getY();
+		boolean isOpen = true;
+		Point change = new Point(0, 0);
+
+		if (!(thisX == otherX || thisY == otherY))
+			return false;
+
+		if (thisX == otherX) {
+			if (Math.abs(thisY - otherY) > thisRange)
+				return false;
+
+			if (thisY > otherY) {
+				if (thisY - otherY == 1)
+					return true;
+				for (int i = thisY - 1; i > otherY; i--) {
+					change.setLocation((double) thisX, (double) i);
+					if (!checkAvailable(change)) {
+						isOpen = false;
+						return isOpen;
+					}
+
+				}
+			} else {
+				if (otherY - thisY == 1)
+					return true;
+				for (int i = thisY + 1; i < otherY; i++) {
+					change.setLocation((double) thisX, (double) i);
+					if (!checkAvailable(change)) {
+						isOpen = false;
+						return isOpen;
+					}
+
+				}
+			}
+		} // end thisX == otherX
+
+		else {
+			if (Math.abs(thisX - otherX) > thisRange)
+				return false;
+
+			if (thisX - otherX == 1) {
+				return true;
+			} else if (thisX > otherX)
+				for (int i = thisX - 1; i > otherX; i--) {
+					change.setLocation((double) i, (double) thisY);
+					if (!checkAvailable(change)) {
+						isOpen = false;
+						return isOpen;
+					}
+				}
+			else if (otherX - thisX == 1) {
+				return true;
+			}
+			for (int i = thisX + 1; i < otherX; i++) {
+				change.setLocation((double) i, (double) thisY);
+				if (!checkAvailable(change)) {
+					isOpen = false;
+					return isOpen;
+				}
+			}
+		}
+
+		return isOpen;
+	}
 
 	public void removeItem(Point p) {
 		if (gameBoard[(int) p.getY()][(int) p.getX()] == '@')
@@ -780,7 +851,12 @@ public class GameBoard implements Serializable {
 	// new faster algorithm
 	public ArrayList<Point> findShortestPath(Point start, Point end) {
 		Tiles tiles[][] = new Tiles[gameBoard.length][gameBoard[0].length];
-
+		if(!checkAvailable(new Point(start.x-1,start.y)) && !checkAvailable(new Point(start.x+1,start.y)) && !checkAvailable(new Point(start.x,start.y+1)) && !checkAvailable(new Point(start.x,start.y-1))){
+			return null;
+		}
+		if(!checkAvailable(new Point(end.x-1,end.y)) && !checkAvailable(new Point(end.x+1,end.y)) && !checkAvailable(new Point(end.x,end.y+1)) && !checkAvailable(new Point(end.x,end.y-1))){
+			return null;
+		}
 		// sets the status of each space on the board
 		for (int i = 0; i < gameBoard.length; i++) {
 			for (int j = 0; j < gameBoard[0].length; j++) {
@@ -793,8 +869,10 @@ public class GameBoard implements Serializable {
 
 		int currCol = start.y;
 		boolean marked = true;
-		while (marked && !tiles[end.x][end.y].status.equals("marked")) {
+		int times =0;
+		while (marked && !tiles[end.x][end.y].status.equals("marked") && times <400) {
 			marked = false;
+			times ++;
 			for (int i = 0; i < gameBoard.length; i++) {
 				for (int j = 0; j < gameBoard[0].length; j++) {
 					if (tiles[i][j].status.equals("fringe")) {

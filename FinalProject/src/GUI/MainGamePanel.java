@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 
 import model.GameBoard;
 import model.Unit;
+import client.Client;
 import client.TRPGClient;
 import command.EndTurnCommand;
 import command.PickUpItemCommand;
@@ -40,9 +41,9 @@ public class MainGamePanel extends JPanel {
 	private ArrayList<Unit> localUserUnitList, localOpponentUnitList;
 	private boolean isHost, myTurn,showInventory;
 	private JPanel inventoryPanel, statsPanel;
-	private TRPGClient client;
+	private Client client;
 	
-	public MainGamePanel(String source, GameBoard startingBoard, TRPGClient client, ObjectOutputStream serverOut, boolean isHost) {
+	public MainGamePanel(String source, GameBoard startingBoard, Client client, ObjectOutputStream serverOut, boolean isHost) {
 		this.serverOut=serverOut;
 		this.source=source;
 		this.isHost=isHost;

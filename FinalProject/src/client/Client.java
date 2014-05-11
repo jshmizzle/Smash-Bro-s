@@ -27,4 +27,5 @@ public interface Client {
 	public void setMapAndScenario(String source, Map map, Scenario scenario);
 	
 	public void beginGame();
+	public ArrayList <Item> getItemList();
 }
