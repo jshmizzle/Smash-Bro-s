@@ -1,6 +1,8 @@
 package client;
 
 import java.awt.Point;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import command.PickUpItemCommand;
-
 import model.GameBoard;
 import model.Item;
 import model.Map;
@@ -73,6 +74,7 @@ public class TRPGClient extends JFrame implements Client {
 		this.setTitle("TRPG Final Project");
 		
 		currentPanel = new MainMenuPanel(userName, outputStream);
+		this.addWindowListener(new WindowClosingListener());
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
@@ -139,11 +141,55 @@ public class TRPGClient extends JFrame implements Client {
 		}
 	}
 	
+	/*****************************************************************************************************/
+
+	// listens for closing window
+	private class WindowClosingListener implements WindowListener {
+		// most of these not used, but "WindowClosing" needed
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			saveGame();
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+
+		}
+
+	}
+
+	/*****************************************************************************************************/
+
+	
 	/**
 	 * Saves the current GameBoard in a file to be read in at a later time
 	 */
 	private void saveGame() {
-		File file = new File("SmashBros.out");
+		/*File file = new File("SmashBros.out");
 		try {
 			FileOutputStream fileout = new FileOutputStream(file);
 			ObjectOutputStream out = new ObjectOutputStream(fileout);
@@ -152,7 +198,7 @@ public class TRPGClient extends JFrame implements Client {
 			out.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	public void startSinglePlayerGame(){
