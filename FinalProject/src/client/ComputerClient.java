@@ -151,7 +151,7 @@ public class ComputerClient extends JFrame implements Client {
 		this.map = map;
 		gameType = scenario;
 	}
-
+	
 	public void setUserUnits(String source, ArrayList<Unit> userUnits) {
 		if (userName.equals(source)) {
 			compUnits = userUnits;
@@ -163,6 +163,21 @@ public class ComputerClient extends JFrame implements Client {
 			playerUnits = userUnits;
 			chooseRandomCompUnits();
 		}
+	}
+	
+	public void loadSavedComputer(GameBoard currentBoard,
+			ArrayList<Item> itemList, ArrayList<Item> opponentItemList) {
+		
+		this.currentBoard = currentBoard;
+		playerItemList = itemList;
+		compItemList = opponentItemList;
+		map = currentBoard.getMap();
+		gameType = currentBoard.getScenario();
+		playerUnits = currentBoard.getPlayerOneUnits();
+		compUnits = currentBoard.getPlayerTwoUnits();
+
+		// TODO Auto-generated method stub
+		
 	}
 
 	/*

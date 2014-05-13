@@ -194,7 +194,22 @@ public class TRPGClient extends JFrame implements Client {
 		singlePlayer=true;
 		mapChoice = currentBoard.getMap();
 		scenarioChoice = currentBoard.getScenario();
+		myUnits = currentBoard.getPlayerOneUnits();
+		opponentUnits = currentBoard.getPlayerTwoUnits();
 		
+		//create a new computer client and give it the game info it needs from previous game
+		ComputerClient compClient = new ComputerClient();
+		compClient.loadSavedComputer(currentBoard, itemList, opponentItemList);
+		
+		this.remove(currentPanel);
+		this.setVisible(false);
+		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream, isHost);
+		currentPanel.grabFocus();
+		this.add(currentPanel);
+		currentPanel.requestFocus(true);
+		this.pack();
+		this.setVisible(true);
+		this.repaint();
 		//TODO under construction
 	}
 	
