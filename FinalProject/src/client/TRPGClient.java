@@ -125,21 +125,7 @@ public class TRPGClient extends JFrame implements Client {
 		Thread t = new Thread(handler);
 		t.start();
 	}
-	
-	/**
-	 * Loads a saved GameBoard from file
-	 */
-	public void loadSavedGame() {
-		try {
-			FileInputStream filein = new FileInputStream("SmashBros.out");
-			ObjectInputStream objectin = new ObjectInputStream(filein);
 
-			currentBoard = (GameBoard) objectin.readObject();
-			objectin.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	/*****************************************************************************************************/
 
@@ -186,21 +172,58 @@ public class TRPGClient extends JFrame implements Client {
 
 	
 	/**
+	 * Loads a saved GameBoard from file
+	 */
+	public void loadSavedGame() {
+		try {
+			FileInputStream filein = new FileInputStream("SmashBros.out");
+			ObjectInputStream objectin = new ObjectInputStream(filein);
+			
+			//these might be out of order..
+			userName = (String) objectin.readObject();
+			currentBoard = (GameBoard) objectin.readObject();
+			itemList = (ArrayList<Item>) objectin.readObject();
+			opponentItemList = (ArrayList<Item>) objectin.readObject();
+			objectin.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		isHost=true;
+		singlePlayer=true;
+		mapChoice = currentBoard.getMap();
+		scenarioChoice = currentBoard.getScenario();
+		
+		//TODO under construction
+	}
+	
+	/**
 	 * Saves the current GameBoard in a file to be read in at a later time
 	 */
 	private void saveGame() {
-		/*File file = new File("SmashBros.out");
-		try {
-			FileOutputStream fileout = new FileOutputStream(file);
-			ObjectOutputStream out = new ObjectOutputStream(fileout);
+		//if it's single player and the game is NOT over
+		if ((singlePlayer == true) && (!currentBoard.gameOver())) {
+			File file = new File("SmashBros.out");
+			//char[][] toSave = currentBoard.getGameBoard();
+			try {
+				FileOutputStream fileout = new FileOutputStream(file);
+				ObjectOutputStream out = new ObjectOutputStream(fileout);
 
-			out.writeObject(currentBoard);
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+				//out.writeObject(toSave);
+				out.writeObject(userName);
+				out.writeObject(currentBoard);
+				out.writeObject(itemList);
+				out.writeObject(opponentItemList);
+
+				out.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		//TODO under construction
 	}
-
+	
 	public void startSinglePlayerGame(){
 		//obviously the player will host the single player game
 		isHost=true;

@@ -36,7 +36,7 @@ public class GameBoard implements Serializable {
 
 	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 
-		gameBoard = new char[boardWidth][boardHeight];
+		gameBoard = new char[boardHeight][boardWidth];
 		this.playerOneUnits = userUnits;
 		this.playerTwoUnits = compUnits;
 		currentMap = map;
@@ -1237,5 +1237,8 @@ public class GameBoard implements Serializable {
 	
 	public Scenario getScenario(){
 		return currentScenario;
+	}
+	public Map getMap(){
+		return currentMap;
 	}
 }

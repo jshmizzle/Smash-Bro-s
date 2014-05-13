@@ -14,10 +14,12 @@ import java.io.ObjectOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import command.HostMultiPlayerGame;
 import command.JoinMultiPlayerGame;
+import command.LoadSavedGame;
 import command.StartSinglePlayerGame;
 
 @SuppressWarnings("serial")
@@ -70,8 +72,8 @@ public class MainMenuPanel extends JPanel {
 	private void initializeButtonChoices(){
 		//initialize the two buttons and add the button listener to them
 		singlePlayer=new JButton("Single Player");
-		joinGame=new JButton("Join Multi-Player Game");
-		hostGame=new JButton("Host Multi-Player Game");
+		joinGame=new JButton("Join a Game");
+		hostGame=new JButton("Host a Game");
 		
 		buttonListener=new GameTypeButtonListener();
 		singlePlayer.addActionListener(buttonListener);
@@ -106,11 +108,22 @@ public class MainMenuPanel extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//tell the server that the player has chosen the deathmatch mode
 			if(e.getSource()==singlePlayer){
-				try {
-					StartSinglePlayerGame command=new StartSinglePlayerGame(name);
-					output.writeObject(command);
-				} catch (IOException e1) {
-					e1.printStackTrace();
+				int temp = JOptionPane.showConfirmDialog(null, "Wanna load previous game?", "Before we start..", JOptionPane.YES_NO_OPTION);
+				if(temp == JOptionPane.YES_OPTION){
+					try {
+						LoadSavedGame command=new LoadSavedGame(name);
+						output.writeObject(command);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+				else{
+					try {
+						StartSinglePlayerGame command=new StartSinglePlayerGame(name);
+						output.writeObject(command);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 			else if(e.getSource()==joinGame){
