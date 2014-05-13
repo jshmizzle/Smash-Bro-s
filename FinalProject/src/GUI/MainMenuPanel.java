@@ -66,7 +66,7 @@ public class MainMenuPanel extends JPanel {
 		
 		g2.setColor(Color.red);
 		g2.setFont(new Font("Algerian", Font.ITALIC, 48));
-		g2.drawString("Final Project TRPG", 0, 40);
+		g2.drawString("Smash Bro's", 0, 40);
 	}
 	
 	private void initializeButtonChoices(){

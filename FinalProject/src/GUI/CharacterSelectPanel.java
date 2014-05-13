@@ -127,7 +127,7 @@ public class CharacterSelectPanel extends JPanel {
 		
 		//draw the display of the user's currently selected units
 		g2.setFont(new Font(Font.SERIF, Font.ITALIC , 30));
-		g2.drawString("Your Chosen Units", (getWidth()/2)-(getWidth()/7)*3+getWidth()/8, getHeight()-getHeight()/6-25);
+		g2.drawString("Your Team", (getWidth()/2)-(getWidth()/7)*3+getWidth()/8, getHeight()-getHeight()/6-25);
 		g2.setFont(new Font("Algerian", Font.BOLD, 40));
 		//first thing draw a grid for the selected units to go into
 		//fill the unselected spaces with question marks to indicate that the 

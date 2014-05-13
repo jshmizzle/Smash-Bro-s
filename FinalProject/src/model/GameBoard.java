@@ -1065,10 +1065,6 @@ public class GameBoard implements Serializable {
 		return attRange;
 	}
 
-	public void startNewGame() {
-
-	}
-
 	/************************************************************************************/
 
 	private Tiles[][] findRange(Point p, Tiles[][] tiles) {
