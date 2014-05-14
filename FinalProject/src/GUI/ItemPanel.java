@@ -29,6 +29,7 @@ public class ItemPanel extends JPanel {
 		this.items=items;
 		
 		initializeImages();
+		
 		this.setPreferredSize(new Dimension(getWidth()/4, (getHeight()/20)*2));
 		this.setVisible(true);
 		this.setBackground(new Color(0,0,0,0));

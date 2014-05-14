@@ -22,7 +22,6 @@ import javax.swing.JPanel;
 import model.Map;
 import model.Scenario;
 import client.Client;
-
 import command.Command;
 import command.MapAndScenarioSelected;
 
@@ -88,7 +87,7 @@ public class SinglePlayerMapAndScenarioSelect extends JPanel {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		

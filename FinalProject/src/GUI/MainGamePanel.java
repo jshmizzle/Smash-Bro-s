@@ -22,7 +22,6 @@ import model.Item;
 import model.Unit;
 import client.Client;
 import client.TRPGClient;
-
 import command.Command;
 import command.EndTurnCommand;
 import command.TeleportUnitCommand;
@@ -81,8 +80,6 @@ public class MainGamePanel extends JPanel {
 		
 		this.currentUnit=localUserUnitList.get(0);
 
-		System.out.println(localUserUnitList.size());
-		
 		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
 		this.gameTileHeight=getHeight()/currentBoard.length;
@@ -103,6 +100,13 @@ public class MainGamePanel extends JPanel {
 	}
 	
 	private void initializeImages(){
+		String baseDir = "C:"+System.getProperty("file.separator")
+				+ "Users"+System.getProperty("file.separator") +
+				"Jason"+System.getProperty("file.separator") +
+				"CSC335"+System.getProperty("file.separator") +
+				"FinalProjectRepository"+System.getProperty("file.separator") +
+				"FinalProject"+System.getProperty("file.separator") +
+				"images"+System.getProperty("file.separator");
 		try {
 			boulder=ImageIO.read(new File("images/Boulder.png"));
 			grass=ImageIO.read(new File("images/TRPGgrass.png"));

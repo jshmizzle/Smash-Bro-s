@@ -262,7 +262,7 @@ public class Unit implements Serializable{
 	
 	public void draw(Graphics2D g2, int height, int width){
 		if(standingImage==null){
-			initializeImages();
+			initializeImages();	
 		}
 		
 		if(isAlive()){

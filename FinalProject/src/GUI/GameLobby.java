@@ -22,7 +22,6 @@ import javax.swing.JPanel;
 
 import model.Map;
 import model.Scenario;
-
 import command.LobbyInfoCommand;
 import command.MapAndScenarioSelected;
 
@@ -70,7 +69,6 @@ public class GameLobby extends JPanel {
 		//save the connection to the server
 		this.serverOut=serverOut;
 		
-		//initialize images
 		initializeImages();
 		
 		cursorLocation=new Point(getWidth()-130, 60);

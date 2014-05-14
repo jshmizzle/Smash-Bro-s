@@ -66,6 +66,13 @@ public class WaitingOnCharacterSelection extends JPanel {
 						
 		initializeImages();
 		
+//		//IF YOU ACCIDENTALLY HAVE THIS METHOD ON YOUR COMPUTER, IGNORE IT OR FIX IT TO 
+//		//WORK FOR YOU! HAHA THIS IS HARDCODED TO MY PATH SO THAT I NOW HAVE A 
+//		//RUNNABLE JAR ON MY DESKTOP!
+//		initializeImagesForMySpecificComputer();
+//		//^^^^IGNORE^^^^^^
+		
+		
 		this.setLayout(null);
 		this.setFocusable(true);
 		this.requestFocusInWindow();
@@ -88,6 +95,26 @@ public class WaitingOnCharacterSelection extends JPanel {
 			megaman=ImageIO.read(new File("images/MegaManStanding.png"));
 			sonic=ImageIO.read(new File("images/SonicStanding.png"));
 			VS=ImageIO.read(new File("images/versus.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void initializeImagesForMySpecificComputer(){
+		String baseDir = "C:"+System.getProperty("file.separator")
+				+ "Users"+System.getProperty("file.separator") +
+				"Jason"+System.getProperty("file.separator")+
+				"CSC335"+System.getProperty("file.separator") +
+				"FinalProjectRepository"+System.getProperty("file.separator") +
+				"FinalProject"+System.getProperty("file.separator") +
+				"images"+System.getProperty("file.separator");
+		try {
+			link=ImageIO.read(new File(baseDir+"linkStanding.png"));
+			goku=ImageIO.read(new File(baseDir+"gokuStanding.png"));
+			mario=ImageIO.read(new File(baseDir+"marioStanding.png"));
+			megaman=ImageIO.read(new File(baseDir+"MegaManStanding.png"));
+			sonic=ImageIO.read(new File(baseDir+"SonicStanding.png"));
+			VS=ImageIO.read(new File(baseDir+"versus.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

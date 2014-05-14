@@ -38,6 +38,7 @@ public class MainMenuPanel extends JPanel {
 		this.setPreferredSize(new Dimension(600, 600));
 		
 		initializeBackground();
+
 		initializeButtonChoices();
 		this.setVisible(true);
 	}
@@ -45,6 +46,21 @@ public class MainMenuPanel extends JPanel {
 	private void initializeBackground(){
 		try {
 			background=ImageIO.read(new File("images/MainMenuBackground.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void initializeImagesForMySpecificComputer(){
+		String baseDir = "C:"+System.getProperty("file.separator")
+				+ "Users"+System.getProperty("file.separator") +
+				"Jason"+System.getProperty("file.separator")+
+				"CSC335"+System.getProperty("file.separator") +
+				"FinalProjectRepository"+System.getProperty("file.separator") +
+				"FinalProject"+System.getProperty("file.separator") +
+				"images"+System.getProperty("file.separator");
+		try {
+			background=ImageIO.read(new File(baseDir + "MainMenuBackground.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -27,6 +27,14 @@ public class UnitStatusPanel extends JPanel {
 	public UnitStatusPanel(Unit unit) {
 		this.unit=unit;
 		initializeImage();
+//		
+//		//IF YOU ACCIDENTALLY HAVE THIS METHOD ON YOUR COMPUTER, IGNORE IT OR FIX IT TO 
+//		//WORK FOR YOU! HAHA THIS IS HARDCODED TO MY PATH SO THAT I NOW HAVE A 
+//		//RUNNABLE JAR ON MY DESKTOP!
+//		initializeImagesForMySpecificComputer();
+//		//^^^^IGNORE^^^^^^
+		
+		
 		this.setPreferredSize(new Dimension((getWidth()/20)*2, (getHeight()/20)*3));
 		this.setVisible(true);
 	}
@@ -34,6 +42,21 @@ public class UnitStatusPanel extends JPanel {
 	private void initializeImage(){
 		try {
 			health=ImageIO.read(new File("images/healthPoint.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void initializeImagesForMySpecificComputer(){
+		String baseDir = "C:"+System.getProperty("file.separator")
+				+ "Users"+System.getProperty("file.separator") +
+				"Jason"+System.getProperty("file.separator")+
+				"CSC335"+System.getProperty("file.separator") +
+				"FinalProjectRepository"+System.getProperty("file.separator") +
+				"FinalProject"+System.getProperty("file.separator") +
+				"images"+System.getProperty("file.separator");
+		try {
+			health=ImageIO.read(new File(baseDir+"healthPoint.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -62,7 +85,7 @@ public class UnitStatusPanel extends JPanel {
 		g2.drawString("Range:" + unit.getAttackRange(), 2, 40);
 		
 		//represent the unit's attack damage
-		g2.drawString("Damage:" +unit.getAttackPower(), 2, 54);
+		g2.drawString("Dmg: " +unit.getAttackPower(), 2, 54);
 		
 		//represent the unit's remaining number of moves
 		g2.drawString("Moves ", 2, 68);
