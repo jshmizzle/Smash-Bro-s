@@ -64,6 +64,7 @@ public class TRPGServer {
 					if (ob instanceof Command<?>){
 						
 						if(ob instanceof DisconnectCommand){
+							System.out.println("Client disconnected.");
 							break;
 						}
 						else{

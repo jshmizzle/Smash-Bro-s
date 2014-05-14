@@ -31,8 +31,7 @@ public class TRPGClientTemp extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		JFrame client=new TRPGClientTemp("Destroy the Princess");
-		client.setVisible(true);
+	//	JFrame client=new TRPGClientTemp("Destroy the Princess");//	client.setVisible(true);
 	}
 	
 	

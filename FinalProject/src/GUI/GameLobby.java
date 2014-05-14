@@ -66,9 +66,11 @@ public class GameLobby extends JPanel {
 		scenario2=new Point(getWidth()-130, 410);
 		scenario3=new Point(getWidth()-130, 460);
 		
+
 		//save the connection to the server
 		this.serverOut=serverOut;
-		
+
+		//initialize images
 		initializeImages();
 		
 		cursorLocation=new Point(getWidth()-130, 60);
@@ -216,6 +218,8 @@ public class GameLobby extends JPanel {
 						}
 						else
 							cursorLocation=scenario1;
+						
+						button.setEnabled(true);
 						repaint();
 					}
 				}

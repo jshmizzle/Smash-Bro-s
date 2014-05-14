@@ -36,7 +36,7 @@ public class GameBoard implements Serializable {
 
 	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 
-		gameBoard = new char[boardWidth][boardHeight];
+		gameBoard = new char[boardHeight][boardWidth];
 		this.playerOneUnits = userUnits;
 		this.playerTwoUnits = compUnits;
 		currentMap = map;
@@ -73,18 +73,29 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 4 + 1][boardWidth / 4] = '#';
 		gameBoard[boardHeight / 4 + 1][boardWidth / 4 - 1] = '#';
 		gameBoard[boardHeight / 4 + 2][boardWidth / 4 + 1] = '#';
+		gameBoard[boardHeight / 4-3][boardWidth / 4-3] = '#';
+		gameBoard[boardHeight / 4-3][boardWidth / 4-2] = '#';
+		
+		
 		// bottom left rocks
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth / 4] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth / 4 - 1] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth / 4 + 1] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth / 4 + 1] = '#';
+		gameBoard[boardHeight - (boardHeight / 4)+3][boardWidth / 4-3] = '#';
+		gameBoard[boardHeight - (boardHeight / 4)+3][boardWidth / 4-2] = '#';
+		
+		
 		// top right rocks
 		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)] = '#';
 		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4) - 1] = '#';
 		gameBoard[boardHeight / 4 + 1][boardWidth - (boardWidth / 4)] = '#';
 		gameBoard[boardHeight / 4 + 1][boardWidth - (boardWidth / 4) - 1] = '#';
 		gameBoard[boardHeight / 4 + 2][boardWidth - (boardWidth / 4) + 1] = '#';
+		gameBoard[boardHeight / 4-3][boardWidth - (boardWidth / 4)+3] = '#';
+		gameBoard[boardHeight / 4-3][boardWidth - (boardWidth / 4)+2] = '#';
+		
 		// bottom right rocks
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
 				- (boardWidth / 4)] = '#';
@@ -96,6 +107,12 @@ public class GameBoard implements Serializable {
 				- (boardWidth / 4)] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth
 				- (boardWidth / 4) + 1] = '#';
+		gameBoard[boardHeight - (boardHeight / 4)+3][boardWidth
+		                           				- (boardWidth / 4)+3] = '#';
+		gameBoard[boardHeight - (boardHeight / 4)+3][boardWidth
+		                           				- (boardWidth / 4)+2] = '#';
+
+		
 		// items
 		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
 		
@@ -103,6 +120,12 @@ public class GameBoard implements Serializable {
 		//wormholes
 		gameBoard[boardHeight / 2 + 1][boardWidth / 2 - 4] = '%';
 		gameBoard[boardHeight / 2 - 1][boardWidth / 2 + 4] = '%';
+		gameBoard[boardHeight / 2 + 1][boardWidth / 2 + 4] = '%';
+		gameBoard[boardHeight / 2 - 1][boardWidth / 2 - 4] = '%';
+		gameBoard[boardHeight / 2+1][boardWidth-1] = '%';
+		gameBoard[boardHeight / 2][boardWidth-1] = '%';
+		gameBoard[boardHeight / 2][0] = '%';
+		gameBoard[boardHeight / 2+1][0] = '%';
 
 		// trees
 		gameBoard[boardHeight / 3][boardWidth / 2] = '!';
@@ -235,6 +258,9 @@ public class GameBoard implements Serializable {
 		//wormholes
 		gameBoard[boardHeight / 2 + 3][boardWidth / 2 + 3] = '%';
 		gameBoard[boardHeight / 2 - 3][boardWidth / 2 - 3] = '%';
+		gameBoard[boardHeight / 2 + 3][boardWidth / 2 - 3] = '%';
+		gameBoard[boardHeight / 2 - 3][boardWidth / 2 + 3] = '%';
+
 
 		// trees
 		// top left
@@ -1039,10 +1065,6 @@ public class GameBoard implements Serializable {
 		return attRange;
 	}
 
-	public void startNewGame() {
-
-	}
-
 	/************************************************************************************/
 
 	private Tiles[][] findRange(Point p, Tiles[][] tiles) {
@@ -1211,5 +1233,8 @@ public class GameBoard implements Serializable {
 	
 	public Scenario getScenario(){
 		return currentScenario;
+	}
+	public Map getMap(){
+		return currentMap;
 	}
 }

@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -19,6 +21,7 @@ import javax.swing.JPanel;
 
 import model.GameBoard;
 import model.Item;
+import model.Scenario;
 import model.Unit;
 import client.Client;
 import client.TRPGClient;
@@ -35,7 +38,8 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
-	private Image redOrb, swordCursor, portal, boulder, grass, headstone, princess, waypoint, 
+	
+	private Image redOrb, swordCursor, portal, boulder, grass, waypoint, 
 	              tree, invalidMove, chest, attackRange, redDiamond, blueDiamond; 
 	private Point cursorLocation;
 	private ObjectOutputStream serverOut;
@@ -66,6 +70,7 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
+		this.localUserUnitList=gameBoard.getPlayerOneUnits();
 		
 		//we cannot assume that the current client's units are always going to be
 		//the player one units. Check whether or not they are the host in order to know which player they are
@@ -110,7 +115,6 @@ public class MainGamePanel extends JPanel {
 		try {
 			boulder=ImageIO.read(new File("images/Boulder.png"));
 			grass=ImageIO.read(new File("images/TRPGgrass.png"));
-			princess=ImageIO.read(new File("images/princess.png"));
 			waypoint=ImageIO.read(new File("images/1GlowingOrb.png"));
 			invalidMove=ImageIO.read(new File("images/notValidCursor.png"));
 			tree=ImageIO.read(new File("images/TreeSprites1.png"));
@@ -196,16 +200,37 @@ public class MainGamePanel extends JPanel {
 	private void drawTheUnits(Graphics2D g2) {
 		for(Unit curr: localUserUnitList){
 			//draw the unit itself
+			if(!curr.isAlive()){
 			curr.draw(g2, gameTileHeight, gameTileWidth);
 			//now draw the blue diamond above its head to designate it as one of ours
 			g2.drawImage(blueDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
+			}
 		}
 		for(Unit curr: localOpponentUnitList){
 			//draw the unit itself
+			if(!curr.isAlive()){
 			curr.draw(g2, gameTileHeight, gameTileWidth);
 			//now draw the red diamond above its head to show it's an enemy
 			g2.drawImage(redDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
+			}
 		}
+		for(Unit curr: localUserUnitList){
+			//draw the unit itself
+			if(curr.isAlive()){
+			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the blue diamond above its head to designate it as one of ours
+			g2.drawImage(blueDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
+			}
+		}
+		for(Unit curr: localOpponentUnitList){
+			//draw the unit itself
+			if(curr.isAlive()){
+			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the red diamond above its head to show it's an enemy
+			g2.drawImage(redDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
+			}
+		}
+		
 	}
 
 	private void drawCursor(Graphics2D g2){
@@ -237,19 +262,44 @@ public class MainGamePanel extends JPanel {
 		}
 	}
 	
+	ArrayList<JPanel> statsPanelList=new ArrayList<>();
 	private void drawStatsPanel(){
-		if(statsPanel!=null){
-			MainGamePanel.this.remove(statsPanel);
+		if(!(currentUnit.getLocation().y>=15) && !(currentUnit.getLocation().y<3)){
+			if(statsPanel!=null){
+				MainGamePanel.this.remove(statsPanel);
+			}
+			statsPanel=new UnitStatusPanel(currentUnit);
+			
+			setStatsPanelLocationBasedOnContext();
+			
+			statsPanel.setSize(gameTileWidth*2, gameTileHeight*3);
+			MainGamePanel.this.add(statsPanel).setVisible(true);
 		}
-		statsPanel=new UnitStatusPanel(currentUnit);
 		
-		setStatsPanelLocationBasedOnContext();
 		
-		statsPanel.setSize(gameTileWidth*2, gameTileHeight*3);
-		MainGamePanel.this.add(statsPanel).setVisible(true);
+		
+		for(int i=gameBoard.getScenario()==Scenario.Princess ? 1:0; i<(gameBoard.getScenario()==Scenario.Princess ? 6:5); i++){
+			int shift=gameBoard.getScenario()==Scenario.Princess ? 1:0;
+			
+			Unit currUnit=localUserUnitList.get(i);
+			JPanel panel=new UnitStatusPanel(currUnit);
+			panel.setSize(getWidth()/8, getHeight()/5);
+			panel.setLocation(0, getHeight()/5*(i-shift));
+			this.add(panel).setVisible(true);
+			
+			statsPanelList.add(panel);
+			
+			currUnit=localOpponentUnitList.get(i);
+			panel=new UnitStatusPanel(currUnit);
+			panel.setSize(getWidth()/8, getHeight()/5);
+			panel.setLocation(7*getWidth()/8, getHeight()/5*(i-shift));
+			this.add(panel).setVisible(true);
+			
+			statsPanelList.add(panel);
+		}
 	}
 	
-
+ 
 	private void setStatsPanelLocationBasedOnContext(){
 		//we need to make sure that the panel is not drawn off the screen at the very top
 		//or the very right
@@ -532,7 +582,13 @@ public class MainGamePanel extends JPanel {
 					else if(key==KeyEvent.VK_S){
 						if(showStats==true){
 							showStats=false;
-							MainGamePanel.this.remove(statsPanel);
+							if(statsPanel!=null)
+								MainGamePanel.this.remove(statsPanel);
+							//also remove all of the other stats panels that are on the edges of the screen
+							for(int i=0; i<statsPanelList.size(); i++){
+								MainGamePanel.this.remove(statsPanelList.get(i));
+							}
+							statsPanelList.clear();
 							repaint();
 						}
 						else{
@@ -652,6 +708,9 @@ public class MainGamePanel extends JPanel {
 						if(showStats==true){
 							showStats=false;
 							MainGamePanel.this.remove(statsPanel);
+							for(JPanel curr: statsPanelList)
+								MainGamePanel.this.remove(curr);
+							
 							repaint();
 						}
 						else{
@@ -706,5 +765,72 @@ public class MainGamePanel extends JPanel {
 	 */
 	private Point swap(Point original){
 		return new Point(original.y, original.x);
+	}
+	
+	private ArrayList<UnitHolder> pendingAnimationUnits=new ArrayList<>();
+	private AttackPanel attackPanel;
+	public void animateAttack(Unit attacker, Unit attacked){
+		
+		if(pendingAnimationUnits.size()>=1){
+			pendingAnimationUnits.add(new UnitHolder(attacker, attacked));
+		}
+		else{
+			pendingAnimationUnits.add(new UnitHolder(attacker, attacked));
+
+			attackPanel= new AttackPanel(attacker, attacked);
+			attackPanel.setLocation(0,getHeight()/3);
+			attackPanel.setSize(600, 200);
+			attackPanel.addListener(new AnimationOverListener());
+			
+			
+			this.add(attackPanel).setVisible(true);
+		}
+	}
+	
+	
+	public class AnimationOverListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			MainGamePanel.this.remove(attackPanel);
+			
+			pendingAnimationUnits.remove(0);//pop the "stack"
+			
+			
+			if(pendingAnimationUnits.size()>=1){
+				Unit attacker=pendingAnimationUnits.get(0).getFirst();
+				Unit attacked=pendingAnimationUnits.get(0).getSecond();
+
+				attackPanel= new AttackPanel(attacker, attacked);
+				attackPanel.setLocation(0,getHeight()/3);
+				attackPanel.setSize(600, 200);
+				attackPanel.addListener(new AnimationOverListener());
+				
+				
+				MainGamePanel.this.add(attackPanel).setVisible(true);
+			}
+			System.out.println("Remove the animation");
+			
+			if(pendingAnimationUnits.size()==0){
+				repaint();
+			}
+		}
+		
+	}
+	
+	private class UnitHolder{
+		private Unit first, second;
+		public UnitHolder(Unit first, Unit second){
+			this.first=first;
+			this.second=second;
+		}
+		
+		public Unit getFirst(){
+			return first;
+		}
+		
+		public Unit getSecond(){
+			return second;
+		}
 	}
 }
