@@ -1,6 +1,8 @@
 package client;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
@@ -14,10 +16,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import command.PickUpItemCommand;
 import model.GameBoard;
 import model.Item;
 import model.Map;
@@ -34,6 +38,8 @@ import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import GUI.SinglePlayerMapAndScenarioSelect;
 import GUI.WaitingOnCharacterSelection;
+
+import command.PickUpItemCommand;
 
 /**
  * TRPGClient is the main GUI meant for human players only. 
@@ -79,7 +85,7 @@ public class TRPGClient extends JFrame implements Client {
 		t.start();
 
 		this.setTitle("Smash Bro's");
-		
+		setUpMenus();
 		currentPanel = new MainMenuPanel(userName, outputStream);
 		this.addWindowListener(new WindowClosingListener());
 		this.add(currentPanel).setVisible(true);
@@ -87,6 +93,135 @@ public class TRPGClient extends JFrame implements Client {
 		this.setVisible(true);
 	}
 
+	private void setUpMenus() {
+		JMenuItem menu = new JMenu("Directions");
+		// Add two Composites to a Composite
+		
+		JMenuItem contrl = new JMenuItem("Basic Controls");
+		menu.add(contrl);
+
+		JMenuItem instr = new JMenu("Gamplay Instrcutions");
+		menu.add(instr);
+		JMenuItem move = new JMenuItem("Movement");
+		instr.add(move);
+		JMenuItem attack = new JMenuItem("Attacking");
+		instr.add(attack);
+		JMenuItem item = new JMenuItem("Items");
+		instr.add(item);
+		JMenuItem stat = new JMenuItem("Stats");
+		instr.add(stat);
+		JMenuItem turn = new JMenuItem("Ending Turn");
+		instr.add(turn);
+		JMenuItem p = new JMenuItem("Pipes");
+		instr.add(p);
+		
+		JMenuItem scen = new JMenu("Scenarios");
+		menu.add(scen);
+		JMenuItem princess = new JMenuItem("Princess");
+		scen.add(princess);
+		JMenuItem mele = new JMenuItem("Mele");
+		scen.add(mele);
+		
+		JMenuItem items= new JMenu("Item");
+		menu.add(items);
+		JMenuItem potion= new JMenuItem ("Potion");
+		items.add(potion);
+		JMenuItem rage=new JMenuItem("Rage");
+		items.add(rage);
+		JMenuItem second=new JMenuItem("Second Chance");
+		items.add(second);
+		JMenuItem shield=new JMenuItem("Shield");
+		items.add(shield);
+		JMenuItem sneakers= new JMenuItem("Sneakers");
+		items.add(sneakers);
+		JMenuItem sniper= new JMenuItem("Sniper");
+		items.add(sniper);
+
+		// Set the menu bar
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		menuBar.add(menu);
+
+		// Add the same listener to all menu items requiring action
+		MenuItemListener menuListener = new MenuItemListener();
+		contrl.addActionListener(menuListener);
+		move.addActionListener(menuListener);
+		p.addActionListener(menuListener);
+		attack.addActionListener(menuListener);
+		item.addActionListener(menuListener);
+		turn.addActionListener(menuListener);
+		stat.addActionListener(menuListener);
+		princess.addActionListener(menuListener);
+		mele.addActionListener(menuListener);
+		potion.addActionListener(menuListener);
+		rage.addActionListener(menuListener);
+		second.addActionListener(menuListener);
+		shield.addActionListener(menuListener);
+		sneakers.addActionListener(menuListener);
+		sniper.addActionListener(menuListener);
+		// TODO Add listeners
+	}
+	
+	//class that acts when a menu item is clicked
+		private class MenuItemListener implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String text = ((JMenuItem) e.getSource()).getText();
+
+				// TODO: Correctly respond to Menu Selections
+				if (text.equals("Basic Controls")) {
+					JOptionPane
+					.showMessageDialog(null,
+							"                    Basic Game Play Controls: \nEnter:        selects character, or space to attack or move to\nA:                attack\nArrows:    move up, down, left, or right\nS:                selects/deselects stats panel\n I:                shows inventory" );
+					
+				}
+				if (text.equals("Movement")){
+					JOptionPane
+							.showMessageDialog(null,
+									"                                                         Moving\n1. Use the left and right keys to switch between units\n2.Press enter to select the unit you want to move\n3.Move the arrow keys to the spot you want to move to\n4.Press enter and your unit will move there\n\nHints:\n-A blue circle means you can move there while a red circle means you ran out of moves\n-You can only move to spaces that are open\n-You can move to or over a space with a grave");
+				}
+				if(text.equals("Attacking")){
+					JOptionPane.showMessageDialog(null, "                                           Attacking\n1. Use the left and right keys to switch between units\n2.Press enter to select the unit you want to attack with\n3.Press A\n4. Move the X and select a unit in one of the red squares to attack, by pressing enter\n\nHints:\n-The red boxes show your attack range\n-You can only attack units in your range\n-You can only attack units you have an open line of fire to");
+				}
+				if(text.equals("Items")){
+					JOptionPane.showMessageDialog(null, "                                   Items\nPickup: Walk over chest\nSee Your Items: Press I to see your inventory\n\nUse:\n1.Select the unit you want the item to affect\n2.Press I to see Item list\n3.Press the number corresponding to the item you want");
+				}
+				if(text.equals("Stats")){
+					JOptionPane.showMessageDialog(null, "                                  Stats Panel\nSelect/Deselct: Press S\nStats:\n*Hearts: -Shows amount of life you have\n                 -Four hearts is full health\n*Range: -Shows how far you can attack\n*Damage: -Shows how much damage you can inflict\n*Moves Left: -Shows how many more spaces you can move");
+				}
+				if(text.equals("Ending Turn")){
+					JOptionPane.showMessageDialog(null, "       Ending Turn\nPress E to end turn");
+				}
+				if(text.equals("Pipes")){
+					JOptionPane.showMessageDialog(null, "                 Pipes\nTo use one, you move over the pipe.\nIt transports you to a random place\non the board and then dissapears.");
+				}
+				if(text.equals("Princess")){
+					JOptionPane.showMessageDialog(null,"                        Kill The Princess\nIn this Scenerio the goal is to kill the princess.\nYou can kill whatever opponets you want.\nYou lose if your princess dies");
+				}
+				if(text.equals("Mele")){
+					JOptionPane.showMessageDialog(null,"                    Mele\nThe goal is to kill all of your oppents\nYou lose when all your units die");
+				}
+				if(text.equals("Potion")){
+					JOptionPane.showMessageDialog(null, "              Potion\nIncreases your health");
+				}
+				if(text.equals("Rage")){
+					JOptionPane.showMessageDialog(null, "                Rage\nIncreases your attack power");
+				}
+				if(text.equals("Shield")){
+					JOptionPane.showMessageDialog(null, "                       Shield\nMakes oppents attacks not do as much damage");
+				}
+				if(text.equals("Second Chance")){
+					JOptionPane.showMessageDialog(null, "             Second Chance\nRespawns you if you die while having it");
+				}
+				if(text.equals("Sneakers")){
+					JOptionPane.showMessageDialog(null, "                Sneakers\nIncreases distance you can move");
+				}
+				if(text.equals("Sniper")){
+					JOptionPane.showMessageDialog(null, "              Sniper\nIncreases attack range");
+				}
+			}	
+		}
 	/**
 	 * The purpose of this alternate constructor is to provide a way to
 	 * automatically set up the connection to the server in a way that only has
@@ -153,7 +288,8 @@ public class TRPGClient extends JFrame implements Client {
 
 		@Override
 		public void windowClosing(WindowEvent arg0) {
-			saveGame();
+			if(currentPanel instanceof MainGamePanel)
+				saveGame();
 		}
 
 		@Override

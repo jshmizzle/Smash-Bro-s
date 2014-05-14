@@ -286,6 +286,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	public void princessTurn() {
 		unitIndex = 0;
+		hasAttacked=false;
 		moveTurnPrincess();
 	}
 
@@ -1282,6 +1283,7 @@ public class ComputerClient extends JFrame implements Client {
 
 	
 		private void attackTurnPrincess() {
+			if(!hasAttacked){
 			compUnits = currentBoard.getPlayerTwoUnits();
 			playerUnits = currentBoard.getPlayerOneUnits();
 			//go through all comp units except for indice one (princess can't attack)
@@ -1301,8 +1303,9 @@ public class ComputerClient extends JFrame implements Client {
 					}
 				}
 			}
-		
+		hasAttacked=true;
 		sendEndTurnCommand();
+			}
 	}
 
 
