@@ -233,19 +233,39 @@ public class MainGamePanel extends JPanel {
 		}
 	}
 	
+	ArrayList<JPanel> statsPanelList=new ArrayList<>();
 	private void drawStatsPanel(){
-		if(statsPanel!=null){
-			MainGamePanel.this.remove(statsPanel);
+		if(!(currentUnit.getLocation().y>=15) && !(currentUnit.getLocation().y<3)){
+			if(statsPanel!=null){
+				MainGamePanel.this.remove(statsPanel);
+			}
+			statsPanel=new UnitStatusPanel(currentUnit);
+			
+			setStatsPanelLocationBasedOnContext();
+			
+			statsPanel.setSize(gameTileWidth*2, gameTileHeight*3);
+			MainGamePanel.this.add(statsPanel).setVisible(true);
 		}
-		statsPanel=new UnitStatusPanel(currentUnit);
-		
-		setStatsPanelLocationBasedOnContext();
-		
-		statsPanel.setSize(gameTileWidth*2, gameTileHeight*3);
-		MainGamePanel.this.add(statsPanel).setVisible(true);
+		for(int i=0; i<5; i++){
+			Unit currUnit=localUserUnitList.get(i);
+			JPanel panel=new UnitStatusPanel(currUnit);
+			panel.setSize(getWidth()/8, getHeight()/5);
+			panel.setLocation(0, getHeight()/5*i);
+			this.add(panel).setVisible(true);
+			
+			statsPanelList.add(panel);
+			
+			currUnit=localOpponentUnitList.get(i);
+			panel=new UnitStatusPanel(currUnit);
+			panel.setSize(getWidth()/8, getHeight()/5);
+			panel.setLocation(7*getWidth()/8, getHeight()/5*i);
+			this.add(panel).setVisible(true);
+			
+			statsPanelList.add(panel);
+		}
 	}
 	
-
+ 
 	private void setStatsPanelLocationBasedOnContext(){
 		//we need to make sure that the panel is not drawn off the screen at the very top
 		//or the very right
@@ -528,7 +548,13 @@ public class MainGamePanel extends JPanel {
 					else if(key==KeyEvent.VK_S){
 						if(showStats==true){
 							showStats=false;
-							MainGamePanel.this.remove(statsPanel);
+							if(statsPanel!=null)
+								MainGamePanel.this.remove(statsPanel);
+							//also remove all of the other stats panels that are on the edges of the screen
+							for(int i=0; i<statsPanelList.size(); i++){
+								MainGamePanel.this.remove(statsPanelList.get(i));
+							}
+							statsPanelList.clear();
 							repaint();
 						}
 						else{
