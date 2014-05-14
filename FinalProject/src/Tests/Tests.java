@@ -34,7 +34,7 @@ public class Tests {
 		 ArrayList<Unit> computer = new ArrayList<Unit>();
 		 
 		 Sonic s = new Sonic('s');
-		 Sonic t = new Sonic("Sonic", 10000, 10, b);
+		 /*Sonic t = new Sonic("Sonic", 10000, 10, b);
 		 Sonic r = new Sonic("Sonic", 10000, 10, b);
 		 Sonic e = new Sonic("Sonic", 10000, 10, b);
 		 Sonic sComputer = new Sonic("Sonic", 10000, 10, x);
@@ -79,14 +79,7 @@ public class Tests {
 		 GameBoard g = new GameBoard(player, computer, 1, 0);
 		 sonic.setLocation(new Point(0, 1));
 		 sComputer.setLocation(new Point(0, 2));
-<<<<<<< HEAD
-		 g.setUnitToThisSpot(sonic, new Point(0, 1));
-		 g.setUnitToThisSpot(sComputer, new Point(0, 2));
-		 /*
-=======
-		 
-		 
->>>>>>> 2df82c53ef1da13e3a3b3da37a3e85902da53e23
+
 		  * Sonic is at (0, 1) so he should be able to attack enemies at:
 		  * (0, 0), (0, 2), (1, 1)
 		  

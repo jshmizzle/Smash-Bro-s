@@ -728,16 +728,6 @@ public class TRPGClient extends JFrame implements Client {
 			((MainGamePanel) currentPanel).myTurn();
 			currentBoard.resetPlayerTwoMoves();
 		} else {
-			if (isHost) {
-				myTurn = true;
-				((MainGamePanel) currentPanel).myTurn();
-				currentBoard.resetPlayerOneMoves();
-
-			} else {
-				myTurn = true;
-				((MainGamePanel) currentPanel).myTurn();
-				currentBoard.resetPlayerTwoMoves();
-			}
 			myTurn = true;
 			((MainGamePanel) currentPanel).myTurn();
 			currentBoard.resetPlayerOneMoves();
@@ -908,5 +898,6 @@ public class TRPGClient extends JFrame implements Client {
 			unit.setLocation(teleLocation);
 			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=unit.getCharRepresentation();
 		}
+		((MainGamePanel)currentPanel).repaint();
 	}
 } // End Class TRPGClient
