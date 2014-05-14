@@ -1265,18 +1265,22 @@ public class ComputerClient extends JFrame implements Client {
 
 	}
 		private void attackTurnPrincess() {
-			if(!hasAttacked){
+		if (!hasAttacked) {
 			compUnits = currentBoard.getPlayerTwoUnits();
 			playerUnits = currentBoard.getPlayerOneUnits();
-			//go through all comp units except for indice one (princess can't attack)
+			// go through all comp units except for indice one (princess can't
+			// attack)
 			for (int i = 1; i < compUnits.size(); i++) {
 				Unit u = compUnits.get(i);
-				//grab each player unit one by one and see if comp can attack
-				for(int j = 0; j < playerUnits.size(); j++){
+				// grab each player unit one by one and see if comp can attack
+				for (int j = 0; j < playerUnits.size(); j++) {
 					Point toCheck = new Point(playerUnits.get(j).getLocation());
 					// if the comp unit is in range and has a shot, TAKE IT!
-					if(!u.checkIfAlreadyAttackedThisTurn() && currentBoard.checkOpenLineOfFire(u, toCheck) && u.isAlive() && playerUnits.get(j).isAlive()){
-						UnitAttackCommand command = new UnitAttackCommand(userName,i,j);
+					if (!u.checkIfAlreadyAttackedThisTurn()
+							&& currentBoard.checkOpenLineOfFire(u, toCheck)
+							&& u.isAlive() && playerUnits.get(j).isAlive()) {
+						UnitAttackCommand command = new UnitAttackCommand(
+								userName, i, j);
 						try {
 							outputStream.writeObject(command);
 						} catch (IOException e) {
@@ -1285,9 +1289,9 @@ public class ComputerClient extends JFrame implements Client {
 					}
 				}
 			}
-		hasAttacked=true;
-		sendEndTurnCommand();
-			}
+			hasAttacked = true;
+			sendEndTurnCommand();
+		}
 	}
 
 

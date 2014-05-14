@@ -101,7 +101,7 @@ public class TRPGClient extends JFrame implements Client {
 		JMenuItem contrl = new JMenuItem("Basic Controls");
 		menu.add(contrl);
 
-		JMenuItem instr = new JMenu("Gamplay Instrcutions");
+		JMenuItem instr = new JMenu("Gameplay Instructions");
 		menu.add(instr);
 		JMenuItem move = new JMenuItem("Movement");
 		instr.add(move);
@@ -120,7 +120,7 @@ public class TRPGClient extends JFrame implements Client {
 		menu.add(scen);
 		JMenuItem princess = new JMenuItem("Princess");
 		scen.add(princess);
-		JMenuItem mele = new JMenuItem("Mele");
+		JMenuItem mele = new JMenuItem("DeathMatch");
 		scen.add(mele);
 		
 		JMenuItem items= new JMenu("Item");
@@ -200,8 +200,8 @@ public class TRPGClient extends JFrame implements Client {
 				if(text.equals("Princess")){
 					JOptionPane.showMessageDialog(null,"                        Kill The Princess\nIn this Scenerio the goal is to kill the princess.\nYou can kill whatever opponets you want.\nYou lose if your princess dies");
 				}
-				if(text.equals("Mele")){
-					JOptionPane.showMessageDialog(null,"                    Mele\nThe goal is to kill all of your oppents\nYou lose when all your units die");
+				if(text.equals("DeathMatch")){
+					JOptionPane.showMessageDialog(null,"                    DeathMatch\nThe goal is to kill all of your oppents\nYou lose when all your units die");
 				}
 				if(text.equals("Potion")){
 					JOptionPane.showMessageDialog(null, "              Potion\nIncreases your health");
