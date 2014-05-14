@@ -57,21 +57,27 @@ public class ItemPanel extends JPanel {
 		//draw the bag that will always be present
 		g2.drawImage(bag, 0, 0, getWidth()/4, getHeight(), null);
 		
+		g2.setColor(Color.black);
 		for(int i=1; i<=items.size(); i++){
 			if(items.get(i-1) instanceof Shield){
 				g2.drawImage(shield, getWidth()/4*i + getWidth()/20, getHeight()/6, getWidth()/5, 2*getHeight()/3, null);
+				g2.drawString(""+i, getWidth()/4*i+getWidth()/20, getHeight());
 			}
 			else if(items.get(i-1) instanceof Rage){
 				g2.drawImage(rage, getWidth()/4*i +getWidth()/20, getHeight()/6, getWidth()/5, 2*getHeight()/3, null);
+				g2.drawString(""+i, getWidth()/4*i+getWidth()/20, getHeight());
 			}
 			else if(items.get(i-1) instanceof Sniper){
 				g2.drawImage(sniper, getWidth()/4*i +getWidth()/20, getHeight()/6, getWidth()/5, 2*getHeight()/3, null);
+				g2.drawString(""+i, getWidth()/4*i+getWidth()/20, getHeight());
 			}
 			else if(items.get(i-1) instanceof Potion){
 				g2.drawImage(potion, getWidth()/4*i +getWidth()/20, getHeight()/6, getWidth()/5, 2*getHeight()/3, null);
+				g2.drawString(""+i, getWidth()/4*i+getWidth()/20, getHeight());
 			}
 			else if(items.get(i-1) instanceof Sneakers){
-				g2.drawImage(potion, getWidth()/4*i +getWidth()/20, getHeight()/6, getWidth()/5, 2*getHeight()/3, null);
+				g2.drawImage(sneakers, getWidth()/4*i +getWidth()/20, getHeight()/6, getWidth()/5, 2*getHeight()/3, null);
+				g2.drawString(""+i, getWidth()/4*i+getWidth()/20, getHeight());
 			}
 		}
 	}

@@ -21,6 +21,7 @@ public class ComputerServerHandler implements Runnable{
 		while(true){
 			try {
 				this.command=(Command<ComputerClient>)inputStream.readObject();
+				System.out.println(command);
 				command.execute(client);
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();

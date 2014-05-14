@@ -28,7 +28,7 @@ public class Unit implements Serializable{
 	protected boolean alive, alreadyAttacked;
 	protected int attackPower;
 	protected Point location;
-	protected Image standingImage, headstone;
+	transient Image standingImage, headstone;
 	protected char charRepresentation;
 	protected int defenseAmount,healthFull,attackRange, movesLeft;
 
@@ -240,25 +240,9 @@ public class Unit implements Serializable{
 	//This method makes the item be used
 	
 	public void useItem(Item I){
-		for(Item obj: items){
-			if(I.compareTo(obj)==0){
-				I.activate(this);
-				removeItem(I);
-				break;
-			}
-		}
+		I.activate(this);
 	}
 	/************************************************************************************/
-	//Method gets rid of an item from the users inventory
-	
-	public void removeItem(Item I){
-		for(Item obj: items){
-			if(I.compareTo(obj)==0){
-				items.remove(obj);
-				break;
-			}
-		}
-	}
 
 	public int getMovesLeft() {
 		return movesLeft;

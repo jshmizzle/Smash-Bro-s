@@ -36,7 +36,7 @@ public class GameBoard implements Serializable {
 
 	public GameBoard(ArrayList<Unit> userUnits, ArrayList<Unit> compUnits, Map map, Scenario scenario) {
 
-		gameBoard = new char[boardWidth][boardHeight];
+		gameBoard = new char[boardHeight][boardWidth];
 		this.playerOneUnits = userUnits;
 		this.playerTwoUnits = compUnits;
 		currentMap = map;
@@ -73,18 +73,29 @@ public class GameBoard implements Serializable {
 		gameBoard[boardHeight / 4 + 1][boardWidth / 4] = '#';
 		gameBoard[boardHeight / 4 + 1][boardWidth / 4 - 1] = '#';
 		gameBoard[boardHeight / 4 + 2][boardWidth / 4 + 1] = '#';
+		gameBoard[boardHeight / 4-3][boardWidth / 4-3] = '#';
+		gameBoard[boardHeight / 4-3][boardWidth / 4-2] = '#';
+		
+		
 		// bottom left rocks
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth / 4] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth / 4] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 1][boardWidth / 4 - 1] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth / 4 + 1] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth / 4 + 1] = '#';
+		gameBoard[boardHeight - (boardHeight / 4)+3][boardWidth / 4-3] = '#';
+		gameBoard[boardHeight - (boardHeight / 4)+3][boardWidth / 4-2] = '#';
+		
+		
 		// top right rocks
 		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4)] = '#';
 		gameBoard[boardHeight / 4][boardWidth - (boardWidth / 4) - 1] = '#';
 		gameBoard[boardHeight / 4 + 1][boardWidth - (boardWidth / 4)] = '#';
 		gameBoard[boardHeight / 4 + 1][boardWidth - (boardWidth / 4) - 1] = '#';
 		gameBoard[boardHeight / 4 + 2][boardWidth - (boardWidth / 4) + 1] = '#';
+		gameBoard[boardHeight / 4-3][boardWidth - (boardWidth / 4)+3] = '#';
+		gameBoard[boardHeight / 4-3][boardWidth - (boardWidth / 4)+2] = '#';
+		
 		// bottom right rocks
 		gameBoard[boardHeight - (boardHeight / 4)][boardWidth
 				- (boardWidth / 4)] = '#';
@@ -96,6 +107,12 @@ public class GameBoard implements Serializable {
 				- (boardWidth / 4)] = '#';
 		gameBoard[boardHeight - (boardHeight / 4) + 2][boardWidth
 				- (boardWidth / 4) + 1] = '#';
+		gameBoard[boardHeight - (boardHeight / 4)+3][boardWidth
+		                           				- (boardWidth / 4)+3] = '#';
+		gameBoard[boardHeight - (boardHeight / 4)+3][boardWidth
+		                           				- (boardWidth / 4)+2] = '#';
+
+		
 		// items
 		gameBoard[boardHeight / 2][boardWidth / 2] = '@';
 		
@@ -103,6 +120,12 @@ public class GameBoard implements Serializable {
 		//wormholes
 		gameBoard[boardHeight / 2 + 1][boardWidth / 2 - 4] = '%';
 		gameBoard[boardHeight / 2 - 1][boardWidth / 2 + 4] = '%';
+		gameBoard[boardHeight / 2 + 1][boardWidth / 2 + 4] = '%';
+		gameBoard[boardHeight / 2 - 1][boardWidth / 2 - 4] = '%';
+		gameBoard[boardHeight / 2+1][boardWidth-1] = '%';
+		gameBoard[boardHeight / 2][boardWidth-1] = '%';
+		gameBoard[boardHeight / 2][0] = '%';
+		gameBoard[boardHeight / 2+1][0] = '%';
 
 		// trees
 		gameBoard[boardHeight / 3][boardWidth / 2] = '!';
@@ -235,6 +258,9 @@ public class GameBoard implements Serializable {
 		//wormholes
 		gameBoard[boardHeight / 2 + 3][boardWidth / 2 + 3] = '%';
 		gameBoard[boardHeight / 2 - 3][boardWidth / 2 - 3] = '%';
+		gameBoard[boardHeight / 2 + 3][boardWidth / 2 - 3] = '%';
+		gameBoard[boardHeight / 2 - 3][boardWidth / 2 + 3] = '%';
+
 
 		// trees
 		// top left
@@ -336,7 +362,24 @@ public class GameBoard implements Serializable {
 		if (gameBoard[(int) point.getX()][(int) point.getY()] == ' ' || gameBoard[(int) point.getX()][(int) point.getY()] == '%'
 				|| gameBoard[(int) point.getX()][(int) point.getY()] == '@')
 			return true;
-
+		else{
+			for(Unit u: playerOneUnits){
+				if(u.getLocation().equals(point)){
+					if(!u.isAlive()){
+						return true;
+					}
+					return false;
+				}
+			}
+			for(Unit u: playerTwoUnits){
+				if(u.getLocation().equals(point)){
+					if(!u.isAlive()){
+						return true;
+					}
+					return false;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -484,17 +527,32 @@ public class GameBoard implements Serializable {
 			return false;
 		else if (charRep <= 'z' && charRep >= 'a') {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'A' && gameBoard[x][y] <= 'Z')
-				return true;
-			else
+			if (gameBoard[x][y] >= 'A' && gameBoard[x][y] <= 'Z'){
+				for(Unit u: playerOneUnits){
+					if(u.getLocation().equals(p)){
+						if(!u.isAlive()){
+							return false;
+						}
+						return true;
+					}
+				}
 				return false;
+			}
 		} else {
 			// the character is on the team represented by lowercase chars
-			if (gameBoard[x][y] >= 'a' && gameBoard[x][y] <= 'z')
-				return true;
-			else
-				return false;
+			if (gameBoard[x][y] >= 'a' && gameBoard[x][y] <= 'z'){
+					for(Unit u: playerTwoUnits){
+						if(u.getLocation().equals(p)){
+							if(!u.isAlive()){
+								return false;
+							}
+							return true;
+						}
+					}
+					return false;
+			}
 		}
+		return false;
 	}
 
 	/************************************************************************************/
@@ -505,6 +563,77 @@ public class GameBoard implements Serializable {
 		int thisRange = u.getAttackRange();
 		int thisX = (int) thisPoint.getX();
 		int thisY = (int) thisPoint.getY();
+		int otherX = (int) p.getX();
+		int otherY = (int) p.getY();
+		boolean isOpen = true;
+		Point change = new Point(0, 0);
+
+		if (!(thisX == otherX || thisY == otherY))
+			return false;
+
+		if (thisX == otherX) {
+			if (Math.abs(thisY - otherY) > thisRange)
+				return false;
+
+			if (thisY > otherY) {
+				if (thisY - otherY == 1)
+					return true;
+				for (int i = thisY - 1; i > otherY; i--) {
+					change.setLocation((double) thisX, (double) i);
+					if (!checkAvailable(change)) {
+						isOpen = false;
+						return isOpen;
+					}
+
+				}
+			} else {
+				if (otherY - thisY == 1)
+					return true;
+				for (int i = thisY + 1; i < otherY; i++) {
+					change.setLocation((double) thisX, (double) i);
+					if (!checkAvailable(change)) {
+						isOpen = false;
+						return isOpen;
+					}
+
+				}
+			}
+		} // end thisX == otherX
+
+		else {
+			if (Math.abs(thisX - otherX) > thisRange)
+				return false;
+
+			if (thisX - otherX == 1) {
+				return true;
+			} else if (thisX > otherX)
+				for (int i = thisX - 1; i > otherX; i--) {
+					change.setLocation((double) i, (double) thisY);
+					if (!checkAvailable(change)) {
+						isOpen = false;
+						return isOpen;
+					}
+				}
+			else if (otherX - thisX == 1) {
+				return true;
+			}
+			for (int i = thisX + 1; i < otherX; i++) {
+				change.setLocation((double) i, (double) thisY);
+				if (!checkAvailable(change)) {
+					isOpen = false;
+					return isOpen;
+				}
+			}
+		}
+
+		return isOpen;
+	}
+	
+	public boolean checkOpenLineOfFire(Unit u, Point s, Point p) {
+
+		int thisRange = u.getAttackRange();
+		int thisX = (int) s.getX();
+		int thisY = (int) s.getY();
 		int otherX = (int) p.getX();
 		int otherY = (int) p.getY();
 		boolean isOpen = true;
@@ -780,7 +909,12 @@ public class GameBoard implements Serializable {
 	// new faster algorithm
 	public ArrayList<Point> findShortestPath(Point start, Point end) {
 		Tiles tiles[][] = new Tiles[gameBoard.length][gameBoard[0].length];
-
+		if(!checkAvailable(new Point(start.x-1,start.y)) && !checkAvailable(new Point(start.x+1,start.y)) && !checkAvailable(new Point(start.x,start.y+1)) && !checkAvailable(new Point(start.x,start.y-1))){
+			return null;
+		}
+		if(!checkAvailable(new Point(end.x-1,end.y)) && !checkAvailable(new Point(end.x+1,end.y)) && !checkAvailable(new Point(end.x,end.y+1)) && !checkAvailable(new Point(end.x,end.y-1))){
+			return null;
+		}
 		// sets the status of each space on the board
 		for (int i = 0; i < gameBoard.length; i++) {
 			for (int j = 0; j < gameBoard[0].length; j++) {
@@ -793,8 +927,10 @@ public class GameBoard implements Serializable {
 
 		int currCol = start.y;
 		boolean marked = true;
-		while (marked && !tiles[end.x][end.y].status.equals("marked")) {
+		int times =0;
+		while (marked && !tiles[end.x][end.y].status.equals("marked") && times <400) {
 			marked = false;
+			times ++;
 			for (int i = 0; i < gameBoard.length; i++) {
 				for (int j = 0; j < gameBoard[0].length; j++) {
 					if (tiles[i][j].status.equals("fringe")) {
@@ -927,10 +1063,6 @@ public class GameBoard implements Serializable {
 			}
 		}
 		return attRange;
-	}
-
-	public void startNewGame() {
-
 	}
 
 	/************************************************************************************/
@@ -1101,5 +1233,8 @@ public class GameBoard implements Serializable {
 	
 	public Scenario getScenario(){
 		return currentScenario;
+	}
+	public Map getMap(){
+		return currentMap;
 	}
 }

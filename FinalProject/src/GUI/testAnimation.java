@@ -7,6 +7,9 @@ import java.awt.Point;
 import javax.swing.JFrame;
 
 import model.Goku;
+import model.Link;
+import model.Mario;
+import model.MegaMan;
 import model.Sonic;
 import model.Unit;
 
@@ -16,8 +19,8 @@ public class testAnimation {
 		frame.setSize(new Dimension(600, 200));
 		frame.setLocation(new Point(100, 100));
 		frame.setLayout(new BorderLayout());
-		Unit one = new Sonic('C');
-		Unit two = new Goku('g');
+		Unit one = new Link('C');
+		Unit two = new Mario('c');
 		AttackPanel wtr = new AttackPanel(one, two);
 		wtr.setPreferredSize(new Dimension(1000, 1000));
 		wtr.setSize(650, 650);

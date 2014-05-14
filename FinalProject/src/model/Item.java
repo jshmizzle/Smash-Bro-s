@@ -1,9 +1,11 @@
 package model;
 
+import java.io.Serializable;
+
 /*
  * Abstract item class that contains general methods for all items
  */
-public abstract class Item implements Comparable<Item>{
+public abstract class Item implements Comparable<Item>, Serializable{
 
 	protected String name;
 	

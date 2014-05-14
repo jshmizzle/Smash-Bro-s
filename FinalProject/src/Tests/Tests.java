@@ -48,14 +48,14 @@ public class Tests {
 		 Point bottom = new Point(0, 21);
 		 e.setLocation(bottom);
 		 assertFalse(g.checkAvailable(edgeTop)); //Testing the edge of the board
-		 //assertFalse(g.moveDown(e)); //Testing the edge of the board	
+		 assertFalse(g.moveDown(e)); //Testing the edge of the board	
 		 assertEquals(sComputer.getLocation(), new Point(19, 9));
 		 System.out.println(g.toString());
-		 //assertTrue(g.moveUp(sComputer));
-		 //assertTrue(g.moveUp(sComputer));
-		 //assertTrue(g.moveUp(sComputer));
+		 assertTrue(g.moveUp(sComputer));
+		 assertTrue(g.moveUp(sComputer));
+		 assertTrue(g.moveUp(sComputer));
 		 assertEquals(sComputer.getLocation(), new Point(16, 9));
-		 //assertTrue(g.moveUp(sComputer));
+		 assertTrue(g.moveUp(sComputer));
 		 assertFalse(g.checkOpenLineOfFire(sComputer, new Point(15,8)));
 		 assertFalse(g.checkOpenLineOfFire(sComputer, new Point(15,9)));
 		 System.out.println("\n\n\n\n" +g.toString());
@@ -79,12 +79,17 @@ public class Tests {
 		 GameBoard g = new GameBoard(player, computer, 1, 0);
 		 sonic.setLocation(new Point(0, 1));
 		 sComputer.setLocation(new Point(0, 2));
+<<<<<<< HEAD
 		 g.setUnitToThisSpot(sonic, new Point(0, 1));
 		 g.setUnitToThisSpot(sComputer, new Point(0, 2));
 		 /*
+=======
+		 
+		 
+>>>>>>> 2df82c53ef1da13e3a3b3da37a3e85902da53e23
 		  * Sonic is at (0, 1) so he should be able to attack enemies at:
 		  * (0, 0), (0, 2), (1, 1)
-		  */
+		  
 		 
 		 assertTrue(g.checkOpenLineOfFire(sonic, new Point(0, 2)));
 		 assertTrue(g.checkOpenLineOfFire(sonic, new Point(0, 0)));
@@ -97,12 +102,10 @@ public class Tests {
 		 
 		 m.setLocation(new Point(0, 18));
 		 sComputer.setLocation(new Point(0, 17));
-		 /*
-		  * MegaMan is at (0, 18) so he can attack units
-		  * that are at (0, 19), (1, 18), (2, 18), (0, 17),
-		  * and (0, 16)
-		  */
-		// assertTrue(g.checkAvailable(new Point( 0, 20)));
+		 
+		 
+		  
+		 assertTrue(g.checkAvailable(new Point( 0, 20)));
 		 assertTrue(g.checkOpenLineOfFire(m, new Point(0, 19)));
 		 assertTrue(g.checkOpenLineOfFire(m, new Point(1, 18)));
 		 assertTrue(g.checkOpenLineOfFire(m, new Point(2, 18)));

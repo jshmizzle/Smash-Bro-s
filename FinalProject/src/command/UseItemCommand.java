@@ -11,8 +11,7 @@ import server.TRPGServer;
 
 public class UseItemCommand extends Command<Client>{
 	
-	private String source;
-	private Item item;
+	private int itemIndex;
 	private int index;
 	
 	
@@ -23,15 +22,15 @@ public class UseItemCommand extends Command<Client>{
 	 * @param source
 	 * @param itemChanges
 	 */
-	public UseItemCommand(String source,int index,Item item) {
+	public UseItemCommand(String source,int index, int itemIndex) {
 		super(source);
-		this.item=item;
+		this.itemIndex=itemIndex;
 		this.index=index;
 	}
 
 	@Override
 	public void execute(Client executeOn) {
-		executeOn.useItem(source,index, item);
+		executeOn.useItem(getSource(),index, itemIndex);
 	}
 	
 

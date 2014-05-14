@@ -127,9 +127,18 @@ public class GameLobby extends JPanel {
 		g2.drawRect(10, 35, getWidth()-150, getHeight()-85);
 		
 		
-		g2.setColor(Color.yellow);
 		for(int i=0; i<clients.size(); i++){
+			g2.setColor(Color.yellow);
 			g2.drawString(clients.get(i), 20, 60+(30*i));
+			
+			if(sourceUserName.equals(clients.get(i)) && isHost){
+				g2.setColor(Color.green);
+				g2.drawString("<-HOST", 90, 60+(30*i));
+			}
+			else if(!sourceUserName.equals(clients.get(i)) && !isHost){
+				g2.setColor(Color.green);
+				g2.drawString("<-HOST", 90, 60+(30*i));
+			}
 		}
 		
 		//draw the map selcetion label
