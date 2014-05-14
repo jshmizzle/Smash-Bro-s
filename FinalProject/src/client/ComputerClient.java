@@ -1352,9 +1352,11 @@ public class ComputerClient extends JFrame implements Client {
 			currentBoard.useThisItem(source, compUnits.get(unitIndex), item);
 			compItemList.remove(item);
 		} else {
-			item=playerItemList.get(itemIndex);
-			currentBoard.useThisItem(source, playerUnits.get(unitIndex), item);
-			playerItemList.remove(item);
+			if(playerItemList.size()>itemIndex){
+				item=playerItemList.get(itemIndex);
+				currentBoard.useThisItem(source, playerUnits.get(unitIndex), item);
+				playerItemList.remove(item);
+			}
 		}
 	}
 

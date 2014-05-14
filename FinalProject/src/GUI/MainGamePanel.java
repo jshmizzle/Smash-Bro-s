@@ -455,8 +455,7 @@ public class MainGamePanel extends JPanel {
 		
 									//don't just go straight to letting them attack they can
 									//manually specify if they want to attack or not
-									if(!currentUnit.checkIfAlreadyAttackedThisTurn())
-										currentGameState=GameState.CyclingThroughUnits;
+									currentGameState=GameState.CyclingThroughUnits;
 									
 									previousPath=null;
 									
