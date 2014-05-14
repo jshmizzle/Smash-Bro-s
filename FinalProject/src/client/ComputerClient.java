@@ -212,7 +212,7 @@ public class ComputerClient extends JFrame implements Client {
 	public void endTurn(String client) {
 		if (client.equals(userName)) {
 			myTurn = false;
-			System.out.println(currentBoard.toString());
+			//System.out.println(currentBoard.g());
 		} else {
 			myTurn = true;
 			currentBoard.resetPlayerTwoMoves();
@@ -725,7 +725,7 @@ public class ComputerClient extends JFrame implements Client {
 						 */
 						for (int h = 0; h < moves.size(); h++) {
 							// System.out.println("before "
-							// +moves.get(h).toString());
+							// +moves.get(h).g());
 						}
 					}
 					for (int j = 1; j < path.size(); j++) {
@@ -1206,7 +1206,7 @@ public class ComputerClient extends JFrame implements Client {
 						 */
 						for (int h = 0; h < moves.size(); h++) {
 							// System.out.println("before "
-							// +moves.get(h).toString());
+							// +moves.get(h).g());
 						}
 					}
 					for (int j = 1; j < path.size(); j++) {
@@ -1214,13 +1214,12 @@ public class ComputerClient extends JFrame implements Client {
 					}
 					UnitMovedCommand moveCommand = new UnitMovedCommand(
 							userName, i, moves);
-					if (moves != null) {
+					System.out.println(unitIndex);
 						try {
 							outputStream.writeObject(moveCommand);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-					}
 				}
 				}
 			}
@@ -1239,7 +1238,7 @@ public class ComputerClient extends JFrame implements Client {
 				for(int j = 0; j < playerUnits.size(); j++){
 					Point toCheck = new Point(playerUnits.get(j).getLocation());
 					// if the comp unit is in range and has a shot, TAKE IT!
-					if(!u.checkIfAlreadyAttackedThisTurn() && currentBoard.checkOpenLineOfFire(u, toCheck) && u.isAlive()){
+					if(!u.checkIfAlreadyAttackedThisTurn() && currentBoard.checkOpenLineOfFire(u, toCheck) && u.isAlive() && playerUnits.get(j).isAlive()){
 						UnitAttackCommand command = new UnitAttackCommand(userName,i,j);
 						try {
 							outputStream.writeObject(command);
@@ -1265,7 +1264,7 @@ public class ComputerClient extends JFrame implements Client {
 			for (int j = 0; j < playerUnits.size(); j++) {
 				Point toCheck = new Point(playerUnits.get(j).getLocation());
 				// if the comp unit is in range and has a shot, TAKE IT!
-				if (!u.checkIfAlreadyAttackedThisTurn() &&currentBoard.checkOpenLineOfFire(u, toCheck) && u.isAlive()) {
+				if (!u.checkIfAlreadyAttackedThisTurn() &&currentBoard.checkOpenLineOfFire(u, toCheck) && u.isAlive() && playerUnits.get(j).isAlive() ) {
 					UnitAttackCommand command = new UnitAttackCommand(userName,
 							i, j);
 					try {
@@ -1330,7 +1329,7 @@ public class ComputerClient extends JFrame implements Client {
 	public void unitMoved(String source, int index, ArrayList<Point> moves) {
 
 		for (int h = 0; h < moves.size(); h++) {
-			// System.out.println("after"+moves.get(h).toString());
+			// System.out.println("after"+moves.get(h).g());
 		}
 		int actualTotalMoveLength;
 
@@ -1409,6 +1408,7 @@ public class ComputerClient extends JFrame implements Client {
 			}
 		} else if(source.equals(userName)){
 			unitIndex++;
+			//System.out.println("end " +unitIndex);
 			if (unitIndex > 4) {
 				attackTurnMele();
 			} else {

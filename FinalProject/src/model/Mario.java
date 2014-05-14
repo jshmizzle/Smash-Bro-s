@@ -6,7 +6,7 @@ import java.awt.Point;
 public class Mario extends Unit {
 
 	public Mario(char c) {
-		super("Mario", 100, 6, 5, 3, new Point(0,0), c);
+		super("Mario", 100, 6, 30, 4, new Point(0,0), c);
 		//		name, hp, move distance, dmg, range, point, character
 	}
 
