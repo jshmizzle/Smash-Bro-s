@@ -290,6 +290,7 @@ public class ComputerClient extends JFrame implements Client {
 	}
 
 	public void meleTurn() {
+		hasAttacked=false;
 		unitIndex = 0;
 		moveTurnMele();
 	}
@@ -799,7 +800,7 @@ public class ComputerClient extends JFrame implements Client {
 		}
 	}
 
-
+	private boolean hasAttacked;
 
 	private void moveTurnMele() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
@@ -1307,6 +1308,7 @@ public class ComputerClient extends JFrame implements Client {
 
 
 	private void attackTurnMele() {
+		if(!hasAttacked){
 		compUnits = currentBoard.getPlayerTwoUnits();
 		playerUnits = currentBoard.getPlayerOneUnits();
 		// go through all comp units
@@ -1327,7 +1329,9 @@ public class ComputerClient extends JFrame implements Client {
 				}
 			}
 		}
+		hasAttacked=true;
 		sendEndTurnCommand();
+		}
 	}
 
 	private void sendEndTurnCommand() {
