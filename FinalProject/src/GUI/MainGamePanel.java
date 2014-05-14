@@ -36,6 +36,7 @@ public class MainGamePanel extends JPanel {
 	char [][] currentBoard;
 	private GameBoard gameBoard;
 	int gameTileWidth, gameTileHeight;
+	
 	private Image redOrb, swordCursor, portal, boulder, grass, headstone, princess, waypoint, 
 	              tree, invalidMove, chest, attackRange, redDiamond, blueDiamond; 
 	private Point cursorLocation;
@@ -67,6 +68,7 @@ public class MainGamePanel extends JPanel {
 		//initialize the game board that will be represented on the screen
 		this.currentBoard=startingBoard.getGameBoard();
 		this.gameBoard=startingBoard;
+		this.localUserUnitList=gameBoard.getPlayerOneUnits();
 		
 		//we cannot assume that the current client's units are always going to be
 		//the player one units. Check whether or not they are the host in order to know which player they are
@@ -81,7 +83,6 @@ public class MainGamePanel extends JPanel {
 		
 		this.currentUnit=localUserUnitList.get(0);
 
-		System.out.println(localUserUnitList.size());
 		
 		//Using the size of the panel determine the dimensions of tiles
 		this.gameTileWidth=getWidth()/currentBoard[0].length;
@@ -192,16 +193,37 @@ public class MainGamePanel extends JPanel {
 	private void drawTheUnits(Graphics2D g2) {
 		for(Unit curr: localUserUnitList){
 			//draw the unit itself
+			if(!curr.isAlive()){
 			curr.draw(g2, gameTileHeight, gameTileWidth);
 			//now draw the blue diamond above its head to designate it as one of ours
 			g2.drawImage(blueDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
+			}
 		}
 		for(Unit curr: localOpponentUnitList){
 			//draw the unit itself
+			if(!curr.isAlive()){
 			curr.draw(g2, gameTileHeight, gameTileWidth);
 			//now draw the red diamond above its head to show it's an enemy
 			g2.drawImage(redDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
+			}
 		}
+		for(Unit curr: localUserUnitList){
+			//draw the unit itself
+			if(curr.isAlive()){
+			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the blue diamond above its head to designate it as one of ours
+			g2.drawImage(blueDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
+			}
+		}
+		for(Unit curr: localOpponentUnitList){
+			//draw the unit itself
+			if(curr.isAlive()){
+			curr.draw(g2, gameTileHeight, gameTileWidth);
+			//now draw the red diamond above its head to show it's an enemy
+			g2.drawImage(redDiamond, curr.getLocation().y*gameTileWidth, curr.getLocation().x*gameTileHeight-2*gameTileHeight/3, gameTileWidth, gameTileHeight, null);
+			}
+		}
+		
 	}
 
 	private void drawCursor(Graphics2D g2){

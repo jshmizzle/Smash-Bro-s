@@ -1,5 +1,6 @@
 package GUI;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -339,8 +340,7 @@ public class CharacterSelectPanel extends JPanel {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		
+		}	
 	}
 	
 }
