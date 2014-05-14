@@ -38,21 +38,25 @@ import command.EndTurnCommand;
 import command.SetUserUnits;
 import command.UnitAttackCommand;
 import command.UnitMovedCommand;
-
+/**
+ * ComputerClient is meant for computer AI only. It is used only in a 
+ * single player game, and connects to the server and receives commands 
+ * needed to make the necessary changes client-side.
+ * @author The Other Guys
+ */
 public class ComputerClient extends JFrame implements Client {
 
 	private String host, userName;
 	private int port = 0;
+	private int unitIndex;
 	private Socket server;
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
-	private MainMenuPanel mainMenuPanel;
-	private CharacterSelectPanel charSelectPanel;
-	private JPanel currentPanel;
 	private MainGamePanel gamePanel;
 	private GameBoard currentBoard;
 	private boolean playingAlready = false;
 	private boolean myTurn = false;
+	private boolean moving = true;
 	private ArrayList<Unit> playerUnits;
 	private ArrayList<Unit> compUnits;
 	private boolean isHost = false;
@@ -106,14 +110,14 @@ public class ComputerClient extends JFrame implements Client {
 		}
 	}
 
-	// temp method
+	/**
+	 * Creates a new unit list for the computer.
+	 * Called when a new AI team needs to be created.
+	 */
 	private void chooseRandomCompUnits() {
 		// initialize the units and the GameBoard
 		compUnits = new ArrayList<Unit>();
 
-		ArrayList<Unit> choices = new ArrayList<>(
-				Arrays.asList(new Link('l'), new Goku('g'), new Mario('w'),
-						new MegaMan('m'), new Sonic('s')));
 		ArrayList<Unit> temp = new ArrayList<>();
 
 		Random rand = new Random();
@@ -138,7 +142,7 @@ public class ComputerClient extends JFrame implements Client {
 			}
 		}
 
-		Command command = new SetUserUnits(userName, temp);
+		SetUserUnits command = new SetUserUnits(userName, temp);
 		// send the command that sets the user units for computer and the user
 		try {
 			outputStream.writeObject(command);
@@ -146,12 +150,24 @@ public class ComputerClient extends JFrame implements Client {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * This method gets called from MapAndScenarioSelected command when the host
+	 * has chosen which map and scenario he wants.
+	 * @param source = user name
+	 * @param map = map selected
+	 * @param scenario = scenario selected
+	 */
 	public void setMapAndScenario(String source, Map map, Scenario scenario) {
 		this.map = map;
 		gameType = scenario;
 	}
-
+	/**
+	 * This method gets called from the GUI after the player has selected his team.
+	 * It places the unit list in the variables for this class, then moves to the
+	 * next panel in the GUI.
+	 * @param source = client name
+	 * @param userUnits = arraylist of units
+	 */
 	public void setUserUnits(String source, ArrayList<Unit> userUnits) {
 		if (userName.equals(source)) {
 			compUnits = userUnits;
@@ -163,6 +179,26 @@ public class ComputerClient extends JFrame implements Client {
 			playerUnits = userUnits;
 			chooseRandomCompUnits();
 		}
+	}
+	
+	/**
+	 * This method gets called when the user decides to 
+	 * load a previous game. It gets passed all the information
+	 * needed for the AI to pick up right where it left off.
+	 * @param currentBoard = current GameBoard object
+	 * @param itemList = human user's item list
+	 * @param opponentItemList = computer's item list
+	 */
+	public void loadSavedComputer(GameBoard currentBoard,
+			ArrayList<Item> itemList, ArrayList<Item> opponentItemList) {
+		
+		this.currentBoard = currentBoard;
+		playerItemList = itemList;
+		compItemList = opponentItemList;
+		map = currentBoard.getMap();
+		gameType = currentBoard.getScenario();
+		playerUnits = currentBoard.getPlayerOneUnits();
+		compUnits = currentBoard.getPlayerTwoUnits();		
 	}
 
 	/*
@@ -189,7 +225,18 @@ public class ComputerClient extends JFrame implements Client {
 	 * public void useItem(String client, Unit u, Item item) {
 	 * currentBoard.useThisItem(client, u, item); }
 	 */
-
+	/**
+	 * This method gets called when a unit has been attacked. It makes the
+	 * proper adjustments in health based on which unit attacked, and which unit
+	 * received the damage.
+	 * 
+	 * @param client
+	 *            = user name
+	 * @param fromIndex
+	 *            = indice of unit in the unit list attacking from
+	 * @param toIndex
+	 *            = indice of unit in the unit list attacking
+	 */
 	public void attackUnit(String client, int fromIndex, int toIndex) {
 		if (client.equals(userName)) {
 			if (isHost)
@@ -208,7 +255,13 @@ public class ComputerClient extends JFrame implements Client {
 						compUnits.get(toIndex));
 		}
 	}
-
+	/**
+	 * This method gets called from EndTurnCommand when the user hits the "e" key
+	 * on the keyboard and ends the current turn, allowing
+	 * either the computer client to take its turn, or the 
+	 * other human user.
+	 * @param client = user name
+	 */
 	public void endTurn(String client) {
 		if (client.equals(userName)) {
 			myTurn = false;
@@ -219,7 +272,10 @@ public class ComputerClient extends JFrame implements Client {
 			executeTurn();
 		}
 	}
-
+	/**
+	 * This method is called when the human player ends his turn.
+	 * It will decide what to do based on the scenario.
+	 */
 	private void executeTurn() {
 		if (gameType == Scenario.Princess)
 			princessTurn();
@@ -230,19 +286,15 @@ public class ComputerClient extends JFrame implements Client {
 
 	public void princessTurn() {
 		unitIndex = 0;
-
 		moveTurnPrincess();
 	}
 
 	public void meleTurn() {
-
 		unitIndex = 0;
-
 		moveTurnMele();
 	}
 
 
-	private int unitIndex;
 
 	private void moveTurnPrincess() {
 		ArrayList<Unit> compUnits = new ArrayList<>();
@@ -1287,17 +1339,17 @@ public class ComputerClient extends JFrame implements Client {
 			e.printStackTrace();
 		}
 	}
-
-	private boolean moving = true;
-
+	
 	public boolean isMoving() {
 		return moving;
 	}
 
-	public void newGame() {
-
-	}
-
+	/**
+	 * This method activates an item and applies it to the chosen unit.
+	 * @param client = user name
+	 * @param unitIndex = indice in unit list
+	 * @param itemIndex = indice in item list
+	 */
 	@Override
 	public void useItem(String source, int unitIndex, int itemIndex) {
 		Item item;
@@ -1324,7 +1376,14 @@ public class ComputerClient extends JFrame implements Client {
 			comp.get(defendUnit).takeHit(user.get(attackUnit).getAttackPower());
 		}
 	}
-
+	/**
+	 * This method is called by the UnitMovedCommand and it will be used to
+	 * make sure that the unit only moves up to as many times as it is able
+	 * before its moves are up.
+	 * @param source = user name
+	 * @param unitIndex = indice in unit list
+	 * @param moves = points to move to
+	 */
 	@Override
 	public void unitMoved(String source, int index, ArrayList<Point> moves) {
 
@@ -1419,7 +1478,12 @@ public class ComputerClient extends JFrame implements Client {
 
 
 	}
-
+	/**
+	 * When an item is walked over, this method gets called from PickUpItemCommand
+	 * to place a randomly generated item into the item list
+	 * belonging to the user whose unit grabbed the item.
+	 * @param client
+	 */
 	@Override
 	public void pickUpItem(String source) {
 		ArrayList<Item> list = new ArrayList<>();
@@ -1455,7 +1519,13 @@ public class ComputerClient extends JFrame implements Client {
 		// SERVER HANDLER DOES NOT HAVE TO RUN INTO A RUNTIME CASTING EXCEPTION
 
 	}
-	
+	/**
+	 * This method gets called from TelePortUnitCommand when a unit steps on a wormhole.
+	 * It teleports the unit to a randomly chosen location on the map.
+	 * @param source = user name
+	 * @param unitIndex = indice in unit list
+	 * @param teleLocation = point to teleport to
+	 */
 	public void teleportUnit(String source, int unitIndex, Point teleLocation){
 		if(this.userName.equals(source)){
 			Unit unit=compUnits.get(unitIndex);

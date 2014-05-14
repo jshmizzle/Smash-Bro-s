@@ -1,6 +1,8 @@
 package client;
 
 import java.awt.Point;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import command.PickUpItemCommand;
-
 import model.GameBoard;
 import model.Item;
 import model.Map;
@@ -34,6 +35,12 @@ import GUI.MainMenuPanel;
 import GUI.SinglePlayerMapAndScenarioSelect;
 import GUI.WaitingOnCharacterSelection;
 
+/**
+ * TRPGClient is the main GUI meant for human players only. 
+ * It connects to the server and receives commands needed to make 
+ * the necessary changes client-side.
+ * @author The Other Guys
+ */
 public class TRPGClient extends JFrame implements Client {
 
 	public String host, userName;
@@ -45,8 +52,8 @@ public class TRPGClient extends JFrame implements Client {
 	private ObjectOutputStream outputStream;
 	private JPanel currentPanel;
 	private GameBoard currentBoard;
-	private boolean playingAlready = false, isHost = false,singlePlayer = false;
-	private boolean myTurn = true;
+	private boolean isHost = false,singlePlayer = false;
+	private boolean myTurn = true, moving = true;
 	private ArrayList<Item> itemList=new ArrayList<>(), opponentItemList=new ArrayList<>();
 	private ServerHandler handler;
 	private ArrayList<Unit> myUnits;
@@ -61,18 +68,20 @@ public class TRPGClient extends JFrame implements Client {
 		TRPGClient client = new TRPGClient();
 		client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-
+	/**
+	 * This client is for human players only. It connects to the server 
+	 * and receives commands needed to make the necessary changes.
+	 */
 	public TRPGClient() {
-
 		askUserForInfo();// now the client has been logged into the server'
-
 		ServerHandler handler = new ServerHandler(this, inputStream);
 		Thread t = new Thread(handler);
 		t.start();
 
-		this.setTitle("TRPG Final Project");
+		this.setTitle("Smash Bro's");
 		
 		currentPanel = new MainMenuPanel(userName, outputStream);
+		this.addWindowListener(new WindowClosingListener());
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
@@ -91,7 +100,7 @@ public class TRPGClient extends JFrame implements Client {
 	 * @param port
 	 *            The port to connect to at the specified port.
 	 * @param username
-	 *            The username which you will be logging into the server with.
+	 *            The user name which you will be logging into the server with.
 	 * 
 	 * @see TRPGQuickStart
 	 */
@@ -100,7 +109,7 @@ public class TRPGClient extends JFrame implements Client {
 		this.host=host;
 		this.port=port;
 		this.userName=username;
-		this.setTitle("TRPG Final Project");
+		this.setTitle("Smash Bro's");
 		
 		try {
 			// create the connection to the server
@@ -123,38 +132,124 @@ public class TRPGClient extends JFrame implements Client {
 		Thread t = new Thread(handler);
 		t.start();
 	}
+
+	
+	/*****************************************************************************************************/
+	/**
+	 * Window listener that listens for when the user closes the game
+	 * window. When the window is closed, the method to save the game
+	 * is called.
+	 */
+	private class WindowClosingListener implements WindowListener {
+		// most of these not used, but "WindowClosing" needed
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			saveGame();
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+
+		}
+
+	}
+
+	/*****************************************************************************************************/
+
 	
 	/**
-	 * Loads a saved GameBoard from file
+	 * Called from the LoadSavedGame command.
+	 * Loads a saved GameBoard from file and assigns the proper variables
+	 * from the loaded game.  Creates a computer client and calls a method
+	 * from its class to similarly assign the needed variables for the game
+	 * to pick up where it left off.
 	 */
 	public void loadSavedGame() {
 		try {
 			FileInputStream filein = new FileInputStream("SmashBros.out");
 			ObjectInputStream objectin = new ObjectInputStream(filein);
-
+			
+			//these might be out of order..
+			userName = (String) objectin.readObject();
 			currentBoard = (GameBoard) objectin.readObject();
+			itemList = (ArrayList<Item>) objectin.readObject();
+			opponentItemList = (ArrayList<Item>) objectin.readObject();
 			objectin.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		isHost=true;
+		singlePlayer=true;
+		mapChoice = currentBoard.getMap();
+		scenarioChoice = currentBoard.getScenario();
+		myUnits = currentBoard.getPlayerOneUnits();
+		opponentUnits = currentBoard.getPlayerTwoUnits();
+		
+		//create a new computer client and give it the game info it needs from previous game
+		ComputerClient compClient = new ComputerClient();
+		compClient.loadSavedComputer(currentBoard, itemList, opponentItemList);
+		
+		this.remove(currentPanel);
+		this.setVisible(false);
+		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream, isHost);
+		currentPanel.grabFocus();
+		this.add(currentPanel);
+		currentPanel.requestFocus(true);
+		this.pack();
+		this.setVisible(true);
+		this.repaint();
 	}
 	
 	/**
 	 * Saves the current GameBoard in a file to be read in at a later time
 	 */
 	private void saveGame() {
-		File file = new File("SmashBros.out");
-		try {
-			FileOutputStream fileout = new FileOutputStream(file);
-			ObjectOutputStream out = new ObjectOutputStream(fileout);
-
-			out.writeObject(currentBoard);
-			out.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		//if it's single player and the game is NOT over
+		if ((singlePlayer == true) && (!currentBoard.gameOver())) {
+			File file = new File("SmashBros.out");
+			try {
+				FileOutputStream fileout = new FileOutputStream(file);
+				ObjectOutputStream out = new ObjectOutputStream(fileout);
+				out.writeObject(userName);
+				out.writeObject(currentBoard);
+				out.writeObject(itemList);
+				out.writeObject(opponentItemList);
+				out.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
-
+	/**
+	 * Called from StartSinglePlayerGame command when a new single player
+	 * game needs to be created.
+	 */
 	public void startSinglePlayerGame(){
 		//obviously the player will host the single player game
 		isHost=true;
@@ -203,7 +298,11 @@ public class TRPGClient extends JFrame implements Client {
 			//or just don't care, do nothing
 		}
 	}
-	
+	/**
+	 * This method is called from JoinMultiPlayerGameCommand when a user
+	 * clicks "Join a Game."
+	 * @param source = user name
+	 */
 	public void joinMultiPlayerGame(String source){
 		if(source.equals(userName)){
 			//designate yourself not to be host
@@ -224,13 +323,22 @@ public class TRPGClient extends JFrame implements Client {
 			((GameLobby)currentPanel).clientJoined(source);
 		}
 	}
-	
+	/**
+	 * Updates the lobby for multiplayer.
+	 * @param users
+	 */
 	public void updateLobby(ArrayList<String> users){
 		if(currentPanel instanceof GameLobby){
 			((GameLobby)currentPanel).updateClients(users);
 		}
 	}
-	
+	/**
+	 * This method gets called from MapAndScenarioSelected command when the host
+	 * has chosen which map and scenario he wants.
+	 * @param source = user name
+	 * @param map = map selected
+	 * @param scenario = scenario selected
+	 */
 	public void setMapAndScenario(String source, Map map, Scenario scenario) {
 		this.mapChoice=map;
 		this.scenarioChoice=scenario;
@@ -247,7 +355,13 @@ public class TRPGClient extends JFrame implements Client {
 		this.pack();
 		this.setVisible(true);
 	}
-
+	/**
+	 * This method gets called from SetUserUnits command after the player has selected his team.
+	 * It places the unit list in the variables for this class, then moves to the
+	 * next panel in the GUI.
+	 * @param source = client name
+	 * @param userUnits = arraylist of units
+	 */
 	public void setUserUnits(String source, ArrayList<Unit> userUnits){
 		
 		//it doesn't matter if you are the host or not, if you sent this command, then
@@ -301,13 +415,16 @@ public class TRPGClient extends JFrame implements Client {
 			}
 		//}
 	}
-	
+	/**
+	 * Starts a new game.
+	 */
 	public void beginGame(){
 		this.remove(currentPanel);
 		
 		//we need to make sure that each client has the same exact setup as the other client
 		//that means that we can't just put my units in first everytime. That results
 		//in both clients having opposite boards
+		
 		if(isHost){
 			//host units always gets to be at the bottom
 			currentBoard =new GameBoard(myUnits, opponentUnits, mapChoice, scenarioChoice);
@@ -315,7 +432,6 @@ public class TRPGClient extends JFrame implements Client {
 		else{
 			currentBoard =new GameBoard(opponentUnits, myUnits, mapChoice, scenarioChoice);
 		}
-		
 		
 		currentPanel=new MainGamePanel(userName, currentBoard, this, outputStream, isHost);
 		currentPanel.grabFocus();
@@ -325,12 +441,14 @@ public class TRPGClient extends JFrame implements Client {
 		this.setVisible(true);
 		this.repaint();
 	}
-	
+	/**
+	 * Attempts to collect the ip address, port, and user name from the user.
+	 */
 	private void askUserForInfo() {
-		host = JOptionPane.showInputDialog(null,
-				"What host would you like to connect to?");
 		while (port == 0) {
 			try {
+				host = JOptionPane.showInputDialog(null,
+						"What host would you like to connect to?");
 				port = Integer.parseInt((String) JOptionPane.showInputDialog(
 						null, "What port are you trying to connect on?"));
 				server = new Socket(host, port);
@@ -343,11 +461,10 @@ public class TRPGClient extends JFrame implements Client {
 			}
 		}
 		try {
-
 			String serverAccepted = "reject";
 			while (serverAccepted.equals("reject")) {
 				userName = JOptionPane
-						.showInputDialog("Enter your TRPG username");
+						.showInputDialog("Enter your Smash Bro's user name");
 				outputStream.writeObject(userName);
 				serverAccepted = (String) inputStream.readObject();
 			}
@@ -355,26 +472,27 @@ public class TRPGClient extends JFrame implements Client {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Not used. This was only useful when we were not letting the 
+	 * players pick their own units
+	 */
 	private void initializeFrame() {
 		// mainMenuPanel = new MainMenuPanel(username, outputStream);
-		// start with MainGamePanel for testing menus will be added later the
-		// game comes first
-
-		// this was only useful when we were not letting the players pick their
-		// own units
 		// initializeGameBoard();
-
 		// gamePanel=new MainGamePanel(userName, currentBoard, this,
 		// outputStream);
 		// currentPanel=gamePanel;
-
 		currentPanel = new GameLobby(userName, outputStream, isHost);
 		this.add(currentPanel).setVisible(true);
 		this.pack();
 		this.setVisible(true);
 	}
-
+	/**
+	 * This method activates an item and applies it to the chosen unit.
+	 * @param client = user name
+	 * @param unitIndex = indice in unit list
+	 * @param itemIndex = indice in item list
+	 */
 	public void useItem(String client, int unitIndex, int itemIndex) {
 		Item item;
 		
@@ -389,10 +507,14 @@ public class TRPGClient extends JFrame implements Client {
 		}
 	}
 
-	public void newGame() {
-		currentBoard.startNewGame();
-	}
-
+	/**
+	 * This method gets called from UnitAttackCommand when a unit has been attacked.
+	 * It makes the proper adjustments in health based on which
+	 * unit attacked, and which unit received the damage.
+	 * @param client = user name
+	 * @param fromIndex = indice of unit in the unit list attacking from
+	 * @param toIndex = indice of unit in the unit list attacking
+	 */
 	public void attackUnit(String client, int fromIndex, int toIndex) {
 		//if the attack was sent by you then the unit from your list attacks the unit from the
 		//opponent's list, make sure to take that into account. Doesn't matter who's hosting.
@@ -409,12 +531,12 @@ public class TRPGClient extends JFrame implements Client {
 				if (myUnits.get(0).getHealth() <= 0) {
 					// client lost
 					currentPanel.repaint();
-					JOptionPane.showMessageDialog(null,"YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+					JOptionPane.showMessageDialog(null,"Game Over, you lose!");
 				}
 				if (opponentUnits.get(0).getHealth() <= 0) {
 					// client won
 					currentPanel.repaint();
-					JOptionPane.showMessageDialog(null,"You won...woooow. Good for you.");
+					JOptionPane.showMessageDialog(null,"Congratulations, you won!");
 				}
 			}
 		}
@@ -422,16 +544,20 @@ public class TRPGClient extends JFrame implements Client {
 			if(allUnitsDead(myUnits)){
 				// client lost
 				currentPanel.repaint();
-				JOptionPane.showMessageDialog(null,"YOU LOST IDIOT!! THE AI IS SO RANDOM IT'S NOT EVEN FUNNY....");
+				JOptionPane.showMessageDialog(null,"Game Over, you lose!");
 			}
 			else if(allUnitsDead(opponentUnits)){
 				// client won
 				currentPanel.repaint();
-				JOptionPane.showMessageDialog(null,"You won...woooow. Good for you.");
+				JOptionPane.showMessageDialog(null,"Congratulations, you won!");
 			}
 		}
 	}
-	
+	/**
+	 * Checks if all units are dead, returns false if any are alive.
+	 * @param units = list of units
+	 * @return
+	 */
 	private boolean allUnitsDead(ArrayList<Unit> units){
 		for(Unit curr: units){
 			if(curr.isAlive())
@@ -439,7 +565,13 @@ public class TRPGClient extends JFrame implements Client {
 		}
 		return true;
 	}
-
+	/**
+	 * This method gets called from EndTurnCommand when the user hits the "e" key
+	 * on the keyboard and ends the current turn, allowing
+	 * either the computer client to take its turn, or the 
+	 * other human user.
+	 * @param client = user name
+	 */
 	public void endTurn(String client) {
 		if (client.equals(userName)) {
 			myTurn = false;
@@ -455,7 +587,13 @@ public class TRPGClient extends JFrame implements Client {
 	public boolean myTurn() {
 		return myTurn;
 	}
-
+	
+	/**
+	 * When an item is walked over, this method gets called from PickUpItemCommand
+	 * to place a randomly generated item into the item list
+	 * belonging to the user whose unit grabbed the item.
+	 * @param client
+	 */
 	public void pickUpItem(String client) {
 		ArrayList<Item> list = new ArrayList<>();
 		Item rage = new Rage();
@@ -481,11 +619,14 @@ public class TRPGClient extends JFrame implements Client {
 		}
 			
 	}
-
+	
 	/**
-	 * This method is called by the UnitMoved Command and it will be used to
+	 * This method is called by the UnitMovedCommand and it will be used to
 	 * make sure that the unit only moves up to as many times as it is able
 	 * before its moves are up.
+	 * @param source = user name
+	 * @param unitIndex = indice in unit list
+	 * @param moves = points to move to
 	 */
 	public void unitMoved(String source, int unitIndex, ArrayList<Point> moves) {
 		moving = true;
@@ -560,7 +701,13 @@ public class TRPGClient extends JFrame implements Client {
 		moving = false;
 	}
 
-	//WORKING
+	/**
+	 * Checks if a unit walked over an item, picks it up
+	 * and puts it in the proper item list if needed.
+	 * @param source = user name
+	 * @param x = row
+	 * @param y = col
+	 */
 	private void checkIfTheUnitWalkedOverAnItem(String source,int x, int y) {
 		if(currentBoard.getGameBoard()[x][y]=='@'){
 			//the unit is currently on top of an item
@@ -574,8 +721,6 @@ public class TRPGClient extends JFrame implements Client {
 		}
 	}
 
-	private boolean moving = true;
-
 	public boolean isMoving() {
 		return moving;
 	}
@@ -583,7 +728,13 @@ public class TRPGClient extends JFrame implements Client {
 	public ArrayList<Item> getItemList(){
 		return itemList;
 	}
-	
+	/**
+	 * This method gets called from TelePortUnitCommand when a unit steps on a wormhole.
+	 * It teleports the unit to a randomly chosen location on the map.
+	 * @param source = user name
+	 * @param unitIndex = indice in unit list
+	 * @param teleLocation = point to teleport to
+	 */
 	public void teleportUnit(String source, int unitIndex, Point teleLocation){
 		if(this.userName.equals(source)){
 			Unit unit=myUnits.get(unitIndex);
@@ -598,4 +749,4 @@ public class TRPGClient extends JFrame implements Client {
 			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=unit.getCharRepresentation();
 		}
 	}
-}
+} // End Class TRPGClient

@@ -28,7 +28,7 @@ public class Unit implements Serializable{
 	protected boolean alive, alreadyAttacked;
 	protected int attackPower;
 	protected Point location;
-	protected Image standingImage, headstone;
+	transient Image standingImage, headstone;
 	protected char charRepresentation;
 	protected int defenseAmount,healthFull,attackRange, movesLeft;
 
