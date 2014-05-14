@@ -31,7 +31,7 @@ public class GameLobby extends JPanel {
 	private ArrayList<String> clients=new ArrayList<String>();
 	private JButton button;
 	private ObjectOutputStream serverOut;
-	private Image map1, princess, grass, deathmatchIcon;
+	private Image map1, map2, princess, grass, deathmatchIcon;
 	private Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, scenario3, selectedMapPoint, selectedScenarioPoint;
 	private int currentState=1;
 	private Map mapChoice;
@@ -86,6 +86,7 @@ public class GameLobby extends JPanel {
 	public void initializeImages(){
 		try {
 			map1=ImageIO.read(new File("images/Map1.png"));
+			map2=ImageIO.read(new File("images/mapTwo.png"));
 			princess=ImageIO.read(new File("images/Princess.png"));
 			grass=ImageIO.read(new File("images/TRPGgrass.png"));
 			deathmatchIcon=ImageIO.read(new File("images/scenario2.png"));
@@ -133,7 +134,7 @@ public class GameLobby extends JPanel {
 		//draw the map1 selection
 		g2.drawImage(map1, getWidth()-130, 60, 120, 120, null);
 		//draw the map2 selection
-		g2.drawImage(map1, getWidth()-130, 200, 120, 120, null);
+		g2.drawImage(map2, getWidth()-130, 200, 120, 120, null);
 		
 		
 		//draw the scenario select label
@@ -143,8 +144,7 @@ public class GameLobby extends JPanel {
 		g2.drawImage(princess, getWidth()-85, 360, 40, 40, null);
 		//draw the deathmatch option
 		g2.drawImage(deathmatchIcon, getWidth()-130, 410, 120, 40, null);
-		//draw the temp 3rd option
-		g2.drawImage(grass, getWidth()-130, 460, 120, 40, null);
+		
 		
 		
 		//draw the cursor at the location of the current selection so the player knows what
@@ -213,13 +213,9 @@ public class GameLobby extends JPanel {
 						if(cursorLocation.equals(scenario1)){
 							cursorLocation=scenario2;
 						}
-						else if(cursorLocation.equals(scenario2)){
-							cursorLocation=scenario3;
-						}
 						else
 							cursorLocation=scenario1;
 						
-						button.setEnabled(true);
 						repaint();
 					}
 				}
@@ -238,13 +234,10 @@ public class GameLobby extends JPanel {
 					//The host will now be selecting the scenario instead of the map
 					else if(currentState==2){
 						if(cursorLocation.equals(scenario1)){
-							cursorLocation=scenario3;
-						}
-						else if(cursorLocation.equals(scenario2)){
-							cursorLocation=scenario1;
+							cursorLocation=scenario2;
 						}
 						else
-							cursorLocation=scenario2;
+							cursorLocation=scenario1;
 						repaint();
 					}
 				}

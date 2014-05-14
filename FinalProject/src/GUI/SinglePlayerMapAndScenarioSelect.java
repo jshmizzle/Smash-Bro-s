@@ -30,7 +30,7 @@ public class SinglePlayerMapAndScenarioSelect extends JPanel {
 
 	private JButton button;
 	private ObjectOutputStream serverOut;
-	private Image map1, princess, grass, deathmatchIcon;
+	private Image map1, map2, princess, grass, deathmatchIcon;
 	private Point cursorLocation, mapOption1, mapOption2, scenario1, scenario2, selectedMapPoint, selectedScenarioPoint;
 	private int currentState=1;
 	private Map mapChoice;
@@ -80,6 +80,7 @@ public class SinglePlayerMapAndScenarioSelect extends JPanel {
 	private void initializeImages() {
 		try {
 			map1=ImageIO.read(new File("images/Map1.png"));
+			map2=ImageIO.read(new File("images/mapTwo.png"));
 			princess=ImageIO.read(new File("images/Princess.png"));
 			grass=ImageIO.read(new File("images/TRPGgrass.png"));
 			deathmatchIcon=ImageIO.read(new File("images/scenario2.png"));
@@ -110,7 +111,7 @@ public class SinglePlayerMapAndScenarioSelect extends JPanel {
 		//draw the map1 selection
 		g2.drawImage(map1, mapOption1.x, mapOption1.y, getWidth()/4, getHeight()/4, null);
 		//draw the map2 selection
-		g2.drawImage(map1, mapOption2.x, mapOption2.y, getWidth()/4, getHeight()/4, null);
+		g2.drawImage(map2, mapOption2.x, mapOption2.y, getWidth()/4, getHeight()/4, null);
 		
 		
 		//draw the scenario select label

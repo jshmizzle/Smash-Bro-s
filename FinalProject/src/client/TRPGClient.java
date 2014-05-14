@@ -34,6 +34,7 @@ import model.Sniper;
 import model.Unit;
 import GUI.CharacterSelectPanel;
 import GUI.GameLobby;
+import GUI.GameOverPanel;
 import GUI.MainGamePanel;
 import GUI.MainMenuPanel;
 import GUI.SinglePlayerMapAndScenarioSelect;
@@ -683,11 +684,26 @@ public class TRPGClient extends JFrame implements Client {
 			if (myUnits.get(0).getHealth() <= 0 || opponentUnits.get(0).getHealth() <= 0) {
 				if (myUnits.get(0).getHealth() <= 0) {
 					// client lost
-					JOptionPane.showMessageDialog(null,"Game Over, you lose!");
-				}
+//					JOptionPane.showMessageDialog(null,"Game Over, you lose!");
+					this.remove(currentPanel);
+					GameOverPanel gameOver=new GameOverPanel(false, scenarioChoice, myUnits);
+					gameOver.grabFocus();
+					this.add(gameOver);
+					gameOver.requestFocus(true);
+					this.pack();
+					this.setVisible(true);
+					this.repaint();				}
 				if (opponentUnits.get(0).getHealth() <= 0) {
 					// client won
-					JOptionPane.showMessageDialog(null,"Congratulations, you won!");
+//					JOptionPane.showMessageDialog(null,"Congratulations, you won!");
+					this.remove(currentPanel);
+					GameOverPanel gameOver=new GameOverPanel(true, scenarioChoice, myUnits);
+					gameOver.grabFocus();
+					this.add(gameOver);
+					gameOver.requestFocus(true);
+					this.pack();
+					this.setVisible(true);
+					this.repaint();
 				}
 			}
 		}
@@ -695,13 +711,28 @@ public class TRPGClient extends JFrame implements Client {
 			if(allUnitsDead(myUnits)){
 				// client lost
 				currentPanel.repaint();
-				JOptionPane.showMessageDialog(null,"Game Over, you lose!");
-			}
+//				JOptionPane.showMessageDialog(null,"Game Over, you lose!");
+				this.remove(currentPanel);
+				GameOverPanel gameOver=new GameOverPanel(false, scenarioChoice, myUnits);
+				gameOver.grabFocus();
+				this.add(gameOver);
+				gameOver.requestFocus(true);
+				this.pack();
+				this.setVisible(true);
+				this.repaint();			}
 			else if(allUnitsDead(opponentUnits)){
 				// client won
 				currentPanel.repaint();
-				JOptionPane.showMessageDialog(null,"Congratulations, you won!");
-			}
+//				JOptionPane.showMessageDialog(null,"Congratulations, you won!");
+				this.remove(currentPanel);
+				GameOverPanel gameOver=new GameOverPanel(true, scenarioChoice, myUnits);
+				gameOver.grabFocus();
+				this.add(gameOver);
+				gameOver.requestFocus(true);
+				this.pack();
+				this.setVisible(true);
+				this.repaint();			
+				}
 		}
 	}
 	/**

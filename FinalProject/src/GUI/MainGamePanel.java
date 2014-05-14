@@ -656,13 +656,14 @@ public class MainGamePanel extends JPanel {
 							int enemyIndex=-99;
 
 							for(int i=0; i<localOpponentUnitList.size(); i++){
-								if(localOpponentUnitList.get(i).getLocation().equals(swap(cursorLocation))){
+								Unit curr=localOpponentUnitList.get(i);
+								if(curr.getLocation().equals(swap(cursorLocation)) && curr.isAlive()){
 									enemyIndex=i;
 								}
 							}
 							//only actually send the command if the unit is within range and its
 							//line of fire is not obstructed
-							if (gameBoard.checkOpenLineOfFire(currentUnit, swap(cursorLocation))) {
+							if (gameBoard.checkOpenLineOfFire(currentUnit, swap(cursorLocation)) && enemyIndex!=-99) {
 								UnitAttackCommand moveCommand = new UnitAttackCommand(source, unitIndex, enemyIndex);
 								System.out.println("attacking");
 								try {
@@ -805,6 +806,7 @@ public class MainGamePanel extends JPanel {
 				attackPanel.setLocation(0,getHeight()/3);
 				attackPanel.setSize(600, 200);
 				attackPanel.addListener(new AnimationOverListener());
+				attackPanel.setIgnoreRepaint(true);
 				
 				
 				MainGamePanel.this.add(attackPanel).setVisible(true);
