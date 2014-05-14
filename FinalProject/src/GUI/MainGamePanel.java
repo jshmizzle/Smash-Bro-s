@@ -47,7 +47,7 @@ public class MainGamePanel extends JPanel {
 	private Unit currentUnit;
 	private String source;
 	private ArrayList<Unit> localUserUnitList, localOpponentUnitList;
-	private boolean isHost, myTurn,showInventory;
+	private boolean isHost, myTurn,showInventory, isAnimating;
 	private JPanel inventoryPanel, statsPanel;
 	private TRPGClient client;
 	
@@ -624,7 +624,7 @@ public class MainGamePanel extends JPanel {
 						}
 					}
 					//allow the player to manually make the decision to attack
-					else if(key==KeyEvent.VK_A){
+					else if(key==KeyEvent.VK_A && currentUnit.isAlive()){
 						if(!currentUnit.checkIfAlreadyAttackedThisTurn()){
 							currentGameState=GameState.ChoosingAttack;
 							repaint();
@@ -651,7 +651,7 @@ public class MainGamePanel extends JPanel {
 						repaint();
 					}
 					else if(key==KeyEvent.VK_ENTER){
-						if(gameBoard.checkIfEnemy(currentUnit,swap(cursorLocation))){
+						if(gameBoard.checkIfEnemy(currentUnit,swap(cursorLocation)) && currentUnit.isAlive()){
 							System.out.println("found enemy");
 							int enemyIndex=-99;
 
@@ -745,7 +745,8 @@ public class MainGamePanel extends JPanel {
 		this.currentBoard=currentGameBoard.getGameBoard();
 		this.gameBoard=currentGameBoard;
 		
-		this.repaint();
+		if(!isAnimating)
+			this.repaint();
 	}
 	
 	public void updateCurrentUnitAfterMove(Unit u){
@@ -785,6 +786,7 @@ public class MainGamePanel extends JPanel {
 			
 			
 			this.add(attackPanel).setVisible(true);
+			isAnimating=true;
 		}
 	}
 	
@@ -806,14 +808,13 @@ public class MainGamePanel extends JPanel {
 				attackPanel.setLocation(0,getHeight()/3);
 				attackPanel.setSize(600, 200);
 				attackPanel.addListener(new AnimationOverListener());
-				attackPanel.setIgnoreRepaint(true);
 				
 				
 				MainGamePanel.this.add(attackPanel).setVisible(true);
 			}
-			System.out.println("Remove the animation");
-			
-			if(pendingAnimationUnits.size()==0){
+
+			else{
+				isAnimating=false;
 				repaint();
 			}
 		}

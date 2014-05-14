@@ -155,6 +155,7 @@ public class AttackPanel extends JPanel{
 			
 			animateLink();
 		}
+		this.setLocation(0, getHeight()/3);
 		
 	}
 	

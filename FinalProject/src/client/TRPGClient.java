@@ -816,10 +816,16 @@ public class TRPGClient extends JFrame implements Client {
 
 		//again, it doesn't matter who's hosting..
 		Unit u;
+		boolean fromAI;
 		if (source.equals(userName)) {
 			u=myUnits.get(unitIndex);
+			fromAI=false;
 		} else {
 			u=opponentUnits.get(unitIndex);
+			if(singlePlayer==false)
+				fromAI=false;
+			else
+				fromAI=true;
 		}
 		// first, determine how many moves from the chosen list can actually be
 		// taken.
