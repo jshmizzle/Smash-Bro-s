@@ -901,5 +901,6 @@ public class TRPGClient extends JFrame implements Client {
 			unit.setLocation(teleLocation);
 			currentBoard.getGameBoard()[unit.getLocation().x][unit.getLocation().y]=unit.getCharRepresentation();
 		}
+		((MainGamePanel)currentPanel).repaint();
 	}
 } // End Class TRPGClient

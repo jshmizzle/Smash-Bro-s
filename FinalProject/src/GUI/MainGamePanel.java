@@ -268,11 +268,11 @@ public class MainGamePanel extends JPanel {
 			statsPanel.setSize(gameTileWidth*2, gameTileHeight*3);
 			MainGamePanel.this.add(statsPanel).setVisible(true);
 		}
-		for(int i=0; i<5; i++){
+		for(int i=1; i<6; i++){
 			Unit currUnit=localUserUnitList.get(i);
 			JPanel panel=new UnitStatusPanel(currUnit);
 			panel.setSize(getWidth()/8, getHeight()/5);
-			panel.setLocation(0, getHeight()/5*i);
+			panel.setLocation(0, getHeight()/5*(i-1));
 			this.add(panel).setVisible(true);
 			
 			statsPanelList.add(panel);
@@ -280,7 +280,7 @@ public class MainGamePanel extends JPanel {
 			currUnit=localOpponentUnitList.get(i);
 			panel=new UnitStatusPanel(currUnit);
 			panel.setSize(getWidth()/8, getHeight()/5);
-			panel.setLocation(7*getWidth()/8, getHeight()/5*i);
+			panel.setLocation(7*getWidth()/8, getHeight()/5*(i-1));
 			this.add(panel).setVisible(true);
 			
 			statsPanelList.add(panel);
