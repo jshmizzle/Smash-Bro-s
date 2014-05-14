@@ -677,18 +677,16 @@ public class TRPGClient extends JFrame implements Client {
 			currentBoard.attackUnit(opponentUnits.get(fromIndex), myUnits.get(toIndex));
 			((MainGamePanel) currentPanel).animateAttack(opponentUnits.get(fromIndex),myUnits.get(toIndex));
 		}
-		currentPanel.repaint();
+
 		// if the game is over let us know!	
 		if (scenarioChoice == Scenario.Princess) {
 			if (myUnits.get(0).getHealth() <= 0 || opponentUnits.get(0).getHealth() <= 0) {
 				if (myUnits.get(0).getHealth() <= 0) {
 					// client lost
-					currentPanel.repaint();
 					JOptionPane.showMessageDialog(null,"Game Over, you lose!");
 				}
 				if (opponentUnits.get(0).getHealth() <= 0) {
 					// client won
-					currentPanel.repaint();
 					JOptionPane.showMessageDialog(null,"Congratulations, you won!");
 				}
 			}

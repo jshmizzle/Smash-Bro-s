@@ -67,20 +67,6 @@ public class GameLobby extends JPanel {
 		scenario2=new Point(getWidth()-130, 410);
 		scenario3=new Point(getWidth()-130, 460);
 		
-		button=new JButton("Continue");
-		button.setEnabled(false);
-		button.setLocation(getWidth()-100, getHeight()-40);
-		button.setSize(90, 30);
-		button.setVisible(true);
-		this.add(button);
-		
-		
-		
-		clients.add("Hello World");
-		clients.add("Jimmy");
-		clients.add("Jason");
-		clientJoined("Random");
-		
 
 		//save the connection to the server
 		this.serverOut=serverOut;
@@ -232,6 +218,8 @@ public class GameLobby extends JPanel {
 						}
 						else
 							cursorLocation=scenario1;
+						
+						button.setEnabled(true);
 						repaint();
 					}
 				}

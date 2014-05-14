@@ -10,7 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import model.Goku;
+import model.Link;
 import model.Mario;
+import model.Princess;
 import model.Unit;
 
 public class testAnimation {
@@ -27,7 +29,7 @@ public class testAnimation {
 		frame.setLocation(new Point(100, 100));
 		frame.setLayout(new BorderLayout());
 		Unit one = new Goku('C');
-		Unit two = new Mario('c');
+		Unit two = new Princess('c');
 		wtr = new AttackPanel(one, two);
 		wtr.setPreferredSize(new Dimension(1000, 1000));
 		wtr.setSize(650, 650);

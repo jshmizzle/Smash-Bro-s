@@ -6,7 +6,7 @@ import client.TRPGClient;
 
 public class LobbyInfoCommand extends Command<TRPGClient>{
 	
-	private String source;
+	//private String source;
 	
 	/**
 	 * New client logs into server and chooses the join/start game option on the main menu.

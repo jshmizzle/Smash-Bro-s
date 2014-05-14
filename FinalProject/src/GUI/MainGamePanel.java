@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -752,13 +754,70 @@ public class MainGamePanel extends JPanel {
 		return new Point(original.y, original.x);
 	}
 	
+	private ArrayList<UnitHolder> pendingAnimationUnits=new ArrayList<>();
+	private AttackPanel attackPanel;
 	public void animateAttack(Unit attacker, Unit attacked){
-		AttackPanel att= new AttackPanel(attacker, attacked);
-		att.setLocation(0,getHeight()/3);
-		this.add(att).setVisible(true);
-		while(att.isAnimating()){
-			System.out.println(att.x);
+		
+		if(pendingAnimationUnits.size()>=1){
+			pendingAnimationUnits.add(new UnitHolder(attacker, attacked));
+		}
+		else{
+			pendingAnimationUnits.add(new UnitHolder(attacker, attacked));
+
+			attackPanel= new AttackPanel(attacker, attacked);
+			attackPanel.setLocation(0,getHeight()/3);
+			attackPanel.setSize(600, 200);
+			attackPanel.addListener(new AnimationOverListener());
+			
+			
+			this.add(attackPanel).setVisible(true);
+		}
+	}
+	
+	
+	public class AnimationOverListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			MainGamePanel.this.remove(attackPanel);
+			
+			pendingAnimationUnits.remove(0);//pop the "stack"
+			
+			
+			if(pendingAnimationUnits.size()>=1){
+				Unit attacker=pendingAnimationUnits.get(0).getFirst();
+				Unit attacked=pendingAnimationUnits.get(0).getSecond();
+
+				attackPanel= new AttackPanel(attacker, attacked);
+				attackPanel.setLocation(0,getHeight()/3);
+				attackPanel.setSize(600, 200);
+				attackPanel.addListener(new AnimationOverListener());
+				
+				
+				MainGamePanel.this.add(attackPanel).setVisible(true);
 			}
-		this.remove(att);
+			System.out.println("Remove the animation");
+			
+			if(pendingAnimationUnits.size()==0){
+				repaint();
+			}
+		}
+		
+	}
+	
+	private class UnitHolder{
+		private Unit first, second;
+		public UnitHolder(Unit first, Unit second){
+			this.first=first;
+			this.second=second;
+		}
+		
+		public Unit getFirst(){
+			return first;
+		}
+		
+		public Unit getSecond(){
+			return second;
+		}
 	}
 }

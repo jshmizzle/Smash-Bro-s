@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -19,6 +18,7 @@ import model.Goku;
 import model.Link;
 import model.Mario;
 import model.MegaMan;
+import model.Princess;
 import model.Sonic;
 import model.Unit;
 
@@ -45,7 +45,6 @@ public class AttackPanel extends JPanel{
 	
 	public AttackPanel(Unit one, Unit two) {
 		
-		this.setVisible(true);
 		
 		try {
 			background =  ImageIO.read(new File("images/background.jpg"));
@@ -61,27 +60,18 @@ public class AttackPanel extends JPanel{
 			
 			if(two instanceof Goku)
 					setTwoGoku();
-			if(two instanceof Link){
-				setTwoLink();
-			}
-
-			if(two instanceof MegaMan){
-				setTwoMegaMan();
-			}
-			if(two instanceof Mario)
-			{
-				setTwoMario();
-			}
 			if(two instanceof Link)
-			{
 				setTwoLink();
-			}
+			if(two instanceof MegaMan)
+				setTwoMegaMan();
+			if(two instanceof Mario)
+				setTwoMario();
+			if(two instanceof Link)
+				setTwoLink();
 			if(two instanceof Sonic)
-			{
 				setTwoSonic();
-				
-			}
-
+			if(two instanceof Princess)
+				setTwoPrincess();
 			
 			animateSonic();
 		} //end of sonic
@@ -102,6 +92,8 @@ public class AttackPanel extends JPanel{
 				setTwoMario();
 			if(two instanceof Sonic)
 				setTwoSonic();
+			if(two instanceof Princess)
+				setTwoPrincess();
 			animateGoku();
 		}// END OF GOKU
 		
@@ -121,6 +113,8 @@ public class AttackPanel extends JPanel{
 				setTwoLink();
 			if(two instanceof Sonic)
 				setTwoSonic();
+			if(two instanceof Princess)
+				setTwoPrincess();
 			
 			animateMario();
 		}//END OF MARIO
@@ -139,6 +133,9 @@ public class AttackPanel extends JPanel{
 				setTwoMario();
 			if(two instanceof Sonic)
 				setTwoSonic();
+			if(two instanceof Princess)
+				setTwoPrincess();
+			
 			animateMegaMan();
 		}
 		else if(one instanceof Link){
@@ -153,16 +150,26 @@ public class AttackPanel extends JPanel{
 				setTwoMario();
 			if(two instanceof Sonic)
 				setTwoSonic();
+			if(two instanceof Princess)
+				setTwoPrincess();
+			
 			animateLink();
 		}
 		
-		JFrame frame = new JFrame();
-		frame.setSize(new Dimension(1000, 1000));
-		frame.setLocation(new Point(100, 100));
-		this.setX(0);
-		this.setY(0);
 	}
 	
+	private void setTwoPrincess() {
+		try {
+			defender = ImageIO.read(new File("images/princess.png"));
+			enemyGettingHit = new BufferedImage[1];
+			enemyGettingHit[0] = ImageIO.read(new File("images/princessDead.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			j = 0;
+	}
+
 	private void animateMegaMan() {
 		try{	
 			
@@ -283,7 +290,7 @@ public class AttackPanel extends JPanel{
 
 	numFrames = 0;
 	i = 0;
-	Timer t = new Timer(75, new ActionListener(){
+	Timer t = new Timer(70, new ActionListener(){
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			moveLink();
@@ -631,7 +638,7 @@ public class AttackPanel extends JPanel{
 				currentAttacker = attackerImages[i];
 				
 				if(isProjectile)
-					x += 8;
+					x += 15;
 			}
 		}
 	}
@@ -672,18 +679,23 @@ public class AttackPanel extends JPanel{
 @Override
 public void paintComponent(Graphics g) {
 	super.paintComponent(g);
+	if(attacker.equals("Link") && t > 900)
+		notifyListeners();
 	
-	if(t > 1300 )
+	if(attacker.equals("Goku") && t > 1400)
+		notifyListeners();
+	
+	if(t > 2000)
 		notifyListeners();
 		
 	t += 25;
-	if(t >= 1400)
+	if(t >= 2100)
 	{
 		t = 0;
 		t += 25;
 	}
 
-	g.drawImage (background, 0 - t, 0, 2000, 1000, null);
+	g.drawImage (background, 0 - t, 0, 2800, 1000, null);
 	
 	if(attacker.equals("Sonic")){
 		g.drawImage (defender, getWidth()-150, y, 150, 200, null);
