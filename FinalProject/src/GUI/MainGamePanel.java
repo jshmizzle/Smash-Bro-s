@@ -751,4 +751,14 @@ public class MainGamePanel extends JPanel {
 	private Point swap(Point original){
 		return new Point(original.y, original.x);
 	}
+	
+	public void animateAttack(Unit attacker, Unit attacked){
+		AttackPanel att= new AttackPanel(attacker, attacked);
+		att.setLocation(0,getHeight()/3);
+		this.add(att).setVisible(true);
+		while(att.isAnimating()){
+			System.out.println(att.x);
+			}
+		this.remove(att);
+	}
 }

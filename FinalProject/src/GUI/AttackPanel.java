@@ -1,6 +1,5 @@
 package GUI;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -9,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -26,7 +26,7 @@ public class AttackPanel extends JPanel{
 
 	public static final int MAX_FRAMES = 2;
 
-	private int x, y;
+	int x, y;
 	private BufferedImage[] attackerImages;
 	private BufferedImage[] attackerAttackingImages;
 	private BufferedImage[] enemyGettingHit;
@@ -40,7 +40,8 @@ public class AttackPanel extends JPanel{
 	private int width, length = 0;
 	private int n = 1;
 	private int i = 0, t = 0, j = 0, shift = 0;
-	private boolean moved = true, isProjectile = false, isMario = false, needToStayPut = false, isAnimating = true;
+	private boolean moved = true, isProjectile = false, isMario = false, needToStayPut = false;
+	public static boolean isAnimating = true;
 	
 	public AttackPanel(Unit one, Unit two) {
 		
@@ -219,7 +220,7 @@ public class AttackPanel extends JPanel{
 			{
 				j = 0;
 				defender = enemyGettingHit[j];
-				isAnimating = false;
+				//isAnimating = false;
 			}
 			moved = false;
 		}
@@ -324,7 +325,7 @@ public class AttackPanel extends JPanel{
 			{
 				j = 0;
 				defender = enemyGettingHit[j];
-				isAnimating = false;
+			//	isAnimating = false;
 			}
 			moved = false;
 			n = 3;
@@ -425,7 +426,7 @@ public class AttackPanel extends JPanel{
 					{
 						j = 0;
 						defender = enemyGettingHit[j];
-						isAnimating = false;
+					//	isAnimating = false;
 					}
 				
 					isProjectile = false;
@@ -623,7 +624,7 @@ public class AttackPanel extends JPanel{
 					{
 						j = 0;
 						defender = enemyGettingHit[j];
-						isAnimating = false;
+						//isAnimating = false;
 					}
 					
 				}
@@ -671,7 +672,10 @@ public class AttackPanel extends JPanel{
 @Override
 public void paintComponent(Graphics g) {
 	super.paintComponent(g);
-
+	
+	if(t > 1300 )
+		notifyListeners();
+		
 	t += 25;
 	if(t >= 1400)
 	{
@@ -731,6 +735,21 @@ public void paintComponent(Graphics g) {
 			
 	}
 	}
-	
+
+public boolean isAnimating() {
+	// TODO Auto-generated method stub
+	return isAnimating;
+}
+
+private void notifyListeners(){
+	for(ActionListener curr: listenerList){
+		curr.actionPerformed(null);
+	}
+}
+
+public ArrayList<ActionListener> listenerList=new ArrayList<>();
+public void addListener(ActionListener l){
+		listenerList.add(l);
+	}
 
 }

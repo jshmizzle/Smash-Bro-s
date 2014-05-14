@@ -668,11 +668,14 @@ public class TRPGClient extends JFrame implements Client {
 	public void attackUnit(String client, int fromIndex, int toIndex) {
 		//if the attack was sent by you then the unit from your list attacks the unit from the
 		//opponent's list, make sure to take that into account. Doesn't matter who's hosting.
+		
 		if (client.equals(userName)) {
 			currentBoard.attackUnit(myUnits.get(fromIndex),opponentUnits.get(toIndex));
+			((MainGamePanel) currentPanel).animateAttack(myUnits.get(fromIndex),opponentUnits.get(toIndex));
 		} 
 		else {
 			currentBoard.attackUnit(opponentUnits.get(fromIndex), myUnits.get(toIndex));
+			((MainGamePanel) currentPanel).animateAttack(opponentUnits.get(fromIndex),myUnits.get(toIndex));
 		}
 		currentPanel.repaint();
 		// if the game is over let us know!	
@@ -728,16 +731,6 @@ public class TRPGClient extends JFrame implements Client {
 			((MainGamePanel) currentPanel).myTurn();
 			currentBoard.resetPlayerTwoMoves();
 		} else {
-			if (isHost) {
-				myTurn = true;
-				((MainGamePanel) currentPanel).myTurn();
-				currentBoard.resetPlayerOneMoves();
-
-			} else {
-				myTurn = true;
-				((MainGamePanel) currentPanel).myTurn();
-				currentBoard.resetPlayerTwoMoves();
-			}
 			myTurn = true;
 			((MainGamePanel) currentPanel).myTurn();
 			currentBoard.resetPlayerOneMoves();
